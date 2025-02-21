@@ -1,0 +1,137 @@
+.candidate_maincontainer {
+  position: relative;
+  padding: 34px 0px;
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+  height: 70vh;
+  overflow-x: hidden;
+  /* background-color: red; */
+}
+.candidate_subcontainer {
+  display: flex;
+  flex-direction: column;
+  width: 35%;
+}
+@media (min-width: 300px) and (max-width: 700px) {
+  .candidate_subcontainer {
+    width: 70%;
+  }
+}
+.candidate_fieldheading {
+  font-weight: 700;
+  font-size: 24px;
+  margin-bottom: 16px !important;
+}
+@media (min-width: 300px) and (max-width: 700px) {
+  .candidate_fieldheading {
+    font-size: 19px;
+  }
+}
+.candidate_experienceheading {
+  font-weight: 700;
+  font-size: 24px;
+  margin-bottom: 16px !important;
+}
+@media (min-width: 300px) and (max-width: 700px) {
+  .candidate_experienceheading {
+    font-size: 19px;
+  }
+}
+.candidate_footercontainer {
+  position: fixed;
+  bottom: 40px;
+  left: 10%; /* Align the footer container properly */
+  /* right: 20%; */
+  display: flex;
+  justify-content: space-between; /* Push text to opposite sides */
+  width: 80%; /* Ensure it spans across the required width */
+}
+.candidate_forwardbutton {
+  background-color: #0056b3;
+  padding: 15px;
+  outline: 0 !important;
+  border-radius: 50%;
+  border: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: #0057b33b 0px 8px 24px;
+}
+.candidate_backwarddiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.candidate_backtext {
+  font-weight: 500;
+  margin-left: 6px !important;
+  color: #0056b3;
+}
+.candidate_freshertext {
+  color: grey;
+  font-size: 15px;
+  margin-bottom: 16px !important;
+  font-weight: 500;
+}
+.candidate_experincefielddiv {
+  display: flex;
+  width: 100%;
+}
+.candidate_popularlocation {
+  font-weight: 600;
+  margin-top: 20px !important;
+}
+.candidate_locationsmaindiv {
+  display: flex;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.candidate_locationdiv {
+  border-radius: 14px;
+  padding: 6px 14px;
+  border: 1px solid rgba(128, 128, 128, 0.678);
+  font-size: 13px;
+  cursor: pointer;
+}
+.candidate_locationdiv:hover {
+  color: #0056b3;
+  background-color: #0057b336;
+  border: 1px solid #0056b3;
+}
+.candidate_companydeleterowdiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+/* .candidate_companydetailsmaindiv {
+  overflow-y: auto;
+  height: 70vh;
+  overflow-x: hidden;
+  padding: 0px 6px;
+} */
+.candidate_companydeletebutton:hover {
+  border-color: #ff4d4f !important;
+  color: #ff4d4f !important;
+}
+.candidate_companyaddbutton {
+  width: 140px;
+  background-color: #0056b3;
+  border-color: #0056b3 !important;
+  color: #ffffff;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.candidate_companyaddbutton:hover {
+  background-color: #0056b3 !important;
+  border-color: #0056b3 !important;
+  color: #ffffff !important;
+  opacity: 0.7;
+}

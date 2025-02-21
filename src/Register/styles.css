@@ -1,0 +1,157 @@
+.registration_mainContainer {
+  /* height: 100vh; */
+  display: flex;
+  justify-content: center;
+}
+.registration_sectioncontainer {
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+  margin-top: 24px;
+  margin-bottom: 40px;
+}
+.registration_sectionheadings {
+  color: rgb(45, 45, 45) !important;
+  font-weight: 700;
+  font-size: 1.75rem;
+}
+.registration_fieldrowdiv {
+  margin-top: 22px;
+}
+.registration_sectiondivider {
+  border-color: rgba(128, 128, 128, 0.425) !important;
+  margin-top: 30px !important;
+  margin-bottom: 16px !important;
+  margin: 0;
+}
+.registration_addcompanybutton {
+  box-sizing: border-box;
+  background: none rgb(255, 255, 255);
+  appearance: none;
+  text-align: start;
+  text-decoration: none;
+  border: 1px solid rgb(212, 210, 208);
+  cursor: pointer;
+  width: max-content;
+  font-weight: 600;
+  border-radius: 6px;
+  color: #0056b3;
+  margin-top: 6px;
+  border-color: #0056b3 !important;
+}
+.registration_addcompanybutton:hover {
+  background-color: #0057b32a !important;
+  color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
+.registration_deletecompanybutton {
+  box-sizing: border-box;
+  background: none rgb(255, 255, 255);
+  appearance: none;
+  text-decoration: none;
+  border: 1px solid rgb(212, 210, 208);
+  cursor: pointer;
+  width: max-content;
+  font-weight: 600;
+  border-radius: 6px;
+  color: rgb(169, 37, 43);
+  border-color: rgb(169, 37, 43) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.registration_deletecompanybutton:hover {
+  background-color: rgb(254, 238, 239) !important;
+  color: rgb(131, 22, 27) !important;
+}
+.registration_companyfields_divider {
+  border-color: rgba(128, 128, 128, 0.219) !important;
+  margin-top: 0px;
+}
+.candidate_companydeleterowdiv {
+  margin-top: 22px;
+}
+.registration_skillsdescription {
+  color: gray;
+  font-weight: 500;
+  margin-top: 1px !important;
+  font-size: 14px;
+  margin-bottom: 20px !important;
+}
+.registration_skillsfield {
+}
+.registration_uploadresumebutton_div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+}
+.registration_uploadresumebutton {
+  box-sizing: border-box;
+  background: none rgb(255, 255, 255);
+  appearance: none;
+  text-align: start;
+  text-decoration: none;
+  border: 1px solid rgb(212, 210, 208);
+  cursor: pointer;
+  width: max-content;
+  font-weight: 600;
+  border-radius: 6px;
+  color: #0056b3;
+  border-color: #0056b3 !important;
+  padding: 19px;
+}
+.registration_uploadresumebutton:hover {
+  background-color: #0057b32a !important;
+  color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
+.registration_draganddropcontainer {
+  margin-top: 20px !important;
+}
+.registration_resumeContainer {
+  border: 1px solid #0056b3;
+  color: #0056b3;
+  border-radius: 6px;
+  padding: 5px 9px;
+  width: 120px;
+  margin-top: 12px;
+}
+.registration_registerbutton {
+  box-sizing: border-box;
+  background-color: #0056b3;
+  appearance: none;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  width: max-content;
+  font-weight: 600;
+  border-radius: 6px;
+  color: #ffffff;
+  border-color: #0056b3 !important;
+  padding: 18px 32px;
+  font-size: 15px;
+}
+.registration_registerbutton_div {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}
+.registration_registerbutton:hover {
+  background-color: #0056b3 !important;
+  color: #ffffff !important;
+  border-color: #0056b3 !important;
+  opacity: 0.7;
+}
+.registration_resumenameContainer {
+  width: max-content;
+  color: #0056b3;
+  background-color: #0057b32a;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-weight: 600;
+  margin-top: 12px;
+}
+.registration_resumename {
+  font-size: 14px;
+}

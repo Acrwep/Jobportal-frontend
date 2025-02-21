@@ -1,0 +1,134 @@
+.admin_mainContainer {
+  margin: 32px;
+}
+.admin_header {
+  font-size: 24px;
+  font-weight: 600;
+}
+.admin_filtericondiv {
+  background-color: #0057b323;
+  border-radius: 6px;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 12px;
+  cursor: pointer;
+  /* color: #026ddf; */
+}
+.admin_filtermainContainer {
+  /* background-color: rgb(255, 255, 255); */
+  /* border-style: solid; */
+  /* border-width: 1px; */
+  /* border-color: rgb(212, 210, 208); */
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border-radius: 0.5rem;
+  /* padding: 24px; */
+}
+.admin_filtersubContainer {
+  width: 100%;
+  padding: 9px 20px;
+  /* margin-top: 20px; */
+  word-break: break-all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.admin_leftheding_coldiv {
+  display: flex;
+  align-items: center;
+}
+.filters_heading {
+  font-weight: 600;
+  font-size: 15px;
+}
+.admin_clearContainer {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  color: #0056b3;
+  font-weight: 600;
+}
+.admin_filterdivider {
+  margin: 0 !important;
+  margin-top: 16px !important;
+  background: #d2d1d6;
+}
+.admin_filterbuttonContainer {
+  display: flex;
+}
+.admin_filtercloseicondiv {
+  background-color: #0057b328;
+  border-radius: 6px;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #0056b3 !important;
+  cursor: pointer;
+}
+.admin_filterarrowicondiv {
+  background-color: #0057b328;
+  border-radius: 6px;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #0056b3 !important;
+  margin-left: 12px;
+  cursor: pointer;
+}
+.admin_candidatesDetailscard {
+  /* background-color: rgb(255, 255, 255); */
+  border-radius: 0.5rem;
+  /* border-style: solid; */
+  /* border-width: 1px; */
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  /* border-color: rgb(212, 210, 208); */
+}
+.admin_candidatesDetailsmainContainer {
+  /* display: flex; */
+  padding: 20px;
+}
+.admin_candidatesleft_div {
+  margin-right: 20px;
+}
+.admin_candidatename {
+  margin-bottom: 9px !important;
+  color: #0056b3;
+  font-weight: 600;
+  font-size: 19px;
+}
+.admin_candidategender {
+  margin-bottom: 9px !important;
+  font-size: 15px;
+}
+.admin_candidate_locationtext {
+  font-size: 15px;
+}
+.admin_candidateskills_container {
+  background-color: #0057b328;
+  border-radius: 6px;
+  padding: 4px 9px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #0056b3 !important;
+  width: max-content;
+  font-weight: 600;
+  margin-right: 12px;
+  margin-bottom: 11px;
+}
+.admin_candidate_profilesummaryheading {
+  margin-bottom: 6px !important;
+  font-weight: 600;
+  font-size: 15px;
+}
+.admin_candidate_profilesummary {
+  line-height: 24px;
+}
+.admin_experienceheading {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 6px !important;
+}

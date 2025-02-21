@@ -1,0 +1,92 @@
+.commonInputfield_container {
+  position: relative;
+  transition: all 0.3s ease;
+}
+.commonInputfield {
+  height: 37px;
+  background-color: #ffffff;
+  background-image: none;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #a3a3a3;
+  border-radius: 6px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 16px;
+}
+.commonSelectfield {
+  height: 37px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 16px;
+}
+.ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+  border-color: #a3a3a3 !important;
+}
+.ant-select-outlined.ant-select-status-error:not(.ant-select-customize-input)
+  .ant-select-selector {
+  border: 1px solid #ff4d4f !important;
+}
+.ant-select-outlined.ant-select-status-error:not(.ant-select-disabled):not(
+    .ant-select-customize-input
+  ):not(.ant-pagination-size-changer):hover
+  .ant-select-selector {
+  border: 1px solid #ff4d4f !important;
+}
+.commonInputfield:hover {
+  border-color: #0056b3 !important;
+}
+.commonInputfield:focus-within {
+  border-color: #0056b3 !important;
+  box-shadow: 0 0 0 2px #0057b349;
+}
+.commonfield_label {
+  font-weight: 600 !important;
+  margin-bottom: 6px !important;
+}
+.commonfield_asterisk {
+  color: rgba(255, 0, 0, 0.863);
+  margin-left: 3px !important;
+}
+.commonfield_errortext {
+  color: #ff4d4f;
+  margin-top: 2px !important;
+}
+.commonInputfield_error {
+  height: 37px;
+  background-color: #ffffff;
+  background-image: none;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #d9d9d9;
+  border-radius: 6px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 16px;
+}
+.commoninput_errormessagediv {
+  position: absolute;
+  left: 0%;
+  opacity: 0;
+  top: 0%;
+}
+.commoninput_errormessage_activediv {
+  /* top: 99%; */
+  /* transform: translateY(2%); */
+  transform: translateX(2%);
+  opacity: 1;
+  position: absolute;
+  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+}
+.commonsearchbar:hover .ant-input-outlined:hover {
+  border-color: #0056b3 !important;
+}
+.commonsearchbar .ant-input-outlined:focus-within {
+  border-color: #0056b3 !important;
+  box-shadow: 0 0 0 2px #25a17e17 !important;
+}
+.commonSelectfield:hover .ant-select-selector {
+  border-color: #0056b3 !important;
+  box-shadow: 0 0 0 2px #25a17e17 !important;
+}
