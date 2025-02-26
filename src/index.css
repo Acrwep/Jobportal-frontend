@@ -13,10 +13,17 @@ body {
 } */
 * {
   /* font-family: "Outfit", sans-serif; */
-  font-family: "Noto Sans", serif;
+  /* font-family: "Noto Sans", serif; */
+  font-family: "Lexend", serif;
 }
 p {
   margin: 0 !important;
+}
+
+/* antd disable input field styles */
+.ant-input-outlined.ant-input-disabled,
+:where(.css-dev-only-do-not-override-1yacf91).ant-input-outlined[disabled] {
+  color: rgb(0 0 0 / 52%) !important;
 }
 /* antd table styles */
 .users_table .ant-table-thead .ant-table-cell {
@@ -56,6 +63,16 @@ p {
 }
 .ant-pagination .ant-pagination-item-active a:hover {
   color: #0056b3 !important;
+}
+.ant-pagination .ant-pagination-item {
+  background-color: #0056b3 !important;
+}
+.ant-pagination .ant-pagination-item a {
+  color: #ffffff !important;
+}
+.ant-pagination .ant-pagination-item:not(.ant-pagination-item-active):hover {
+  background-color: none !important;
+  opacity: 0.7;
 }
 /* antd searchbar styles */
 .ant-input-search
@@ -126,4 +143,10 @@ p {
   .ant-select-selection-overflow
   .ant-select-selection-item-remove {
   color: #0056b3 !important;
+}
+
+/* antd modal footer styles */
+.ant-modal .ant-modal-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
 }

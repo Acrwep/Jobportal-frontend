@@ -2,9 +2,10 @@
   position: relative;
   transition: all 0.3s ease;
 }
+/* common input field styles */
 .commonInputfield {
   height: 37px;
-  background-color: #ffffff;
+  background-color: transparent;
   background-image: none;
   border-width: 1px;
   border-style: solid;
@@ -14,6 +15,16 @@
   width: 100%;
   font-size: 16px;
 }
+.commonInputfield:hover {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+}
+.commonInputfield:focus-within {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #0057b349;
+}
+/* common select field styles */
 .commonSelectfield {
   height: 37px;
   border-radius: 6px;
@@ -23,6 +34,7 @@
 }
 .ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
   border-color: #a3a3a3 !important;
+  background-color: transparent !important;
 }
 .ant-select-outlined.ant-select-status-error:not(.ant-select-customize-input)
   .ant-select-selector {
@@ -34,13 +46,7 @@
   .ant-select-selector {
   border: 1px solid #ff4d4f !important;
 }
-.commonInputfield:hover {
-  border-color: #0056b3 !important;
-}
-.commonInputfield:focus-within {
-  border-color: #0056b3 !important;
-  box-shadow: 0 0 0 2px #0057b349;
-}
+/* common labels styles */
 .commonfield_label {
   font-weight: 600 !important;
   margin-bottom: 6px !important;
@@ -55,7 +61,7 @@
 }
 .commonInputfield_error {
   height: 37px;
-  background-color: #ffffff;
+  background-color: transparent;
   background-image: none;
   border-width: 1px;
   border-style: solid;
@@ -72,13 +78,12 @@
   top: 0%;
 }
 .commoninput_errormessage_activediv {
-  /* top: 99%; */
-  /* transform: translateY(2%); */
   transform: translateX(2%);
   opacity: 1;
   position: absolute;
   transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
 }
+/* common search field styles */
 .commonsearchbar:hover .ant-input-outlined:hover {
   border-color: #0056b3 !important;
 }
@@ -89,4 +94,15 @@
 .commonSelectfield:hover .ant-select-selector {
   border-color: #0056b3 !important;
   box-shadow: 0 0 0 2px #25a17e17 !important;
+}
+/* common multiselect field styles */
+.commonMultiselectfield .ant-select-selector {
+  min-height: 37px !important;
+  height: auto !important;
+  overflow-y: auto;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: wrap;
+  border-radius: 6px !important;
+  display: flex;
 }

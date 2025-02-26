@@ -57,7 +57,20 @@ export const candidateRegistration = async (payload) => {
 
 export const getCandidates = async (payload) => {
   try {
-    const response = await api.get("/api/getCandidates", payload);
+    const response = await api.get("/api/getCandidates", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getSkills = async (payload) => {
+  try {
+    const response = await api.get("/api/getSkills", {
+      params: payload,
+    });
     return response;
   } catch (error) {
     throw error;

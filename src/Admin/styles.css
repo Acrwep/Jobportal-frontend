@@ -1,5 +1,41 @@
 .admin_mainContainer {
-  margin: 32px;
+  background-color: rgba(128, 128, 128, 0.11);
+  height: 100%;
+}
+.admin_layoutrowContainer {
+  padding: 30px 35px;
+}
+.admin_filtersmainContainer {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #ffffff;
+  border-radius: 9px;
+  width: 290px;
+}
+.admin_antdsider.ant-layout-sider {
+  max-width: 270px !important;
+  min-width: 270px !important;
+  overflow: auto;
+}
+.admin_antdsider.ant-layout-sider::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+  background-color: transparent; /* or add it to the track */
+}
+
+/* Add a thumb */
+.admin_antdsider.ant-layout-sider::-webkit-scrollbar-thumb {
+  background: #284461;
+}
+.admin_headerContainer {
+  border-bottom: 1px solid #e4e2e0;
+  padding: 19px 32px;
+  color: #2d2d2d;
+  font-size: 14px;
+  background-color: #ffffff;
+}
+.admin_headeravatar {
+  background-color: #0056b3;
+  font-weight: 600;
 }
 .admin_header {
   font-size: 24px;
@@ -16,22 +52,13 @@
   cursor: pointer;
   /* color: #026ddf; */
 }
-.admin_filtermainContainer {
-  /* background-color: rgb(255, 255, 255); */
-  /* border-style: solid; */
-  /* border-width: 1px; */
-  /* border-color: rgb(212, 210, 208); */
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  border-radius: 0.5rem;
-  /* padding: 24px; */
-}
 .admin_filtersubContainer {
   width: 100%;
   padding: 9px 20px;
   /* margin-top: 20px; */
   word-break: break-all;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
 }
 .admin_leftheding_coldiv {
@@ -39,7 +66,8 @@
   align-items: center;
 }
 .filters_heading {
-  font-weight: 600;
+  font-weight: 500;
+  color: #333;
   font-size: 15px;
 }
 .admin_clearContainer {
@@ -49,45 +77,74 @@
   color: #0056b3;
   font-weight: 600;
 }
+.admin_clearalltext {
+  cursor: pointer;
+  color: #0075f1;
+}
+.admin_clearalltext:active {
+  transform: scale(0.9);
+  transition: all 0.3s ease;
+}
+
 .admin_filterdivider {
   margin: 0 !important;
-  margin-top: 16px !important;
-  background: #d2d1d6;
+  margin-top: 6px !important;
+  background: #d2d1d634 !important;
 }
 .admin_filterbuttonContainer {
   display: flex;
 }
 .admin_filtercloseicondiv {
-  background-color: #0057b328;
+  background-color: #0057b314;
   border-radius: 6px;
-  padding: 6px;
+  padding: 5px 6px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #0056b3 !important;
+  color: #0075f1 !important;
   cursor: pointer;
 }
+.admin_filtercloseicondiv:active {
+  transform: scale(0.8);
+}
 .admin_filterarrowicondiv {
-  background-color: #0057b328;
+  background-color: #0057b314;
   border-radius: 6px;
-  padding: 6px;
+  padding: 5px 6px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #0056b3 !important;
+  color: #0075f1;
   margin-left: 12px;
   cursor: pointer;
 }
+.admin_filterarrowicondiv:active {
+  transform: scale(0.8);
+}
+.admin_filtervaluesmaindiv {
+  padding: 1px 20px;
+  display: flex;
+}
+.admin_filtervaluesdiv {
+  background-color: #0057b321;
+  color: #0056b3;
+  border-radius: 6px;
+  width: max-content;
+  padding: 4px 6px;
+  margin-right: 12px;
+  margin-bottom: 4px;
+  font-weight: 500;
+  font-size: 13px;
+}
 .admin_candidatesDetailscard {
-  /* background-color: rgb(255, 255, 255); */
   border-radius: 0.5rem;
-  /* border-style: solid; */
-  /* border-width: 1px; */
+  background-color: #ffffff;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  /* border-color: rgb(212, 210, 208); */
+  /* margin: 0px 16px; */
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 .admin_candidatesDetailsmainContainer {
-  /* display: flex; */
   padding: 20px;
 }
 .admin_candidatesleft_div {
@@ -96,39 +153,186 @@
 .admin_candidatename {
   margin-bottom: 9px !important;
   color: #0056b3;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 19px;
 }
 .admin_candidategender {
   margin-bottom: 9px !important;
   font-size: 15px;
+  color: #333;
+}
+.admin_candidatedesignation {
+  margin-bottom: 9px !important;
+  font-size: 15px;
+  font-weight: 700;
+  color: #333;
+}
+.admin_candidate_lefttext {
+  font-size: 14px;
+  color: #87878a;
 }
 .admin_candidate_locationtext {
-  font-size: 15px;
+  font-size: 14px;
+  color: #333;
 }
 .admin_candidateskills_container {
-  background-color: #0057b328;
+  background-color: rgba(207, 207, 207, 0.24);
   border-radius: 6px;
   padding: 4px 9px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #0056b3 !important;
+  color: #333 !important;
   width: max-content;
-  font-weight: 600;
   margin-right: 12px;
   margin-bottom: 11px;
+  font-size: 13px;
+  font-weight: 500;
 }
 .admin_candidate_profilesummaryheading {
   margin-bottom: 6px !important;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 15px;
+  color: gray;
 }
 .admin_candidate_profilesummary {
   line-height: 24px;
+  color: #333;
 }
 .admin_experienceheading {
   font-weight: 600;
   font-size: 15px;
   margin-bottom: 6px !important;
+  color: #87878a;
+}
+.admin_ctctext {
+  font-weight: 500;
+  color: #333;
+}
+.admin_candidatenodatadiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 25%;
+  height: 100%;
+  font-size: 17px;
+  font-weight: 700;
+  color: rgb(45, 45, 45);
+}
+.admin_contactinfo_buttondiv {
+  position: absolute;
+  bottom: 12px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.admin_contactinfo_button {
+  width: max-content;
+  background-color: #0056b3;
+  border-color: #0056b3 !important;
+  color: #ffffff;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.admin_contactinfo_button:hover {
+  background-color: #0056b3 !important;
+  border-color: #0056b3 !important;
+  color: #ffffff !important;
+  opacity: 0.7;
+}
+.admin_profilesummaryrow {
+  margin-top: 20px;
+}
+.admin_profilefound_heading {
+  font-weight: 600;
+  font-size: 18px;
+  color: #333;
+}
+/* modal styles */
+.admin_modalsubmitbutton {
+  width: max-content;
+  background-color: #0056b3;
+  border-color: #0056b3 !important;
+  color: #ffffff;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.admin_modalsubmitbutton:hover {
+  background-color: #0056b3 !important;
+  border-color: #0056b3 !important;
+  color: #ffffff !important;
+  opacity: 0.7;
+}
+.admin_viewresumebuttondiv {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+.admin_viewresumebutton {
+  width: max-content;
+  background-color: #0056b3;
+  border-color: #0056b3 !important;
+  color: #ffffff;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.admin_viewresumebutton:hover {
+  background-color: #0056b3 !important;
+  border-color: #0056b3 !important;
+  color: #ffffff !important;
+  opacity: 0.7;
+}
+.admin_resumemodal_resumeview {
+  height: 75vh;
+  overflow-y: auto;
+}
+.admin_resumemodal_paginationdiv {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 20px;
+}
+.admin_resumemodal_paginationbutton {
+  border: 1px solid rgba(128, 128, 128, 0.301) !important;
+  border-radius: 7px;
+  padding: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: transparent;
+}
+.admin_resumemodal_activepaginationbutton {
+  border-color: #0056b3;
+  border: none;
+  background-color: #0056b3;
+  color: #ffffff;
+  border-radius: 7px;
+  padding: 6px 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin: 0px 9px;
+  padding: 6px 12px;
 }
