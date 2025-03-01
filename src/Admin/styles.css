@@ -33,6 +33,20 @@
   font-size: 14px;
   background-color: #ffffff;
 }
+.admin_headerlogoutbutton {
+  margin-left: 12px;
+  /* width: 90px; */
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px !important;
+}
+.admin_headerlogoutbutton:hover {
+  border-color: #0056b3 !important;
+  color: #0056b3 !important;
+}
 .admin_headeravatar {
   background-color: #0056b3;
   font-weight: 600;
@@ -143,6 +157,7 @@
   /* margin: 0px 16px; */
   margin-top: 20px;
   margin-bottom: 20px;
+  width: 100%;
 }
 .admin_candidatesDetailsmainContainer {
   padding: 20px;
@@ -150,11 +165,25 @@
 .admin_candidatesleft_div {
   margin-right: 20px;
 }
+.admin_candidateprofileimage {
+  width: 94px;
+  border-radius: 50%;
+  border: 1px solid #e4e2e0;
+}
 .admin_candidatename {
   margin-bottom: 9px !important;
   color: #0056b3;
   font-weight: 700;
   font-size: 19px;
+}
+.admin_candidateprofdiv {
+  display: flex;
+  margin-bottom: 2px;
+}
+.admin_candidatecard_icons {
+  color: #333;
+  margin-right: 6px;
+  margin-top: 1px;
 }
 .admin_candidategender {
   margin-bottom: 9px !important;
@@ -189,6 +218,11 @@
   font-size: 13px;
   font-weight: 500;
 }
+.highlighted-skill {
+  background-color: #0057b336;
+  color: #333;
+  font-weight: bold;
+}
 .admin_candidate_profilesummaryheading {
   margin-bottom: 6px !important;
   font-weight: 700;
@@ -198,6 +232,12 @@
 .admin_candidate_profilesummary {
   line-height: 24px;
   color: #333;
+}
+.admin_candidate_nosummary {
+  color: gray;
+  text-align: center;
+  margin-top: 16px !important;
+  margin-bottom: 16px !important;
 }
 .admin_experienceheading {
   font-weight: 600;

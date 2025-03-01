@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./styles.css";
 import CommonInputField from "../Common/CommonInputField";
 import CommonDatePicker from "../Common/CommonDatePicker";
-import { Col, Divider, Row, Button, Checkbox, Upload, Spin } from "antd";
+import { Col, Divider, Row, Button, Checkbox, Upload, Spin, Input } from "antd";
 import CommonSelectField from "../Common/CommonSelectField";
 import { CloudUploadOutlined } from "@ant-design/icons";
 import { CommonToaster } from "../Common/CommonToaster";
@@ -14,15 +14,18 @@ import {
   nameValidator,
   selectValidator,
 } from "../Common/Validation";
-import { candidateRegistration, getCandidates } from "../Common/action";
+import { candidateRegistration } from "../Common/action";
 import CommonMultiSelect from "../Common/CommonMultiSelect";
 import { LoadingOutlined } from "@ant-design/icons";
 import Actelogo from "../images/acte-logo.png";
 import cardImage from "../images/registrationimage.png";
 import { BsPatchCheckFill } from "react-icons/bs";
+import { Country, State, City } from "country-state-city";
+import moment from "moment";
 
 export default function Register() {
   const { Dragger } = Upload;
+  const { TextArea } = Input;
   const [firstName, setFirstName] = useState("");
   const [firstNameError, setFirstNameError] = useState("");
   const [lastName, setLastName] = useState("");
@@ -31,10 +34,14 @@ export default function Register() {
   const [emailError, setEmailError] = useState("");
   const [mobile, setMobile] = useState();
   const [mobileError, setMobileError] = useState("");
+  const [countryOptions, setCountryOptions] = useState([]);
   const [country, setCountry] = useState("");
+  const [countryCode, setCountryCode] = useState("");
   const [countryError, setCountryError] = useState("");
-  const [address, setAddress] = useState("");
-  const [addressError, setAddressError] = useState("");
+  const [stateOptions, setStateOptions] = useState([]);
+  const [state, setState] = useState("");
+  const [stateError, setStateError] = useState("");
+  const [cityOptions, setCityOptions] = useState([]);
   const [city, setCity] = useState("");
   const [cityError, setCityError] = useState("");
   const [pincode, setPincode] = useState("");
@@ -130,9 +137,9 @@ export default function Register() {
   const [linkedinUrlError, setLinkedinUrlError] = useState("");
 
   const typeofEducationOptions = [
-    { id: 1, name: "Full time" },
-    { id: 2, name: "Part time" },
-    { id: 3, name: "Correspondence" },
+    { id: "Full time", name: "Full time" },
+    { id: "Part time", name: "Part time" },
+    { id: "Correspondence", name: "Correspondence" },
   ];
   const genderOptions = [
     { id: "Male", name: "Male" },
@@ -149,21 +156,38 @@ export default function Register() {
     { id: "3 Months", name: "3 Months" },
     { id: "6 Months", name: "6 Months" },
   ];
+  const [profilePictureArray, setProfilePictureArray] = useState([]);
+  const [profilePicture, setProfilePicture] = useState("");
+  const [summary, setSummary] = useState("");
+  const [summaryError, setSummaryError] = useState("");
   const [resume, setResume] = useState("");
-  const [resumeName, setResumeName] = useState("");
+  const [resumeArray, setResumeArray] = useState([]);
   const [resumeError, setResumeError] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getCandidatesData();
+    const countries = Country.getAllCountries();
+    setCountryOptions(countries);
   }, []);
 
-  const getCandidatesData = async () => {
-    try {
-      const response = await getCandidates();
-      console.log("candidates list", response?.data);
-    } catch (error) {
-      console.log(error);
+  const handleCountry = (value) => {
+    setCountry(value);
+    const selectedCountry = countryOptions.find((f) => f.name === value);
+    console.log("selected country", value, selectedCountry);
+    setCountryCode(selectedCountry.isoCode);
+    setStateOptions(State.getStatesOfCountry(selectedCountry.isoCode));
+    if (validationTrigger) {
+      setCountryError(selectValidator(value));
+    }
+  };
+
+  const handleState = (value) => {
+    setState(value);
+    const selectedState = stateOptions.find((f) => f.name === value);
+    console.log("selected state", value, selectedState);
+    setCityOptions(City.getCitiesOfState(countryCode, selectedState.isoCode));
+    if (validationTrigger) {
+      setStateError(selectValidator(value));
     }
   };
 
@@ -270,30 +294,59 @@ export default function Register() {
     setCertificationDetails(data);
   };
 
+  const handleProfileAttachment = ({ file }) => {
+    const isValidType =
+      file.type === "image/png" ||
+      file.type === "image/jpeg" ||
+      file.type === "image/jpg";
+
+    if (file.status === "uploading" || file.status === "removed") {
+      setProfilePictureArray([]);
+      return;
+    }
+    if (isValidType) {
+      console.log("fileeeee", file);
+      setProfilePictureArray([file]);
+      CommonToaster("Profile uploaded");
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result.split(",")[1]; // Extract Base64 content
+        setProfilePicture(base64String); // Store in state
+      };
+    } else {
+      CommonToaster("Accept only .png, .jpg and .jpeg");
+      setProfilePicture("");
+      setProfilePictureArray([]);
+    }
+  };
+
   //resume function
-  const handleAttachment = ({ file }) => {
-    const OriginFile = file.originFileObj;
+  const handleResumeAttachment = ({ file }) => {
+    console.log("fileee", file);
     const ValidType = file.type === "application/pdf";
 
-    if (file.status === "uploading") {
+    if (file.status === "uploading" || file.status === "removed") {
+      setResume("");
+      setResumeArray([]);
       return;
     }
     if (ValidType) {
-      console.log("fileeeee", OriginFile);
-      CommonToaster("Attachment uploaded successfully");
-      setResumeName(OriginFile.name);
+      console.log("fileeeee", file);
+      setResumeArray([file]);
+      CommonToaster("Attachment uploaded");
       const reader = new FileReader();
-      reader.readAsDataURL(OriginFile);
+      reader.readAsDataURL(file);
       reader.onload = () => {
         const base64String = reader.result.split(",")[1]; // Extract Base64 content
-        console.log("Base64 Resume:", base64String);
         setResume(base64String); // Store in state
         setResumeError(selectValidator(base64String));
       };
     } else {
-      CommonToaster("Accept only .png");
+      CommonToaster("Accept only .pdf");
       setResume("");
       setResumeError(" is required");
+      setResumeArray([]);
     }
   };
 
@@ -304,9 +357,9 @@ export default function Register() {
     const lastNameValidate = lastNameValidator(lastName);
     const emailValidate = emailValidator(email);
     const mobileValidate = mobileValidator(mobile);
-    const countryValidate = nameValidator(country);
-    const addressValidate = addressValidator(address);
-    const cityValidate = addressValidator(city);
+    const countryValidate = selectValidator(country);
+    const stateValidate = selectValidator(state);
+    const cityValidate = selectValidator(city);
     const pincodeValidate = selectValidator(pincode);
     const expYearValidate = selectValidator(experienceYear);
     const expMonthValidate = selectValidator(experienceMonth);
@@ -326,6 +379,7 @@ export default function Register() {
     const jobtitlesValidate = selectValidator(jobTitles);
     const joblocationsValidate = selectValidator(jobLocations);
     const linkedinUrlValidate = addressValidator(linkedinUrl);
+    const summaryValidate = addressValidator(summary);
     const resumeValidate = selectValidator(resume);
 
     setFirstNameError(firstNameValidate);
@@ -333,7 +387,7 @@ export default function Register() {
     setEmailError(emailValidate);
     setMobileError(mobileValidate);
     setCountryError(countryValidate);
-    setAddressError(addressValidate);
+    setStateError(stateValidate);
     setCityError(cityValidate);
     setPincodeError(pincodeValidate);
     setExperienceYearError(expYearValidate);
@@ -349,6 +403,7 @@ export default function Register() {
     setEctcError(expectedCtcValidate);
     setJobTitlesError(jobtitlesValidate);
     setJobLocationsError(joblocationsValidate);
+    setSummaryError(summaryValidate);
     setLinkedinUrlError(linkedinUrlValidate);
 
     //contact info validation
@@ -358,7 +413,7 @@ export default function Register() {
       emailValidate ||
       mobileValidate ||
       countryValidate ||
-      addressValidate ||
+      stateValidate ||
       cityValidate ||
       pincodeValidate
     ) {
@@ -467,6 +522,7 @@ export default function Register() {
       expectedCtcValidate ||
       jobtitlesValidate ||
       joblocationsValidate ||
+      summaryValidate ||
       linkedinUrlValidate
     ) {
       const personalContainer = document.getElementById(
@@ -488,15 +544,15 @@ export default function Register() {
       mobile: mobile,
       email: email,
       country: country,
-      address: address,
-      state: city,
+      state: state,
+      city: city,
       pincode: pincode,
       yearsOfExperience: experienceYear,
       monthOfExperience: experienceMonth,
       companyName: companyName,
       designation: designation,
-      companyStartdate: startDate,
-      companyEnddate: endDate,
+      companyStartdate: moment(startDate).format("YYYY-MM-DD HH:mm:ss"),
+      companyEnddate: moment(endDate).format("YYYY-MM-DD HH:mm:ss"),
       workingStatus: workingStatus,
       skills: skills,
       qualification: qualification,
@@ -504,13 +560,15 @@ export default function Register() {
       graduateYear: graduateYear,
       typeOfEducation: typeofEducation,
       certifications: certificationDetails,
-      gender: gender === 1 ? "Male" : "Female",
+      gender: gender,
       preferredJobTitles: jobTitles,
       preferredJobLocations: jobLocations,
       noticePeriod: noticePeriod,
       currentCTC: ctc,
       expectedCTC: ectc,
       linkedinURL: linkedinUrl,
+      profileImage: profilePicture,
+      profileSummary: summary,
       resume: resume,
       createdAt: new Date(),
     };
@@ -553,8 +611,8 @@ export default function Register() {
     setEmailError("");
     setCountry("");
     setCountryError("");
-    setAddress("");
-    setAddressError("");
+    setState("");
+    setStateError("");
     setCity("");
     setCityError("");
     setPincode("");
@@ -595,10 +653,14 @@ export default function Register() {
     setJobTitlesError("");
     setJobLocations([]);
     setJobLocationsError("");
+    setProfilePicture("");
+    setProfilePictureArray([]);
+    setSummary("");
+    setSummaryError("");
     setLinkedinUrl("");
     setLinkedinUrlError("");
+    setResumeArray([]);
     setResume("");
-    setResumeName("");
     setResumeError("");
     const container = document.getElementById("registration_mainContainer");
     container.scrollIntoView({ behavior: "smooth" });
@@ -777,31 +839,23 @@ export default function Register() {
                     xxl={12}
                     className="registration_fieldcolumndiv"
                   >
-                    <CommonInputField
+                    <CommonSelectField
                       label="Country"
+                      options={countryOptions}
                       mandatory={true}
                       value={country}
-                      onChange={(e) => {
-                        setCountry(e.target.value);
-                        if (validationTrigger) {
-                          setCountryError(nameValidator(e.target.value));
-                        }
-                      }}
+                      onChange={handleCountry}
                       error={countryError}
                     />
                   </Col>
                   <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
-                    <CommonInputField
-                      label="Address"
+                    <CommonSelectField
+                      label="State"
                       mandatory={true}
-                      value={address}
-                      onChange={(e) => {
-                        setAddress(e.target.value);
-                        if (validationTrigger) {
-                          setAddressError(addressValidator(e.target.value));
-                        }
-                      }}
-                      error={addressError}
+                      options={stateOptions}
+                      value={state}
+                      onChange={handleState}
+                      error={stateError}
                     />
                   </Col>
                 </Row>
@@ -816,14 +870,15 @@ export default function Register() {
                     xxl={12}
                     className="registration_fieldcolumndiv"
                   >
-                    <CommonInputField
-                      label="City, State"
+                    <CommonSelectField
+                      label="City"
+                      options={cityOptions}
                       mandatory={true}
                       value={city}
-                      onChange={(e) => {
-                        setCity(e.target.value);
+                      onChange={(value) => {
+                        setCity(value);
                         if (validationTrigger) {
-                          setCityError(addressValidator(e.target.value));
+                          setCityError(selectValidator(value));
                         }
                       }}
                       error={cityError}
@@ -1484,7 +1539,34 @@ export default function Register() {
                 </Row>
 
                 <Row className="registration_fieldrowdiv">
-                  <Col span={24} className="registration_fieldcolumndiv">
+                  <Col
+                    xs={24}
+                    sm={24}
+                    md={24}
+                    lg={12}
+                    xl={12}
+                    xxl={12}
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <div className="registration_uploadprofileContainer">
+                      <p>Upload Profile Picture</p>
+                      <Upload
+                        beforeUpload={(file) => {
+                          console.log(file);
+                          return false; // Prevent auto-upload
+                        }}
+                        multiple={false}
+                        onChange={handleProfileAttachment}
+                        maxCount={1}
+                        fileList={profilePictureArray}
+                      >
+                        <Button className="registration_profilechoosebutton">
+                          Browse
+                        </Button>
+                      </Upload>
+                    </div>
+                  </Col>
+                  <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                     <CommonInputField
                       label="Linkedin profile link"
                       mandatory={true}
@@ -1499,36 +1581,71 @@ export default function Register() {
                     />
                   </Col>
                 </Row>
+                <Row className="registration_fieldrowdiv">
+                  <Col span={24} className="registration_fieldcolumndiv">
+                    <div style={{ display: "flex" }}>
+                      <label className="registration_summarytextarealabel">
+                        Profile summary
+                      </label>
+                      <p className="registration_summarytextareaasterisk">*</p>
+                    </div>
+                    <TextArea
+                      className={
+                        summaryError
+                          ? "registration_errorsummarytextarea"
+                          : "registration_summarytextarea"
+                      }
+                      rows={4}
+                      value={summary}
+                      onChange={(e) => {
+                        setSummary(e.target.value);
+                        setSummaryError(addressValidator(e.target.value));
+                      }}
+                    />
+                    {summaryError && (
+                      <p className="registration_summaryerrortext">
+                        {"Profile summary" + " " + summaryError}
+                      </p>
+                    )}
+                  </Col>
+                </Row>
                 <Divider className="registration_sectiondivider" />
               </div>
 
               <p className="registration_sectionheadings">Resume</p>
-              <Dragger
-                className="registration_draganddropcontainer"
-                multiple={false}
-                onChange={handleAttachment}
-                showUploadList={false}
-              >
-                <p className="ant-upload-drag-icon">
-                  <CloudUploadOutlined style={{ color: "#0056b3" }} />
-                </p>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+              <div style={{ marginTop: "12px" }}>
+                <Dragger
+                  className="registration_draganddropcontainer"
+                  multiple={false}
+                  onChange={handleResumeAttachment}
+                  beforeUpload={(file) => {
+                    console.log(file);
+                    return false; // Prevent auto-upload
                   }}
+                  maxCount={1}
+                  fileList={resumeArray}
                 >
-                  <div className="registration_resumeContainer">
-                    <p>Upload Resume</p>
+                  <p className="ant-upload-drag-icon">
+                    <CloudUploadOutlined style={{ color: "#0056b3" }} />
+                  </p>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div className="registration_resumeContainer">
+                      <p>Upload Resume</p>
+                    </div>
                   </div>
-                </div>
-              </Dragger>
-              {resumeName && (
+                </Dragger>
+              </div>
+              {/* {resumeName && (
                 <div className="registration_resumenameContainer">
                   <p className="registration_resumename">{resumeName}</p>
                 </div>
-              )}
+              )} */}
 
               <div className="registration_registerbutton_div">
                 {loading ? (

@@ -10,6 +10,7 @@ import "./styles.css";
 import { adminLogin } from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
 import { LoadingOutlined } from "@ant-design/icons";
+import Actelogo from "../images/acte-logo.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -68,99 +69,104 @@ export default function Login() {
   };
 
   return (
-    <div className="login_maincontainer">
-      <div className="login_card">
-        <p className="logincard_heading">Sign in</p>
+    <div style={{ backgroundColor: "#f3f2f1" }}>
+      <div className="login_headerContainer">
+        <img src={Actelogo} className="login_actelogo" />
+      </div>
+      <div className="login_maincontainer">
+        <div className="login_card">
+          <p className="logincard_heading">Sign in</p>
 
-        <form>
-          <div style={{ position: "relative" }}>
-            <label className="inputfields_label">Email</label>
-            <Input
-              className={
-                emailError ? "login_errorinputfields" : "login_inputfields"
-              }
-              name="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (validationTrigger) {
-                  setEmailError(emailValidator(e.target.value));
+          <form>
+            <div style={{ position: "relative" }}>
+              <label className="inputfields_label">Email</label>
+              <Input
+                className={
+                  emailError ? "login_errorinputfields" : "login_inputfields"
                 }
-              }}
-              status={emailError ? "error" : ""}
-            />
-            <div
-              className={
-                emailError
-                  ? "commoninput_errormessage_activediv"
-                  : "commoninput_errormessagediv"
-              }
-            >
-              <p style={{ color: "#ff4d4f", marginTop: "2px" }}>
-                {`Email ${emailError}`}
-              </p>
-            </div>
-          </div>
-          <div style={{ marginTop: "22px", position: "relative" }}>
-            <label className="inputfields_label">Password</label>
-            <Input.Password
-              className={
-                passwordError
-                  ? "login_errorinputfields"
-                  : "login_passwordinputfield"
-              }
-              name="password"
-              visibilityToggle={{
-                visible: passwordVisible,
-                onVisibleChange: setPasswordVisible,
-              }}
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (validationTrigger) {
-                  setPasswordError(passwordValidator(e.target.value));
-                }
-              }}
-              status={passwordError ? "error" : ""}
-            />
-            <div
-              className={
-                passwordError
-                  ? "commoninput_errormessage_activediv"
-                  : "commoninput_errormessagediv"
-              }
-            >
-              <p style={{ color: "#ff4d4f", marginTop: "2px" }}>
-                {passwordError}
-              </p>
-            </div>
-          </div>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <p className="login_forgotpasswordtext">Forgot Password?</p>
-          </div>
-          <button
-            className={loading ? "loading_loginbutton" : "loginbutton"}
-            type="submit"
-            onClick={handleSubmit}
-          >
-            {loading ? (
-              <>
-                <Spin
-                  size="default"
-                  indicator={
-                    <LoadingOutlined
-                      style={{ color: "#ffffff", marginRight: "6px" }}
-                      spin
-                    />
+                name="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (validationTrigger) {
+                    setEmailError(emailValidator(e.target.value));
                   }
-                />{" "}
-                Loading...
-              </>
-            ) : (
-              "Sign In"
-            )}
-          </button>
-        </form>
+                }}
+                status={emailError ? "error" : ""}
+              />
+              <div
+                className={
+                  emailError
+                    ? "commoninput_errormessage_activediv"
+                    : "commoninput_errormessagediv"
+                }
+              >
+                <p style={{ color: "#ff4d4f", marginTop: "2px" }}>
+                  {`Email ${emailError}`}
+                </p>
+              </div>
+            </div>
+            <div style={{ marginTop: "22px", position: "relative" }}>
+              <label className="inputfields_label">Password</label>
+              <Input.Password
+                className={
+                  passwordError
+                    ? "login_errorinputfields"
+                    : "login_passwordinputfield"
+                }
+                name="password"
+                visibilityToggle={{
+                  visible: passwordVisible,
+                  onVisibleChange: setPasswordVisible,
+                }}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (validationTrigger) {
+                    setPasswordError(passwordValidator(e.target.value));
+                  }
+                }}
+                status={passwordError ? "error" : ""}
+              />
+              <div
+                className={
+                  passwordError
+                    ? "commoninput_errormessage_activediv"
+                    : "commoninput_errormessagediv"
+                }
+              >
+                <p style={{ color: "#ff4d4f", marginTop: "2px" }}>
+                  {passwordError}
+                </p>
+              </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <p className="login_forgotpasswordtext">Forgot Password?</p>
+            </div>
+            <button
+              className={loading ? "loading_loginbutton" : "loginbutton"}
+              type="submit"
+              onClick={handleSubmit}
+            >
+              {loading ? (
+                <>
+                  <Spin
+                    size="default"
+                    indicator={
+                      <LoadingOutlined
+                        style={{ color: "#ffffff", marginRight: "6px" }}
+                        spin
+                      />
+                    }
+                  />{" "}
+                  Loading...
+                </>
+              ) : (
+                "Sign In"
+              )}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

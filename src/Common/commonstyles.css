@@ -70,6 +70,7 @@
   transition: all 0.2s;
   width: 100%;
   font-size: 16px;
+  background-color: transparent !important;
 }
 .commoninput_errormessagediv {
   position: absolute;

@@ -150,3 +150,8 @@ p {
   display: flex !important;
   justify-content: flex-end !important;
 }
+
+/* antd upload styles */
+.ant-upload-wrapper .ant-upload-list .ant-upload-list-item {
+  color: #0056b3 !important;
+}

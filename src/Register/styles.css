@@ -137,6 +137,23 @@
 .candidate_companydeleterowdiv {
   margin-top: 22px;
 }
+.registration_uploadprofileContainer {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  margin-top: 22px;
+  width: 100%;
+}
+.registration_profilechoosebutton {
+  margin-left: 12px;
+  width: 100%;
+  background-color: transparent;
+}
+.registration_profilechoosebutton:hover {
+  border-color: #0056b3 !important;
+  color: #0056b3 !important;
+  background-color: transparent !important;
+}
 .registration_skillsdescription {
   color: gray;
   font-weight: 500;
@@ -170,8 +187,38 @@
   color: #0056b3 !important;
   border-color: #0056b3 !important;
 }
-.registration_draganddropcontainer {
-  margin-top: 20px !important;
+.registration_summarytextarea {
+  background-color: transparent !important;
+}
+.registration_summarytextarea:hover {
+  border-color: #0056b3 !important;
+}
+.registration_summarytextarea:focus-within {
+  border-color: #0056b3 !important;
+  box-shadow: 0 0 0 2px #0057b349 !important;
+}
+.registration_errorsummarytextarea {
+  background-color: transparent !important;
+  border-color: #ff4d4f !important;
+}
+.registration_errorsummarytextarea:hover {
+  border-color: #ff4d4f !important;
+}
+.registration_errorsummarytextarea:focus-within {
+  border-color: #ff4d4f !important;
+  box-shadow: 0 0 0 2px rgba(255, 38, 5, 0.06) !important;
+}
+.registration_summarytextarealabel {
+  font-weight: 600 !important;
+  margin-bottom: 6px !important;
+}
+.registration_summarytextareaasterisk {
+  color: rgba(255, 0, 0, 0.863);
+  margin-left: 3px !important;
+}
+.registration_summaryerrortext {
+  margin-top: 2px !important;
+  color: #ff4d4f;
 }
 .registration_resumeContainer {
   border: 1px solid #0056b3;

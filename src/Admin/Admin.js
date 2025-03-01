@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { IoCloseSharp } from "react-icons/io5";
 import { IoIosArrowForward } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa";
 import "./styles.css";
-import { Row, Col, Divider, Modal, Avatar, Pagination } from "antd";
+import { Row, Col, Divider, Modal, Avatar, Pagination, Button } from "antd";
 import { getCandidates, getSkills } from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
 import moment from "moment";
@@ -13,9 +14,17 @@ import { Layout, Menu, theme } from "antd";
 import Actelogo from "../images/acte-logo.png";
 import { MdArrowForwardIos, MdArrowBackIosNew } from "react-icons/md";
 import { FaRegFileAlt } from "react-icons/fa";
+import { PiGraduationCapDuotone } from "react-icons/pi";
+import { BsGenderMale } from "react-icons/bs";
+import { BsGenderFemale } from "react-icons/bs";
+import { AiOutlineLogout } from "react-icons/ai";
+import { HiOutlineUserCircle } from "react-icons/hi2";
+import { FiAward } from "react-icons/fi";
+import { BsBuildings } from "react-icons/bs";
 import { pdfjs, Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import CommonMultiSelect from "../Common/CommonMultiSelect";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -30,8 +39,10 @@ export default function Admin() {
     totalPages: 0,
     limit: 10,
   });
+  const navigate = useNavigate();
   const [totalProfileCount, setTotalProfileCount] = useState(0);
 
+  const [skillsModal, setSkillsModal] = useState(false);
   const [experienceModal, setExperienceModal] = useState(false);
   const [noticePeriodModal, setNoticePeriodModal] = useState(false);
   const [salaryModal, setSalaryModal] = useState(false);
@@ -44,6 +55,8 @@ export default function Admin() {
   const [conatactInfoModal, setConatactInfoModal] = useState(false);
   const [resumeViewerModal, setResumeViewerModal] = useState(false);
 
+  const [skillsFilter, setSkillsFilter] = useState([]);
+  const [skillsFilterRender, setSkillsFilterRender] = useState([]);
   const [experienceYear, setExperienceYear] = useState("");
   const [experienceMonth, setExperienceMonth] = useState("");
   const [noticePeriods, setNoticePeriods] = useState("");
@@ -86,6 +99,7 @@ export default function Admin() {
 
   const filterList = [
     { id: 1, name: "Experience" },
+    { id: 10, name: "Skills" },
     { id: 2, name: "Location" },
     { id: 3, name: "Salary" },
     { id: 4, name: "Education" },
@@ -147,13 +161,15 @@ export default function Admin() {
     noticePeriod,
     currentCTC,
     mobile,
-    state,
+    city,
     qualification,
     graduateYear,
     gen,
     companyName,
-    designation
+    designation,
+    skills
   ) => {
+    console.log("skills list", skills);
     const payload = {
       yearsOfExperience:
         yearsOfExperience != undefined ? yearsOfExperience : experienceYear,
@@ -162,12 +178,13 @@ export default function Admin() {
       noticePeriod: noticePeriod != undefined ? noticePeriod : noticePeriods,
       currentCTC: currentCTC != undefined ? currentCTC : salary,
       mobile: mobile != undefined ? mobile : phone,
-      state: state != undefined ? state : location,
+      city: city != undefined ? city : location,
       qualification: qualification != undefined ? qualification : degree,
       graduateYear: graduateYear != undefined ? graduateYear : passedOut,
       gender: gen != undefined ? gen : gender,
       companyName: companyName != undefined ? companyName : CompanyName,
       designation: designation != undefined ? designation : Designation,
+      skills: Array.isArray(skills) ? skills : skills ? [skills] : skillsFilter,
       page: pagination.currentPage,
       limit: pagination.limit,
     };
@@ -202,69 +219,12 @@ export default function Admin() {
       location,
       degree,
       passedOut,
-      gender
+      gender,
+      CompanyName,
+      Designation,
+      skillsFilter
     );
     setExperienceModal(false);
-  };
-
-  const handleNoticePeriodModal = () => {
-    getCandidatesData(
-      experienceYear,
-      experienceMonth,
-      noticePeriods,
-      salary,
-      phone,
-      location,
-      degree,
-      passedOut,
-      gender
-    );
-    setNoticePeriodModal(false);
-  };
-
-  const handleSalaryModal = () => {
-    getCandidatesData(
-      experienceYear,
-      experienceMonth,
-      noticePeriods,
-      salary,
-      phone,
-      location,
-      degree,
-      passedOut,
-      gender
-    );
-    setSalaryModal(false);
-  };
-
-  const handleGenderModal = () => {
-    getCandidatesData(
-      experienceYear,
-      experienceMonth,
-      noticePeriods,
-      salary,
-      phone,
-      location,
-      degree,
-      passedOut,
-      gender
-    );
-    setGenderModal(false);
-  };
-
-  const handleMobileModal = () => {
-    getCandidatesData(
-      experienceYear,
-      experienceMonth,
-      noticePeriods,
-      salary,
-      phone,
-      location,
-      degree,
-      passedOut,
-      gender
-    );
-    setMobileModal(false);
   };
 
   const handleLocationModal = () => {
@@ -277,9 +237,30 @@ export default function Admin() {
       location,
       degree,
       passedOut,
-      gender
+      gender,
+      CompanyName,
+      Designation,
+      skillsFilter
     );
     setLocationModal(false);
+  };
+
+  const handleSalaryModal = () => {
+    getCandidatesData(
+      experienceYear,
+      experienceMonth,
+      noticePeriods,
+      salary,
+      phone,
+      location,
+      degree,
+      passedOut,
+      gender,
+      CompanyName,
+      Designation,
+      skillsFilter
+    );
+    setSalaryModal(false);
   };
 
   const handleEducationModal = () => {
@@ -292,9 +273,66 @@ export default function Admin() {
       location,
       degree,
       passedOut,
-      gender
+      gender,
+      CompanyName,
+      Designation,
+      skillsFilter
     );
     setEducationModal(false);
+  };
+
+  const handleNoticePeriodModal = () => {
+    getCandidatesData(
+      experienceYear,
+      experienceMonth,
+      noticePeriods,
+      salary,
+      phone,
+      location,
+      degree,
+      passedOut,
+      gender,
+      CompanyName,
+      Designation,
+      skillsFilter
+    );
+    setNoticePeriodModal(false);
+  };
+
+  const handleMobileModal = () => {
+    getCandidatesData(
+      experienceYear,
+      experienceMonth,
+      noticePeriods,
+      salary,
+      phone,
+      location,
+      degree,
+      passedOut,
+      gender,
+      CompanyName,
+      Designation,
+      skillsFilter
+    );
+    setMobileModal(false);
+  };
+
+  const handleGenderModal = () => {
+    getCandidatesData(
+      experienceYear,
+      experienceMonth,
+      noticePeriods,
+      salary,
+      phone,
+      location,
+      degree,
+      passedOut,
+      gender,
+      CompanyName,
+      Designation,
+      skillsFilter
+    );
+    setGenderModal(false);
   };
 
   const handleCompanyModal = () => {
@@ -308,7 +346,9 @@ export default function Admin() {
       degree,
       passedOut,
       gender,
-      CompanyName
+      CompanyName,
+      Designation,
+      skillsFilter
     );
     setCompanyModal(false);
   };
@@ -325,9 +365,33 @@ export default function Admin() {
       passedOut,
       gender,
       CompanyName,
-      Designation
+      Designation,
+      skillsFilter
     );
     setDesignationModal(false);
+  };
+
+  const handleSkillsModal = () => {
+    const result = skillsList.filter((f) =>
+      skillsFilter.some((s) => f.id === s)
+    );
+    console.log(result);
+    setSkillsFilterRender(result);
+    getCandidatesData(
+      experienceYear,
+      experienceMonth,
+      noticePeriods,
+      salary,
+      phone,
+      location,
+      degree,
+      passedOut,
+      gender,
+      CompanyName,
+      Designation,
+      skillsFilter
+    );
+    setSkillsModal(false);
   };
 
   const handleContactInfoModal = (
@@ -512,6 +576,25 @@ export default function Admin() {
         ""
       );
     }
+
+    if (id === 10) {
+      setSkillsFilter([]);
+      setSkillsFilterRender([]);
+      getCandidatesData(
+        experienceYear,
+        experienceMonth,
+        noticePeriods,
+        salary,
+        phone,
+        location,
+        degree,
+        passedOut,
+        gender,
+        CompanyName,
+        Designation,
+        []
+      );
+    }
   };
 
   const [scrollValue, setScrollValue] = useState(null);
@@ -525,6 +608,12 @@ export default function Admin() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleLogout = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate("/login");
+  };
+
   return (
     <div className="admin_mainContainer">
       <div className="admin_headerContainer">
@@ -536,6 +625,9 @@ export default function Admin() {
             <Avatar size={40} className="admin_headeravatar">
               B
             </Avatar>
+            <Button className="admin_headerlogoutbutton" onClick={handleLogout}>
+              <AiOutlineLogout size={16} /> Logout
+            </Button>
           </Col>
         </Row>
       </div>
@@ -544,11 +636,14 @@ export default function Admin() {
           <div
             className="admin_filtersmainContainer"
             style={{
-              position: scrollValue > 100 ? "fixed" : "relative",
+              position:
+                candidates.length >= 2 && scrollValue > 100
+                  ? "fixed"
+                  : "relative",
               transform:
-                scrollValue > 50 && scrollValue < 100
+                candidates.length >= 2 && scrollValue > 50 && scrollValue < 100
                   ? "translateY(-15px)"
-                  : scrollValue > 100
+                  : candidates.length >= 2 && scrollValue > 100
                   ? "translateY(-85px)"
                   : "translateY(0px)",
               transition: scrollValue < 50 ? "transform 0.3s ease-in-out" : "",
@@ -677,6 +772,15 @@ export default function Admin() {
                             <IoCloseSharp size={17} />
                           </div>
                         )}
+
+                        {item.id === 10 && skillsFilter.length >= 1 && (
+                          <div
+                            className="admin_filtercloseicondiv"
+                            onClick={() => handleClearParticularFilter(item.id)}
+                          >
+                            <IoCloseSharp size={17} />
+                          </div>
+                        )}
                         <div
                           className="admin_filterarrowicondiv"
                           onClick={() => {
@@ -706,6 +810,9 @@ export default function Admin() {
                             }
                             if (item.id === 9) {
                               setDesignationModal(true);
+                            }
+                            if (item.id === 10) {
+                              setSkillsModal(true);
                             }
                           }}
                         >
@@ -800,6 +907,18 @@ export default function Admin() {
                         </div>
                       )}
                     </div>
+                  ) : item.id === 10 ? (
+                    <div className="admin_filtervaluesmaindiv">
+                      {skillsFilterRender.length >= 1 && (
+                        <>
+                          {skillsFilterRender.map((item, index) => (
+                            <div key={index} className="admin_filtervaluesdiv">
+                              <p>{item.name}</p>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </div>
                   ) : (
                     ""
                   )}
@@ -849,6 +968,7 @@ export default function Admin() {
             {candidates.length >= 1 ? (
               <>
                 {candidates.map((item, index) => {
+                  const profileBase64String = `data:image/jpeg;base64,${item.profileImage}`;
                   return (
                     <React.Fragment key={index}>
                       <div className="admin_candidatesDetailscard">
@@ -867,37 +987,95 @@ export default function Admin() {
                           >
                             <Row>
                               <Col span={6}>
-                                <FaRegUser size={55} />
+                                {item.profileImage ? (
+                                  <img
+                                    src={profileBase64String}
+                                    className="admin_candidateprofileimage"
+                                  />
+                                ) : (
+                                  <FaRegUser size={55} color="#212121" />
+                                )}
                               </Col>
                               <Col span={18}>
                                 <p className="admin_candidatename">
                                   {item.firstName + " " + item.lastName}
                                 </p>
-                                <p className="admin_candidategender">
-                                  {item.gender}
-                                </p>
-                                <p className="admin_candidatedesignation">
-                                  {item.designation.charAt(0).toUpperCase() +
-                                    item.designation.slice(1)}
-                                </p>
-                                <p className="admin_candidategender">
-                                  {item.companyName}
-                                </p>
-                                <p className="admin_candidategender">
-                                  {item.companyStartdate === null &&
-                                  item.companyEnddate === null
-                                    ? "Fresher"
-                                    : item.companyStartdate != null &&
-                                      item.companyEnddate === null
-                                    ? moment(item.companyStartdate).format(
-                                        "MMM YYYY"
-                                      ) +
-                                      " " +
-                                      "-" +
-                                      " " +
-                                      "Present"
-                                    : ""}
-                                </p>
+
+                                {item.gender === "Male" ? (
+                                  <div className="admin_candidateprofdiv">
+                                    <BsGenderMale
+                                      size={15}
+                                      color="#333"
+                                      className="admin_candidatecard_icons"
+                                    />
+                                    <p className="admin_candidategender">
+                                      {item.gender}
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <div className="admin_candidateprofdiv">
+                                    <BsGenderFemale
+                                      size={15}
+                                      color="#333"
+                                      className="admin_candidatecard_icons"
+                                    />
+                                    <p className="admin_candidategender">
+                                      {item.gender}
+                                    </p>
+                                  </div>
+                                )}
+
+                                <div className="admin_candidateprofdiv">
+                                  <HiOutlineUserCircle
+                                    size={16}
+                                    color="#333"
+                                    className="admin_candidatecard_icons"
+                                  />
+                                  <p className="admin_candidatedesignation">
+                                    {item.designation.charAt(0).toUpperCase() +
+                                      item.designation.slice(1)}
+                                  </p>
+                                </div>
+
+                                <div className="admin_candidateprofdiv">
+                                  <BsBuildings className="admin_candidatecard_icons" />
+                                  <p className="admin_candidategender">
+                                    {item.companyName}
+                                  </p>
+                                </div>
+
+                                <div
+                                  style={{
+                                    display: "flex",
+                                  }}
+                                >
+                                  <FiAward
+                                    color="#333"
+                                    size={15}
+                                    className="admin_candidatecard_icons"
+                                  />
+                                  <p className="admin_candidategender">
+                                    {item.companyStartdate === null &&
+                                    item.companyEnddate === null
+                                      ? "Fresher"
+                                      : item.companyStartdate != null &&
+                                        item.companyEnddate === null
+                                      ? moment(item.companyStartdate).format(
+                                          "MMM YYYY"
+                                        ) +
+                                        " " +
+                                        "-" +
+                                        " " +
+                                        "Present"
+                                      : moment(item.companyStartdate).format(
+                                          "MMM YYYY"
+                                        ) +
+                                        " - " +
+                                        moment(item.companyEnddate).format(
+                                          "MMM YYYY"
+                                        )}
+                                  </p>
+                                </div>
                               </Col>
                             </Row>
 
@@ -909,8 +1087,10 @@ export default function Admin() {
                               </Col>
                               <Col span={18}>
                                 <p className="admin_candidate_locationtext">
-                                  {item.state.charAt(0).toUpperCase() +
-                                    item.state.slice(1)}
+                                  {item.city
+                                    ? item.city.charAt(0).toUpperCase() +
+                                      item.city.slice(1)
+                                    : "-"}
                                 </p>
                               </Col>
                             </Row>
@@ -957,17 +1137,23 @@ export default function Admin() {
                                 </p>
                               </Col>
                               <Col span={18}>
-                                <p className="admin_candidate_locationtext">
-                                  {item.qualification +
-                                    " " +
-                                    "at" +
-                                    " " +
-                                    item.university +
-                                    " " +
-                                    "in" +
-                                    " " +
-                                    item.graduateYear}
-                                </p>
+                                <div style={{ display: "flex" }}>
+                                  <PiGraduationCapDuotone
+                                    size={15}
+                                    className="admin_candidatecard_icons"
+                                  />
+                                  <p className="admin_candidate_locationtext">
+                                    {item.qualification +
+                                      " " +
+                                      "at" +
+                                      " " +
+                                      item.university +
+                                      " " +
+                                      "in" +
+                                      " " +
+                                      item.graduateYear}
+                                  </p>
+                                </div>
                               </Col>
                             </Row>
 
@@ -986,10 +1172,19 @@ export default function Admin() {
                                   }}
                                 >
                                   {item.skills.map((item, index) => {
+                                    const isHighlighted = skillsFilter.includes(
+                                      item.id
+                                    );
                                     return (
                                       <React.Fragment key={index}>
                                         <div className="admin_candidateskills_container">
-                                          <p>
+                                          <p
+                                            className={
+                                              isHighlighted
+                                                ? "highlighted-skill"
+                                                : ""
+                                            }
+                                          >
                                             {item.name.charAt(0).toUpperCase() +
                                               item.name.slice(1)}
                                           </p>
@@ -1012,15 +1207,15 @@ export default function Admin() {
                               <p className="admin_candidate_profilesummaryheading">
                                 Profile Summary
                               </p>
-                              <p className="admin_candidate_profilesummary">
-                                Experienced Frontend Developer with 2 years in
-                                Markerz Global Solution Private Limited,
-                                proficient in CSS, HTML, Javascript, React,
-                                Bootstrap, Redux, react Hook, dotnet MAUI and
-                                Material UI. Achieved exceptional results in the
-                                development of user-friendly interfaces, seeking
-                                to transition into a Frontend Developer role.
-                              </p>
+                              {item.profileSummary ? (
+                                <p className="admin_candidate_profilesummary">
+                                  {item.profileSummary}
+                                </p>
+                              ) : (
+                                <p className="admin_candidate_nosummary">
+                                  No data found
+                                </p>
+                              )}
                               <Row
                                 gutter={16}
                                 className="admin_profilesummaryrow"
@@ -1347,7 +1542,7 @@ export default function Admin() {
 
       {/* designation modal */}
       <Modal
-        title="Filter company"
+        title="Filter designation"
         open={designationModal}
         onOk={handleDesignationModal}
         onCancel={() => {
@@ -1367,6 +1562,36 @@ export default function Admin() {
             label="Designation"
             value={Designation}
             onChange={(e) => setDesignation(e.target.value)}
+          />
+        </div>
+      </Modal>
+
+      {/* skills modal */}
+      <Modal
+        title="Filter skills"
+        open={skillsModal}
+        onOk={handleSkillsModal}
+        onCancel={() => {
+          setSkillsModal(false);
+        }}
+        footer={[
+          <button
+            className="admin_modalsubmitbutton"
+            onClick={handleSkillsModal}
+          >
+            Submit
+          </button>,
+        ]}
+      >
+        <div style={{ marginTop: "16px" }}>
+          <CommonSelectField
+            mode="tags"
+            label="Skills"
+            options={skillsList}
+            value={skillsFilter}
+            onChange={(value) => {
+              setSkillsFilter(value);
+            }}
           />
         </div>
       </Modal>
@@ -1417,7 +1642,7 @@ export default function Admin() {
         />
       </Modal>
 
-      {/* contactinfo modal */}
+      {/* resume modal */}
       <Modal
         title="Resume"
         open={resumeViewerModal}

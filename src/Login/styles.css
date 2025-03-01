@@ -4,7 +4,13 @@
   background-color: #f3f2f1;
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
+}
+.login_headerContainer {
+  padding: 32px 54px;
+}
+.login_actelogo {
+  width: 100px;
 }
 .login_card {
   background-color: rgb(255, 255, 255);
@@ -14,6 +20,8 @@
   border-color: rgb(212, 210, 208);
   padding: 32px 24px;
   width: 310px;
+  height: 300px;
+  margin: 50px 0px;
 }
 .logincard_heading {
   font-size: 24px;

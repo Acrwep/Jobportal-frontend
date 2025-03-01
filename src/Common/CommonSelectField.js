@@ -56,7 +56,7 @@ export default function CommonSelectField({
         style={{ width: "100%" }}
         onChange={onChange}
         options={options.map((item) => ({
-          value: item.id,
+          value: item.id ? item.id : item.name,
           label: item.full_Name ? item.full_Name : item.name,
         }))}
         value={value}
