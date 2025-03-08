@@ -160,6 +160,18 @@ export default function Register() {
   const [profilePicture, setProfilePicture] = useState("");
   const [summary, setSummary] = useState("");
   const [summaryError, setSummaryError] = useState("");
+  const [languages, setLanguages] = useState([
+    {
+      id: Date.now(),
+      name: "",
+      levelStatus: [],
+    },
+  ]);
+  const languageLevelOptions = [
+    { label: "Read", value: "Read" },
+    { label: "Speak", value: "Speak" },
+    { label: "Write", value: "Write" },
+  ];
   const [resume, setResume] = useState("");
   const [resumeArray, setResumeArray] = useState([]);
   const [resumeError, setResumeError] = useState("");
@@ -292,6 +304,36 @@ export default function Register() {
     let data = [...certificationDetails];
     data.splice(index, 1);
     setCertificationDetails(data);
+  };
+
+  //language functions
+  const addLanguage = () => {
+    const obj = {
+      id: Date.now(),
+      name: "",
+      levelStatus: [],
+    };
+
+    setLanguages([...languages, obj]);
+  };
+
+  const handleLanguages = (index, field, value) => {
+    const updatedDetails = [...languages];
+    updatedDetails[index][field] = value;
+
+    if (field === "name") {
+      updatedDetails[index].languageError = addressValidator(value);
+    }
+    setLanguages(updatedDetails);
+  };
+
+  const deleteLanguage = (index) => {
+    if (languages.length <= 1) {
+      return;
+    }
+    let data = [...languages];
+    data.splice(index, 1);
+    setLanguages(data);
   };
 
   const handleProfileAttachment = ({ file }) => {
@@ -514,6 +556,30 @@ export default function Register() {
       return;
     }
 
+    //languages validate
+    let checkLanguagesErrors = [];
+    if (languages.length >= 1) {
+      const validateLanguages = languages.map((item) => {
+        return {
+          ...item,
+          languageError: addressValidator(item.name),
+        };
+      });
+
+      checkLanguagesErrors = validateLanguages.filter(
+        (f) => f.languageError != ""
+      );
+      setLanguages(validateLanguages);
+    }
+
+    if (checkLanguagesErrors.length >= 1) {
+      const languageContainer = document.getElementById(
+        "registration_personalinfosection"
+      );
+      languageContainer.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
     //personal info validate
     if (
       genderValidate ||
@@ -552,7 +618,9 @@ export default function Register() {
       companyName: companyName,
       designation: designation,
       companyStartdate: moment(startDate).format("YYYY-MM-DD HH:mm:ss"),
-      companyEnddate: moment(endDate).format("YYYY-MM-DD HH:mm:ss"),
+      companyEnddate: endDate
+        ? moment(endDate).format("YYYY-MM-DD HH:mm:ss")
+        : null,
       workingStatus: workingStatus,
       skills: skills,
       qualification: qualification,
@@ -569,6 +637,7 @@ export default function Register() {
       linkedinURL: linkedinUrl,
       profileImage: profilePicture,
       profileSummary: summary,
+      languages: languages,
       resume: resume,
       createdAt: new Date(),
     };
@@ -657,6 +726,7 @@ export default function Register() {
     setProfilePictureArray([]);
     setSummary("");
     setSummaryError("");
+    setLanguages([{ id: Date.now(), name: "", levelStatus: [] }]);
     setLinkedinUrl("");
     setLinkedinUrlError("");
     setResumeArray([]);
@@ -1205,6 +1275,7 @@ export default function Register() {
                   mode="tags"
                   value={skills}
                   onChange={(value) => {
+                    console.log("sjills", value);
                     setSkills(value);
                     const err = selectValidator(value);
                     setSkillsError(err ? "Skills" + err : "");
@@ -1609,10 +1680,73 @@ export default function Register() {
                     )}
                   </Col>
                 </Row>
+
+                <div style={{ marginTop: "22px" }}>
+                  {languages.map((lang, index) => (
+                    <React.Fragment key={lang.id}>
+                      <Row
+                        gutter={16}
+                        className="registration_languagesContainer"
+                      >
+                        <Col xs={24} sm={24} md={24} lg={9}>
+                          <CommonInputField
+                            label={`Language ${index + 1} `}
+                            mandatory={true}
+                            value={lang.name}
+                            onChange={(e) =>
+                              handleLanguages(index, "name", e.target.value)
+                            }
+                            error={lang.languageError}
+                          />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={9}>
+                          <Checkbox.Group
+                            options={languageLevelOptions}
+                            value={lang.levelStatus}
+                            onChange={(checkedValues) =>
+                              handleLanguages(
+                                index,
+                                "levelStatus",
+                                checkedValues
+                              )
+                            }
+                          />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={6}>
+                          <Button
+                            onClick={() => deleteLanguage(index)}
+                            className="registration_deletecompanybutton"
+                          >
+                            Delete
+                          </Button>
+                        </Col>
+                      </Row>
+                      {languages.length <= 1 ||
+                      languages.length - 1 === index ? (
+                        ""
+                      ) : (
+                        <Divider className="registration_companyfields_divider" />
+                      )}
+                    </React.Fragment>
+                  ))}
+                  <Button
+                    onClick={addLanguage}
+                    className="registration_addcompanybutton"
+                  >
+                    Add Language
+                  </Button>
+                </div>
                 <Divider className="registration_sectiondivider" />
               </div>
 
-              <p className="registration_sectionheadings">Resume</p>
+              <p
+                className="registration_sectionheadings"
+                onClick={() => {
+                  console.log(languages);
+                }}
+              >
+                Resume
+              </p>
               <div style={{ marginTop: "12px" }}>
                 <Dragger
                   className="registration_draganddropcontainer"

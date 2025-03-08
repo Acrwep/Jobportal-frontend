@@ -66,11 +66,58 @@ export const getCandidates = async (payload) => {
   }
 };
 
+export const getCandidateById = async (candidateId) => {
+  try {
+    const response = await api.get(`/api/getCandidateById?id=${candidateId}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getMultipleCandidatesById = async (payload) => {
+  try {
+    const response = await api.get("/api/getMultipleCandidatesById", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getSkills = async (payload) => {
   try {
     const response = await api.get("/api/getSkills", {
       params: payload,
     });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addToFavorite = async (payload) => {
+  try {
+    const response = await api.put("/api/updateFavorites", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createFolder = async (payload) => {
+  try {
+    const response = await api.post("/api/createfolder", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getFolders = async () => {
+  try {
+    const response = await api.get("/api/getfolders");
     return response;
   } catch (error) {
     throw error;

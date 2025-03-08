@@ -220,6 +220,10 @@
   margin-top: 2px !important;
   color: #ff4d4f;
 }
+.registration_languagesContainer {
+  align-items: center;
+  margin-bottom: 22px;
+}
 .registration_resumeContainer {
   border: 1px solid #0056b3;
   color: #0056b3;

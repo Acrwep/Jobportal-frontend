@@ -30,6 +30,10 @@ p {
   background-color: #0056b3;
   color: white;
 }
+.ant-pagination {
+  display: flex;
+  align-items: center;
+}
 .ant-select-outlined.ant-select-status-error:not(.ant-select-disabled):not(
     .ant-select-customize- input
   ):not(.ant-pagination-size-changer)
@@ -39,6 +43,15 @@ p {
 }
 .ant-pagination .ant-pagination-item-active {
   border-color: #0056b3 !important;
+}
+.ant-pagination
+  .ant-pagination-options-size-changer.ant-select:not(
+    .ant-select-customize-input
+  )
+  .ant-select-selector {
+  height: 26px;
+  font-size: 11px;
+  margin-top: 3px;
 }
 .ant-select-outlined:not(.ant-select-disabled):not(
     .ant-select-customize-input
@@ -65,10 +78,15 @@ p {
   color: #0056b3 !important;
 }
 .ant-pagination .ant-pagination-item {
-  background-color: #0056b3 !important;
+  background-color: #0057b314 !important;
+  border: 1px solid #0057b338;
+  height: 25px !important;
+  line-height: 24px;
+  min-width: 27px;
+  font-size: 12px !important;
 }
 .ant-pagination .ant-pagination-item a {
-  color: #ffffff !important;
+  color: #0056b3 !important;
 }
 .ant-pagination .ant-pagination-item:not(.ant-pagination-item-active):hover {
   background-color: none !important;
@@ -154,4 +172,28 @@ p {
 /* antd upload styles */
 .ant-upload-wrapper .ant-upload-list .ant-upload-list-item {
   color: #0056b3 !important;
+}
+
+/* antd checkbox styles */
+.ant-checkbox .ant-checkbox-inner {
+  background-color: transparent;
+}
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+.ant-checkbox-checked:hover .ant-checkbox-inner {
+  background-color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
+.ant-checkbox-wrapper:hover .ant-checkbox-inner {
+  border: 1px solid #0056b3 !important;
+}
+.ant-checkbox-indeterminate .ant-checkbox-inner:after {
+  background-color: #0056b3 !important;
+}
+.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
+  .ant-checkbox-checked:not(.ant-checkbox-disabled)
+  .ant-checkbox-inner {
+  background-color: #0056b3 !important;
 }

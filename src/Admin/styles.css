@@ -1,6 +1,20 @@
 .admin_mainContainer {
   background-color: rgba(128, 128, 128, 0.11);
   height: 100%;
+  position: relative;
+}
+.admin_movetotop_buttonContainer {
+  position: fixed;
+  bottom: 34px;
+  right: 34px;
+}
+.admin_movetotop_button {
+  border-radius: 50%;
+  padding: 14px 16px;
+  border: 1px solid #222;
+  background-color: #222;
+  opacity: 0.7;
+  cursor: pointer;
 }
 .admin_layoutrowContainer {
   padding: 30px 35px;
@@ -26,35 +40,7 @@
 .admin_antdsider.ant-layout-sider::-webkit-scrollbar-thumb {
   background: #284461;
 }
-.admin_headerContainer {
-  border-bottom: 1px solid #e4e2e0;
-  padding: 19px 32px;
-  color: #2d2d2d;
-  font-size: 14px;
-  background-color: #ffffff;
-}
-.admin_headerlogoutbutton {
-  margin-left: 12px;
-  /* width: 90px; */
-  font-size: 12px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 12px !important;
-}
-.admin_headerlogoutbutton:hover {
-  border-color: #0056b3 !important;
-  color: #0056b3 !important;
-}
-.admin_headeravatar {
-  background-color: #0056b3;
-  font-weight: 600;
-}
-.admin_header {
-  font-size: 24px;
-  font-weight: 600;
-}
+
 .admin_filtericondiv {
   background-color: #0057b323;
   border-radius: 6px;
@@ -158,15 +144,22 @@
   margin-top: 20px;
   margin-bottom: 20px;
   width: 100%;
+  position: relative;
+}
+.admin_checkiconContainer {
+  position: absolute;
+  left: 12px;
+  top: 10px;
 }
 .admin_candidatesDetailsmainContainer {
-  padding: 20px;
+  padding: 40px 20px 20px;
 }
 .admin_candidatesleft_div {
   margin-right: 20px;
 }
 .admin_candidateprofileimage {
   width: 94px;
+  height: 94px;
   border-radius: 50%;
   border: 1px solid #e4e2e0;
 }
@@ -175,6 +168,7 @@
   color: #0056b3;
   font-weight: 700;
   font-size: 19px;
+  cursor: pointer;
 }
 .admin_candidateprofdiv {
   display: flex;
@@ -223,6 +217,21 @@
   color: #333;
   font-weight: bold;
 }
+.admin_favoritesbutton {
+  border: 1px solid rgba(128, 128, 128, 0.322);
+  background-color: transparent;
+  border-radius: 6px;
+  padding: 6px 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.admin_favoritesbutton:hover {
+  border-color: #0056b3;
+  color: #0056b3;
+}
+
 .admin_candidate_profilesummaryheading {
   margin-bottom: 6px !important;
   font-weight: 700;
@@ -296,6 +305,24 @@
   font-size: 18px;
   color: #333;
 }
+.admin_savetofoldersdiv {
+  margin-top: 16px;
+  width: 100%;
+  align-items: center;
+}
+.admin_savetofoldersbutton {
+  border-radius: 6px;
+  padding: 7px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid #0056b3;
+  color: #0056b3;
+}
+.admin_savetofoldersbutton:hover {
+  background-color: #0056b3;
+  color: #ffffff;
+}
 /* modal styles */
 .admin_modalsubmitbutton {
   width: max-content;
@@ -310,6 +337,7 @@
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
+  margin-top: 12px;
 }
 .admin_modalsubmitbutton:hover {
   background-color: #0056b3 !important;

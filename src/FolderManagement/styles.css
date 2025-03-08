@@ -1,0 +1,35 @@
+.folder_mainContainer {
+  background-color: rgba(128, 128, 128, 0.11);
+  height: 100vh;
+  position: relative;
+  overflow: auto;
+}
+.folders_innercontainer {
+  padding: 26px 32px;
+}
+.folders_heading {
+  font-weight: 600;
+  margin-bottom: 16px !important;
+}
+.folders_listContainer {
+  border: 1px solid rgba(128, 128, 128, 0.384);
+  border-radius: 6px;
+  padding: 16px;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+.folders_listname_text {
+  font-weight: 500;
+}
+.folders_listcreatedat_text {
+  color: gray;
+  font-size: 14px;
+  margin-top: 9px !important;
+}
+.folders_nodatadiv {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  height: 50vh;
+  justify-content: center;
+}

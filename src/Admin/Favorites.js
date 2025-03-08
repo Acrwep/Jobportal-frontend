@@ -4,16 +4,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { IoIosArrowForward } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa";
 import "./styles.css";
-import {
-  Row,
-  Col,
-  Divider,
-  Modal,
-  Avatar,
-  Pagination,
-  Button,
-  Checkbox,
-} from "antd";
+import { Row, Col, Divider, Modal, Avatar, Pagination, Button } from "antd";
 import {
   addToFavorite,
   createFolder,
@@ -47,7 +38,7 @@ import { addressValidator } from "../Common/Validation";
 
 const { Content, Footer, Sider } = Layout;
 
-export default function Admin() {
+export default function Favorites() {
   pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     "pdfjs-dist/build/pdf.worker.min.mjs",
     import.meta.url
@@ -60,7 +51,6 @@ export default function Admin() {
   });
   const navigate = useNavigate();
   const [totalProfileCount, setTotalProfileCount] = useState(0);
-  const [selectAllValue, setSelectAllValue] = useState(false);
 
   const [skillsModal, setSkillsModal] = useState(false);
   const [experienceModal, setExperienceModal] = useState(false);
@@ -168,7 +158,11 @@ export default function Admin() {
 
   const [skillsList, setSkillsList] = useState([]);
   const [candidates, setCandidates] = useState([]);
-  const [selectedCandidates, setSelectedCandidates] = useState([]);
+
+  const data = [
+    { id: 1, name: "Balaji", email: "balaji@gmail.com", mobile: "98786765667" },
+    { id: 2, name: "Rahul", email: "rahul@gmail.com", mobile: "98786765667" },
+  ];
 
   useEffect(() => {
     getCandidatesData();
@@ -189,7 +183,6 @@ export default function Admin() {
     skills
   ) => {
     console.log("skills list", skills);
-
     const payload = {
       yearsOfExperience:
         yearsOfExperience != undefined ? yearsOfExperience : experienceYear,
@@ -205,6 +198,7 @@ export default function Admin() {
       companyName: companyName != undefined ? companyName : CompanyName,
       designation: designation != undefined ? designation : Designation,
       skills: Array.isArray(skills) ? skills : skills ? [skills] : skillsFilter,
+      favorites: 1,
       page: pagination.currentPage,
       limit: pagination.limit,
     };
@@ -213,10 +207,6 @@ export default function Admin() {
       console.log("candidates response", response);
       setCandidates(response?.data?.data?.data);
       setTotalProfileCount(response?.data?.data?.pagination?.total);
-      setPagination((prev) => ({
-        ...prev,
-        totalRecords: response?.data?.data?.pagination?.total, // Total data count from API
-      }));
     } catch (error) {
       console.log(error);
     } finally {
@@ -434,22 +424,27 @@ export default function Admin() {
   };
 
   const handleFolderModal = async () => {
-    console.log("folderss", new Date());
+    console.log("folderss");
     const folderNameValidate = addressValidator(folderName);
-
-    setFolderNameError(folderNameValidate);
-
-    if (folderNameValidate) return;
 
     const payload = {
       name: folderName,
-      candidateIds: selectedCandidates,
+      city: location,
+      yearsOfExperience: experienceYear,
+      monthOfExperience: experienceMonth,
+      skills: skillsFilter,
+      qualification: degree,
+      graduateYear: passedOut,
+      gender: gender,
+      noticePeriod: noticePeriods,
+      currentCTC: salary,
+      companyName: CompanyName,
+      designation: Designation,
     };
 
     try {
       const response = await createFolder(payload);
       console.log("folder response", response);
-      CommonToaster("Saved to folders");
       setFolderName("");
       setFolderModal(false);
     } catch (error) {
@@ -482,10 +477,14 @@ export default function Admin() {
     setGender(null);
     setCompanyName("");
 
+    const payload = {
+      favorites: 1,
+    };
     try {
-      const response = await getCandidates();
+      const response = await getCandidates(payload);
       console.log("candidates response", response);
       setCandidates(response?.data?.data?.data);
+      setTotalProfileCount(response?.data?.data?.pagination?.total);
     } catch (error) {
       console.log(error);
     }
@@ -670,41 +669,6 @@ export default function Admin() {
     } catch (error) {
       console.log("add to favorite error");
     }
-  };
-
-  const handleSelectall = (e) => {
-    setSelectAllValue(e.target.checked);
-    const result = candidates.map((item) => {
-      return { ...item, isSelect: e.target.checked };
-    });
-    setCandidates(result);
-    console.log("selectall", result);
-
-    if (e.target.checked === true) {
-      const filterIds = result.map((item) => {
-        return item.id;
-      });
-      setSelectedCandidates(filterIds);
-    } else {
-      setSelectedCandidates([]);
-    }
-  };
-
-  const handleCandidateSelect = (e, Id) => {
-    const updateData = candidates.map((item) => {
-      if (item.id === Id) {
-        return { ...item, isSelect: e.target.checked };
-      } else {
-        return { ...item };
-      }
-    });
-    console.log(updateData);
-    setCandidates(updateData);
-    const filterIds = updateData
-      .filter((item) => item.isSelect === true)
-      .map((item) => item.id);
-
-    setSelectedCandidates(filterIds);
   };
 
   return (
@@ -1015,10 +979,7 @@ export default function Admin() {
             }}
           >
             <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
-              <p
-                className="admin_profilefound_heading"
-                onClick={() => console.log(selectedCandidates)}
-              >
+              <p className="admin_profilefound_heading">
                 {totalProfileCount} Profile found
               </p>
             </Col>
@@ -1035,46 +996,18 @@ export default function Admin() {
                 current={pagination.currentPage}
                 total={pagination.totalRecords}
                 pageSize={pagination.limit}
-                onChange={(page, pageSize) => {
-                  console.log("pageee", page, pageSize);
+                onChange={(page, pageSize) =>
                   setPagination({
                     ...pagination,
                     currentPage: page,
                     limit: pageSize,
-                  });
-                }}
+                  })
+                }
                 showSizeChanger
-                pageSizeOptions={["1", "2", "20", "40", "80", "160"]}
+                pageSizeOptions={["20", "40", "80", "160"]}
               />
             </Col>
 
-            <Row gutter={16} className="admin_savetofoldersdiv">
-              <Col xs={24} sm={24} md={24} lg={12}>
-                <Checkbox
-                  onChange={handleSelectall}
-                  style={{ backgroundColor: "transparent" }}
-                  value={selectAllValue}
-                >
-                  Select All
-                </Checkbox>
-              </Col>
-              <Col xs={24} sm={24} md={24} lg={12}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    width: "100%",
-                  }}
-                >
-                  <button
-                    className="admin_savetofoldersbutton"
-                    onClick={() => setFolderModal(true)}
-                  >
-                    Save to folders
-                  </button>
-                </div>
-              </Col>
-            </Row>
             {candidates.length >= 1 ? (
               <>
                 {candidates.map((item, index) => {
@@ -1082,12 +1015,6 @@ export default function Admin() {
                   return (
                     <React.Fragment key={index}>
                       <div className="admin_candidatesDetailscard">
-                        <div className="admin_checkiconContainer">
-                          <Checkbox
-                            onChange={(e) => handleCandidateSelect(e, item.id)}
-                            checked={item.isSelect ? item.isSelect : false}
-                          />
-                        </div>
                         <Row
                           gutter={16}
                           className="admin_candidatesDetailsmainContainer"
@@ -1113,14 +1040,7 @@ export default function Admin() {
                                 )}
                               </Col>
                               <Col span={18}>
-                                <p
-                                  className="admin_candidatename"
-                                  onClick={() =>
-                                    navigate("/profile", {
-                                      state: { candidateId: item.id },
-                                    })
-                                  }
-                                >
+                                <p className="admin_candidatename">
                                   {item.firstName + " " + item.lastName}
                                 </p>
 

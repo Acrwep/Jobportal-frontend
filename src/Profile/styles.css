@@ -1,0 +1,156 @@
+.profile_mainContainer {
+  height: 100vh;
+  background-color: rgba(128, 128, 128, 0.11);
+  overflow-y: auto;
+}
+.profile_innerContainer {
+  padding: 26px 32px;
+}
+.profile_profilecard {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #ffffff;
+  border-radius: 9px;
+  padding: 24px 16px;
+}
+.profilecard_imageContainer {
+  display: flex;
+  gap: 24px;
+  color: #333;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.384);
+  padding: 0px 0px 24px 0px;
+}
+.profile_candidateprofileimage {
+  width: 94px;
+  height: 94px;
+  border-radius: 50%;
+  border: 1px solid #e4e2e0;
+}
+.profilecard_candidatename {
+  font-weight: 700;
+  font-size: 16px;
+}
+.profilecard_candidategender {
+  color: gray;
+  margin-top: 9px !important;
+  font-size: 13px;
+}
+.profilecard_candidatedesignation {
+  margin-top: 9px !important;
+  font-weight: 500;
+  font-size: 14px;
+}
+.profilecard_ExperienceContainer {
+  display: flex;
+  flex-direction: row;
+  /* border-top: 0.1rem solid rgb(210, 209, 214); */
+  padding: 24px 0px 0px 0px;
+  column-gap: 1.2rem;
+  -webkit-box-align: start;
+  align-items: start;
+}
+.profilecard_Experienceheading {
+  color: gray;
+  font-size: 13px;
+}
+.profilecard_Experienceyear {
+  font-weight: 600;
+  margin-top: 9px !important;
+  color: #333;
+}
+.profilecard_ExperienceDivider {
+  height: 2rem;
+  background-color: rgba(0, 0, 0, 0.12);
+}
+.profile_contactinfoCard {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #ffffff;
+  border-radius: 9px;
+  padding: 24px 16px;
+  margin: 24px 0px;
+}
+.contactinfocard_heading {
+  font-weight: 700;
+  font-size: 15px;
+  color: #333;
+}
+.contactinfocard_numberdiv {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  align-items: center;
+}
+.contactinfocard_number {
+  color: gray;
+  font-size: 13px;
+}
+.contactinfocard_divider {
+  background-color: rgba(0, 0, 0, 0.12);
+  margin: 0 !important;
+  margin-top: 16px !important;
+}
+.jobprefcard_contentdiv {
+  margin-top: 16px;
+}
+.jobprefcard_locationheading {
+  color: gray;
+}
+.jobprefcard_locationtext {
+  color: #333;
+  font-size: 13px;
+  margin-top: 2px !important;
+}
+.languagecard_text {
+  color: gray;
+  margin-top: 12px !important;
+}
+.profile_skillscard {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #ffffff;
+  border-radius: 9px;
+  padding: 24px 16px;
+  margin-bottom: 22px;
+}
+.skillscard_headline {
+  font-weight: 700;
+  color: #333;
+  font-size: 16px;
+}
+.skillscard_headlinecontent {
+  color: gray;
+  line-height: 24px;
+  margin-top: 9px !important;
+  font-size: 13px;
+}
+.skillscard_skillsheading {
+  font-weight: 700;
+  color: #333;
+  font-size: 16px;
+  margin-top: 16px !important;
+}
+.experiencecard_companydiv {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  align-items: center;
+}
+.experiencecard_companyname {
+  color: #333;
+  font-weight: 600;
+}
+.experiencecard_companyexp {
+  color: gray;
+  margin-top: 9px !important;
+  font-size: 13px;
+}
+.profile_resumenameContainer {
+  display: flex;
+  margin-bottom: 16px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+.profile_resumecardname {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+}
