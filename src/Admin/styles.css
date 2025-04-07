@@ -404,3 +404,45 @@
   margin: 0px 9px;
   padding: 6px 12px;
 }
+/* search styles */
+.adminsearch_mainContainer {
+  margin-top: 90px;
+  padding: 0px 32px;
+}
+.adminsearch_heading {
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 22px !important;
+}
+.adminsearch_label {
+  margin-bottom: 8px !important;
+}
+.adminsearch_inputfield {
+  height: 42px;
+  background-color: transparent;
+  background-image: none;
+  /* border-width: 1px; */
+  /* border-style: solid; */
+  /* border-color: #a3a3a3; */
+  border-radius: 6px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 16px;
+}
+.adminsearch_inputfield:hover {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+}
+.adminsearch_inputfield:focus-within {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #0057b317;
+}
+.adminsearch_inputfield .ant-select-selector {
+  padding: 0px 36px;
+}
+.adminsearch_searchicon {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}

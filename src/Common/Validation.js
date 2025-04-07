@@ -49,7 +49,6 @@ export const mobileValidator = (mobile) => {
 
 export const selectValidator = (name) => {
   let error = "";
-
   if (!name || name.length <= 0) error = " is required";
 
   return error;

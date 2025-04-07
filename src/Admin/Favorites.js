@@ -8,7 +8,10 @@ import { Row, Col, Divider, Modal, Avatar, Pagination, Button } from "antd";
 import {
   addToFavorite,
   createFolder,
+  deleteFavorite,
   getCandidates,
+  getFavoriteCandidates,
+  getFavorites,
   getSkills,
 } from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
@@ -158,11 +161,21 @@ export default function Favorites() {
 
   const [skillsList, setSkillsList] = useState([]);
   const [candidates, setCandidates] = useState([]);
+  const [favoritesList, setFavoritesList] = useState([]);
 
-  const data = [
-    { id: 1, name: "Balaji", email: "balaji@gmail.com", mobile: "98786765667" },
-    { id: 2, name: "Rahul", email: "rahul@gmail.com", mobile: "98786765667" },
-  ];
+  useEffect(() => {
+    getFavoritesData();
+  }, []);
+
+  const getFavoritesData = async () => {
+    try {
+      const response = await getFavorites();
+      console.log("favorites list", response);
+      setFavoritesList(response?.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     getCandidatesData();
@@ -183,7 +196,9 @@ export default function Favorites() {
     skills
   ) => {
     console.log("skills list", skills);
+    const userId = localStorage.getItem("loginUserId");
     const payload = {
+      userId: userId,
       yearsOfExperience:
         yearsOfExperience != undefined ? yearsOfExperience : experienceYear,
       monthOfExperience:
@@ -198,13 +213,13 @@ export default function Favorites() {
       companyName: companyName != undefined ? companyName : CompanyName,
       designation: designation != undefined ? designation : Designation,
       skills: Array.isArray(skills) ? skills : skills ? [skills] : skillsFilter,
-      favorites: 1,
+      // favorites: 1,
       page: pagination.currentPage,
       limit: pagination.limit,
     };
     try {
-      const response = await getCandidates(payload);
-      console.log("candidates response", response);
+      const response = await getFavoriteCandidates(payload);
+      console.log("favorite candidates response", response);
       setCandidates(response?.data?.data?.data);
       setTotalProfileCount(response?.data?.data?.pagination?.total);
     } catch (error) {
@@ -476,12 +491,13 @@ export default function Favorites() {
     setPassedOut("");
     setGender(null);
     setCompanyName("");
+    const userId = localStorage.getItem("loginUserId");
 
     const payload = {
-      favorites: 1,
+      userId: userId,
     };
     try {
-      const response = await getCandidates(payload);
+      const response = await getFavoriteCandidates(payload);
       console.log("candidates response", response);
       setCandidates(response?.data?.data?.data);
       setTotalProfileCount(response?.data?.data?.pagination?.total);
@@ -656,18 +672,35 @@ export default function Favorites() {
   }, []);
 
   const handleAddfavorite = async (Id, favoriteStatus) => {
-    const payload = {
-      id: Id,
-      favoriteStatus: favoriteStatus === 0 ? true : false,
-    };
-    try {
-      const response = await addToFavorite(payload);
-      CommonToaster(
-        favoriteStatus === 0 ? "Added to favorites" : "Removed from favorites"
-      );
-      getCandidatesData();
-    } catch (error) {
-      console.log("add to favorite error");
+    const userId = localStorage.getItem("loginUserId");
+    if (favoriteStatus === false) {
+      const payload = {
+        userId: userId,
+        candidateId: Id,
+      };
+      try {
+        const response = await addToFavorite(payload);
+        CommonToaster("Added to favorites");
+        getFavoritesData();
+      } catch (error) {
+        console.log("add to favorite error");
+      } finally {
+        getCandidatesData();
+      }
+    } else {
+      const payload = {
+        userId: userId,
+        candidateId: Id,
+      };
+      try {
+        const response = await deleteFavorite(payload);
+        CommonToaster("Removed from favorites");
+        getFavoritesData();
+      } catch (error) {
+        console.log("add to favorite error");
+      } finally {
+        getCandidatesData();
+      }
     }
   };
 
@@ -1012,6 +1045,9 @@ export default function Favorites() {
               <>
                 {candidates.map((item, index) => {
                   const profileBase64String = `data:image/jpeg;base64,${item.profileImage}`;
+                  const isFavorite = favoritesList.some(
+                    (fav) => fav.candidateId === item.id
+                  );
                   return (
                     <React.Fragment key={index}>
                       <div className="admin_candidatesDetailscard">
@@ -1040,7 +1076,14 @@ export default function Favorites() {
                                 )}
                               </Col>
                               <Col span={18}>
-                                <p className="admin_candidatename">
+                                <p
+                                  className="admin_candidatename"
+                                  onClick={() =>
+                                    navigate("/profile", {
+                                      state: { candidateId: item.id },
+                                    })
+                                  }
+                                >
                                   {item.firstName + " " + item.lastName}
                                 </p>
 
@@ -1278,17 +1321,17 @@ export default function Favorites() {
                                   <button
                                     className="admin_favoritesbutton"
                                     onClick={() =>
-                                      handleAddfavorite(item.id, item.favorites)
+                                      handleAddfavorite(item.id, isFavorite)
                                     }
                                   >
-                                    {item.favorites === 0 ? (
-                                      <IoBookmarkOutline
+                                    {isFavorite ? (
+                                      <IoBookmark
+                                        color="#FFC107"
                                         size={16}
                                         style={{ marginRight: "6px" }}
                                       />
                                     ) : (
-                                      <IoBookmark
-                                        color="#FFC107"
+                                      <IoBookmarkOutline
                                         size={16}
                                         style={{ marginRight: "6px" }}
                                       />

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Login from "../Login/Login";
-import StudentRegister from "../StudentsRegister/StudentsRegister";
 import Admin from "../Admin/Admin";
 import FolderManagement from "../FolderManagement/FolderManagement";
 import CandidateRegister from "../CandidateRegister/CandidateRegister";
@@ -9,6 +8,7 @@ import Register from "../Register/Register";
 import FolderProfiles from "../FolderManagement/Folderprofiles";
 import Favorites from "../Admin/Favorites";
 import Profile from "../Profile/Profile";
+import AdminSearch from "../Admin/AdminSearch";
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -25,10 +25,16 @@ const Layout = () => {
       } else {
         if (location.pathname === "/") {
           navigate("/");
+          setShowPages(false);
         } else if (location.pathname === "/register") {
           navigate("/register");
+          setShowPages(false);
+        } else if (location.pathname === "/search") {
+          navigate("/search");
+          setShowPages(false);
         } else {
           navigate("/login");
+          setShowPages(false);
         }
       }
     };
@@ -46,7 +52,7 @@ const Layout = () => {
     <div>
       {location.pathname === "/" ? (
         <Routes>
-          <Route path="/" element={<Register />} />
+          <Route path="/" element={<CandidateRegister />} />
         </Routes>
       ) : location.pathname === "/login" ? (
         <Routes>
@@ -54,11 +60,16 @@ const Layout = () => {
         </Routes>
       ) : location.pathname === "/register" ? (
         <Routes>
-          <Route path="/register" element={<StudentRegister />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      ) : location.pathname === "/search" ? (
+        <Routes>
+          <Route path="/search" element={<AdminSearch />} />
         </Routes>
       ) : showPages === true ? (
         <Routes>
           <Route path="/admin" element={<Admin />} />
+          {/* <Route path="/search" element={<AdminSearch />} /> */}
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/foldermanagement" element={<FolderManagement />} />
           <Route path="/folderprofiles" element={<FolderProfiles />} />

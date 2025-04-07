@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: API_URL,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -99,7 +101,38 @@ export const getSkills = async (payload) => {
 
 export const addToFavorite = async (payload) => {
   try {
-    const response = await api.put("/api/updateFavorites", payload);
+    const response = await api.post("/api/createFavorites", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteFavorite = async (payload) => {
+  try {
+    const response = await api.delete("/api/removeFavorites", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getFavorites = async () => {
+  try {
+    const response = await api.get("/api/getFavorites");
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getFavoriteCandidates = async (payload) => {
+  try {
+    const response = await api.get("/api/getFavoriteCandidates", {
+      params: payload,
+    });
     return response;
   } catch (error) {
     throw error;
@@ -115,9 +148,18 @@ export const createFolder = async (payload) => {
   }
 };
 
-export const getFolders = async () => {
+export const updateFolder = async (payload) => {
   try {
-    const response = await api.get("/api/getfolders");
+    const response = await api.put("/api/updatefolder", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getFolders = async (userId) => {
+  try {
+    const response = await api.get(`/api/getfolders?userId=${userId}`);
     return response;
   } catch (error) {
     throw error;

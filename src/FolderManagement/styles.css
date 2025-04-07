@@ -15,11 +15,11 @@
   border: 1px solid rgba(128, 128, 128, 0.384);
   border-radius: 6px;
   padding: 16px;
-  cursor: pointer;
   margin-bottom: 16px;
 }
 .folders_listname_text {
   font-weight: 500;
+  cursor: pointer;
 }
 .folders_listcreatedat_text {
   color: gray;

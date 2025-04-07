@@ -17,7 +17,9 @@ import {
 import {
   addToFavorite,
   createFolder,
+  deleteFavorite,
   getCandidates,
+  getFavorites,
   getSkills,
 } from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
@@ -169,6 +171,21 @@ export default function Admin() {
   const [skillsList, setSkillsList] = useState([]);
   const [candidates, setCandidates] = useState([]);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
+  const [favoritesList, setFavoritesList] = useState([]);
+
+  useEffect(() => {
+    getFavoritesData();
+  }, []);
+
+  const getFavoritesData = async () => {
+    try {
+      const response = await getFavorites();
+      console.log("favorites list", response);
+      setFavoritesList(response?.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     getCandidatesData();
@@ -189,8 +206,10 @@ export default function Admin() {
     skills
   ) => {
     console.log("skills list", skills);
+    const userId = localStorage.getItem("loginUserId");
 
     const payload = {
+      userId: userId,
       yearsOfExperience:
         yearsOfExperience != undefined ? yearsOfExperience : experienceYear,
       monthOfExperience:
@@ -440,9 +459,11 @@ export default function Admin() {
     setFolderNameError(folderNameValidate);
 
     if (folderNameValidate) return;
+    const userId = localStorage.getItem("loginUserId");
 
     const payload = {
       name: folderName,
+      userId: userId,
       candidateIds: selectedCandidates,
     };
 
@@ -467,7 +488,8 @@ export default function Admin() {
       location === "" &&
       degree === "" &&
       passedOut === "" &&
-      gender === null
+      gender === null &&
+      CompanyName === ""
     ) {
       return;
     }
@@ -486,6 +508,7 @@ export default function Admin() {
       const response = await getCandidates();
       console.log("candidates response", response);
       setCandidates(response?.data?.data?.data);
+      setTotalProfileCount(response?.data?.data?.pagination?.total);
     } catch (error) {
       console.log(error);
     }
@@ -657,18 +680,32 @@ export default function Admin() {
   }, []);
 
   const handleAddfavorite = async (Id, favoriteStatus) => {
-    const payload = {
-      id: Id,
-      favoriteStatus: favoriteStatus === 0 ? true : false,
-    };
-    try {
-      const response = await addToFavorite(payload);
-      CommonToaster(
-        favoriteStatus === 0 ? "Added to favorites" : "Removed from favorites"
-      );
-      getCandidatesData();
-    } catch (error) {
-      console.log("add to favorite error");
+    console.log(Id, favoriteStatus);
+    const userId = localStorage.getItem("loginUserId");
+    if (favoriteStatus === false) {
+      const payload = {
+        userId: userId,
+        candidateId: Id,
+      };
+      try {
+        const response = await addToFavorite(payload);
+        CommonToaster("Added to favorites");
+        getFavoritesData();
+      } catch (error) {
+        console.log("add to favorite error");
+      }
+    } else {
+      const payload = {
+        userId: userId,
+        candidateId: Id,
+      };
+      try {
+        const response = await deleteFavorite(payload);
+        CommonToaster("Removed from favorites");
+        getFavoritesData();
+      } catch (error) {
+        console.log("add to favorite error");
+      }
     }
   };
 
@@ -1044,19 +1081,21 @@ export default function Admin() {
                   });
                 }}
                 showSizeChanger
-                pageSizeOptions={["1", "2", "20", "40", "80", "160"]}
+                pageSizeOptions={["20", "40", "80", "160"]}
               />
             </Col>
 
             <Row gutter={16} className="admin_savetofoldersdiv">
               <Col xs={24} sm={24} md={24} lg={12}>
-                <Checkbox
-                  onChange={handleSelectall}
-                  style={{ backgroundColor: "transparent" }}
-                  value={selectAllValue}
-                >
-                  Select All
-                </Checkbox>
+                {candidates.length >= 1 && (
+                  <Checkbox
+                    onChange={handleSelectall}
+                    style={{ backgroundColor: "transparent" }}
+                    value={selectAllValue}
+                  >
+                    Select All
+                  </Checkbox>
+                )}
               </Col>
               <Col xs={24} sm={24} md={24} lg={12}>
                 <div
@@ -1079,6 +1118,9 @@ export default function Admin() {
               <>
                 {candidates.map((item, index) => {
                   const profileBase64String = `data:image/jpeg;base64,${item.profileImage}`;
+                  const isFavorite = favoritesList.some(
+                    (fav) => fav.candidateId === item.id
+                  );
                   return (
                     <React.Fragment key={index}>
                       <div className="admin_candidatesDetailscard">
@@ -1358,17 +1400,17 @@ export default function Admin() {
                                   <button
                                     className="admin_favoritesbutton"
                                     onClick={() =>
-                                      handleAddfavorite(item.id, item.favorites)
+                                      handleAddfavorite(item.id, isFavorite)
                                     }
                                   >
-                                    {item.favorites === 0 ? (
-                                      <IoBookmarkOutline
+                                    {isFavorite ? (
+                                      <IoBookmark
+                                        color="#FFC107"
                                         size={16}
                                         style={{ marginRight: "6px" }}
                                       />
                                     ) : (
-                                      <IoBookmark
-                                        color="#FFC107"
+                                      <IoBookmarkOutline
                                         size={16}
                                         style={{ marginRight: "6px" }}
                                       />
@@ -1794,7 +1836,7 @@ export default function Admin() {
 
       {/* folders modal */}
       <Modal
-        title="Save current filter profiles to folder"
+        title="Save folder"
         open={folderModal}
         onOk={handleFolderModal}
         onCancel={() => {

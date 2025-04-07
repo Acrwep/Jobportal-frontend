@@ -14,16 +14,40 @@ import {
   nameValidator,
   selectValidator,
 } from "../Common/Validation";
-import { candidateRegistration } from "../Common/action";
+import { candidateRegistration, getSkills } from "../Common/action";
 import CommonMultiSelect from "../Common/CommonMultiSelect";
 import { LoadingOutlined } from "@ant-design/icons";
 import Actelogo from "../images/acte-logo.png";
 import cardImage from "../images/registrationimage.png";
 import { BsPatchCheckFill } from "react-icons/bs";
 import { Country, State, City } from "country-state-city";
+import axios from "axios";
 import moment from "moment";
 
 export default function Register() {
+  const api = axios.create({
+    baseURL: "https://actecrm.com",
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  api.interceptors.request.use(
+    (config) => {
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  const crmEmailValidation = async (payload) => {
+    try {
+      const response = await api.post("/email-validation.php", payload);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const { Dragger } = Upload;
   const { TextArea } = Input;
   const [firstName, setFirstName] = useState("");
@@ -180,7 +204,18 @@ export default function Register() {
   useEffect(() => {
     const countries = Country.getAllCountries();
     setCountryOptions(countries);
+
+    getSkillsData();
   }, []);
+
+  const getSkillsData = async () => {
+    try {
+      const response = await getSkills();
+      console.log("skills response", response);
+    } catch (error) {
+      console.log("skills error", error);
+    }
+  };
 
   const handleCountry = (value) => {
     setCountry(value);
@@ -392,6 +427,28 @@ export default function Register() {
     }
   };
 
+  const handleEmail = async (e) => {
+    setEmail(e.target.value);
+    if (validationTrigger) {
+      setEmailError(emailValidator(e.target.value));
+      const formData = new FormData();
+      formData.append("email", e.target.value);
+      setTimeout(async () => {
+        try {
+          const response = await crmEmailValidation(formData);
+          if (response?.data?.message === "Email ID is not exist.") {
+            setEmailError(" is not matching. Contact acte support team.");
+          } else {
+            setEmailError("");
+          }
+          console.log("crm email response", response);
+        } catch (error) {
+          console.log("php email error", error);
+        }
+      }, 300);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setValidationTrigger(true);
@@ -465,7 +522,29 @@ export default function Register() {
       contactContainer.scrollIntoView({ behavior: "smooth" });
       return;
     }
+    let crmEmailValidate = "";
+    try {
+      const formData = new FormData();
+      formData.append("email", email);
+      const response = await crmEmailValidation(formData);
+      if (response?.data?.message === "Email ID is not exist.") {
+        crmEmailValidate = " is not matching. Contact acte support team.";
+      } else {
+        crmEmailValidate = "";
+      }
+      console.log("crm email response", response);
+    } catch (error) {
+      console.log("php email error", error);
+    }
 
+    if (crmEmailValidate) {
+      setEmailError(crmEmailValidate);
+      const contactContainer = document.getElementById(
+        "registration_contactsection"
+      );
+      contactContainer.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
     //experience session validate
     if (showCompanyfields === true) {
       setCompanyNameError(companyNameValidate);
@@ -888,12 +967,7 @@ export default function Register() {
                       label="Email"
                       mandatory={true}
                       value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        if (validationTrigger) {
-                          setEmailError(emailValidator(e.target.value));
-                        }
-                      }}
+                      onChange={handleEmail}
                       error={emailError}
                     />
                   </Col>

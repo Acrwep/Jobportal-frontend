@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../Header/Header";
 import "./styles.css";
 import { Row, Col, Modal } from "antd";
@@ -28,6 +29,7 @@ export default function FolderProfiles() {
     "pdfjs-dist/build/pdf.worker.min.mjs",
     import.meta.url
   ).toString();
+  const navigate = useNavigate();
   const candidates = useSelector((state) => state.folderprofiles);
   const folderFilters = useSelector((state) => state.folderfilters);
 
@@ -152,7 +154,14 @@ export default function FolderProfiles() {
                             )}
                           </Col>
                           <Col span={18}>
-                            <p className="admin_candidatename">
+                            <p
+                              className="admin_candidatename"
+                              onClick={() =>
+                                navigate("/profile", {
+                                  state: { candidateId: item.id },
+                                })
+                              }
+                            >
                               {item.firstName + " " + item.lastName}
                             </p>
 
@@ -371,7 +380,7 @@ export default function FolderProfiles() {
                                 alignItems: "center",
                               }}
                             >
-                              <button
+                              {/* <button
                                 className="admin_favoritesbutton"
                                 onClick={() =>
                                   handleAddfavorite(item.id, item.favorites)
@@ -390,7 +399,7 @@ export default function FolderProfiles() {
                                   />
                                 )}
                                 Favorite
-                              </button>
+                              </button> */}
                             </div>
                           </Col>
                         </Row>

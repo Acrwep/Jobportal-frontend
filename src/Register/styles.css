@@ -6,12 +6,12 @@
 }
 .registration_headerContainer {
   border-bottom: 1px solid #e4e2e0;
-  padding: 19px 32px;
+  padding: 12px 32px;
   color: #2d2d2d;
   font-size: 14px;
 }
 .registration_actelogo {
-  width: 90px;
+  width: 220px;
 }
 .registration_headertextContainer {
   display: flex;
@@ -132,7 +132,7 @@
 }
 .registration_companyfields_divider {
   border-color: rgba(128, 128, 128, 0.219) !important;
-  margin-top: 0px;
+  margin: 38px 0px 21px !important;
 }
 .candidate_companydeleterowdiv {
   margin-top: 22px;
