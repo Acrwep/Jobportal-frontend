@@ -21,6 +21,7 @@ import {
   getCandidates,
   getFavorites,
   getSkills,
+  searchByKeyword,
 } from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
 import moment from "moment";
@@ -135,40 +136,39 @@ export default function Admin() {
     { id: 9, name: "Designation" },
   ];
   const experienceYearsOptions = [
-    { id: 0, name: "0 years" },
-    { id: 1, name: "1 years" },
-    { id: 2, name: "2 years" },
-    { id: 3, name: "3 years" },
-    { id: 4, name: "4 years" },
-    { id: 5, name: "5 years" },
-    { id: 6, name: "6 years" },
-    { id: 7, name: "7 years" },
-    { id: 8, name: "8 years" },
-    { id: 9, name: "9 years" },
-    { id: 10, name: "10 years" },
-    { id: 11, name: "11 years" },
-    { id: 12, name: "12 years" },
-    { id: 13, name: "13 years" },
-    { id: 14, name: "14 years" },
-    { id: 15, name: "15 years" },
+    { id: "0 Years", name: "0 years" },
+    { id: "1 Years", name: "1 years" },
+    { id: "2 Years", name: "2 years" },
+    { id: "3 Years", name: "3 years" },
+    { id: "4 Years", name: "4 years" },
+    { id: "5 Years", name: "5 years" },
+    { id: "6 Years", name: "6 years" },
+    { id: "7 Years", name: "7 years" },
+    { id: "8 Years", name: "8 years" },
+    { id: "9 Years", name: "9 years" },
+    { id: "10 Years", name: "10 years" },
+    { id: "11 Years", name: "11 years" },
+    { id: "12 Years", name: "12 years" },
+    { id: "13 Years", name: "13 years" },
+    { id: "14 Years", name: "14 years" },
+    { id: "15 Years", name: "15 years" },
   ];
   const experienceMonthsOptions = [
-    { id: 0, name: "0 months" },
-    { id: 1, name: "1 months" },
-    { id: 2, name: "2 months" },
-    { id: 3, name: "3 months" },
-    { id: 4, name: "4 months" },
-    { id: 5, name: "5 months" },
-    { id: 6, name: "6 months" },
-    { id: 7, name: "7 months" },
-    { id: 8, name: "8 months" },
-    { id: 9, name: "9 months" },
-    { id: 10, name: "10 months" },
-    { id: 11, name: "11 months" },
-    { id: 12, name: "12 months" },
+    { id: "0 Months", name: "0 months" },
+    { id: "1 Months", name: "1 months" },
+    { id: "2 Months", name: "2 months" },
+    { id: "3 Months", name: "3 months" },
+    { id: "4 Months", name: "4 months" },
+    { id: "5 Months", name: "5 months" },
+    { id: "6 Months", name: "6 months" },
+    { id: "7 Months", name: "7 months" },
+    { id: "8 Months", name: "8 months" },
+    { id: "9 Months", name: "9 months" },
+    { id: "10 Months", name: "10 months" },
+    { id: "11 Months", name: "11 months" },
+    { id: "12 Months", name: "12 months" },
   ];
 
-  const [skillsList, setSkillsList] = useState([]);
   const [candidates, setCandidates] = useState([]);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [favoritesList, setFavoritesList] = useState([]);
@@ -188,7 +188,14 @@ export default function Admin() {
   };
 
   useEffect(() => {
-    getCandidatesData();
+    const keyword = localStorage.getItem("searchKeyword");
+    const convertJson = JSON.parse(keyword);
+    console.log("search keyword", convertJson);
+    if (convertJson != null) {
+      getCandidatesData();
+    } else {
+      navigate("/search");
+    }
   }, [pagination.currentPage, pagination.limit]);
 
   const getCandidatesData = async (
@@ -206,10 +213,15 @@ export default function Admin() {
     skills
   ) => {
     console.log("skills list", skills);
+    const keyword = localStorage.getItem("searchKeyword");
+    const convertJson = JSON.parse(keyword);
+    const searchBykeyword = convertJson.join(" ");
+
     const userId = localStorage.getItem("loginUserId");
 
     const payload = {
-      userId: userId,
+      q: searchBykeyword,
+      // userId: userId,
       yearsOfExperience:
         yearsOfExperience != undefined ? yearsOfExperience : experienceYear,
       monthOfExperience:
@@ -228,7 +240,7 @@ export default function Admin() {
       limit: pagination.limit,
     };
     try {
-      const response = await getCandidates(payload);
+      const response = await searchByKeyword(payload);
       console.log("candidates response", response);
       setCandidates(response?.data?.data?.data);
       setTotalProfileCount(response?.data?.data?.pagination?.total);
@@ -238,17 +250,6 @@ export default function Admin() {
       }));
     } catch (error) {
       console.log(error);
-    } finally {
-      getSkillsData();
-    }
-  };
-
-  const getSkillsData = async () => {
-    try {
-      const response = await getSkills();
-      setSkillsList(response?.data?.data);
-    } catch (error) {
-      CommonToaster(error?.response?.data?.message);
     }
   };
 
@@ -415,11 +416,7 @@ export default function Admin() {
   };
 
   const handleSkillsModal = () => {
-    const result = skillsList.filter((f) =>
-      skillsFilter.some((s) => f.id === s)
-    );
-    console.log(result);
-    setSkillsFilterRender(result);
+    setSkillsFilterRender(skillsFilter);
     getCandidatesData(
       experienceYear,
       experienceMonth,
@@ -744,6 +741,38 @@ export default function Admin() {
     setSelectedCandidates(filterIds);
   };
 
+  const highlightTextSafe = (text) => {
+    if (!text) return null;
+
+    let keyword = localStorage.getItem("searchKeyword");
+    let keywords = [];
+
+    try {
+      const parsed = JSON.parse(keyword);
+      if (Array.isArray(parsed)) {
+        keywords = parsed.map((k) => k.toLowerCase());
+      } else if (typeof parsed === "string") {
+        keywords = parsed.toLowerCase().split(" ");
+      }
+    } catch (e) {
+      keyword = keyword?.replace(/[\[\]']+/g, ""); // remove brackets & quotes
+      keywords = keyword?.split(",").map((k) => k.trim().toLowerCase()) || [];
+    }
+
+    const parts = text.split(new RegExp(`(${keywords.join("|")})`, "gi"));
+
+    return parts.map((part, i) => {
+      const isMatch = keywords.some((k) => k === part.toLowerCase());
+      return isMatch ? (
+        <mark className="keyword_highlight" key={i}>
+          {part}
+        </mark>
+      ) : (
+        <React.Fragment key={i}>{part}</React.Fragment>
+      );
+    });
+  };
+
   return (
     <div className="admin_mainContainer" id="admin_mainContainer">
       <Header />
@@ -806,7 +835,7 @@ export default function Admin() {
                     <Col span={12} className="admin_clearContainer">
                       <div className="admin_filterbuttonContainer">
                         {item.id === 1 &&
-                          (experienceYear !== "" || experienceMonth !== "") && (
+                          (experienceYear || experienceMonth) && (
                             <div
                               className="admin_filtercloseicondiv"
                               onClick={() =>
@@ -943,14 +972,14 @@ export default function Admin() {
                         experienceYear !== "" &&
                         experienceYear !== undefined && (
                           <div className="admin_filtervaluesdiv">
-                            <p>{experienceYear + " " + "years"}</p>
+                            <p>{experienceYear}</p>
                           </div>
                         )}
                       {experienceMonth !== null &&
                         experienceMonth !== "" &&
                         experienceMonth !== undefined && (
                           <div className="admin_filtervaluesdiv">
-                            <p>{experienceMonth + " " + "months"}</p>
+                            <p>{experienceMonth}</p>
                           </div>
                         )}
                     </div>
@@ -1029,7 +1058,7 @@ export default function Admin() {
                         <>
                           {skillsFilterRender.map((item, index) => (
                             <div key={index} className="admin_filtervaluesdiv">
-                              <p>{item.name}</p>
+                              <p>{item}</p>
                             </div>
                           ))}
                         </>
@@ -1158,12 +1187,15 @@ export default function Admin() {
                                 <p
                                   className="admin_candidatename"
                                   onClick={() =>
-                                    navigate("/profile", {
+                                    navigate("/profiledetails", {
                                       state: { candidateId: item.id },
                                     })
                                   }
                                 >
-                                  {item.firstName + " " + item.lastName}
+                                  <>
+                                    {highlightTextSafe(item.firstName)}{" "}
+                                    {highlightTextSafe(item.lastName)}
+                                  </>
                                 </p>
 
                                 {item.gender === "Male" ? (
@@ -1174,7 +1206,7 @@ export default function Admin() {
                                       className="admin_candidatecard_icons"
                                     />
                                     <p className="admin_candidategender">
-                                      {item.gender}
+                                      {highlightTextSafe(item.gender)}
                                     </p>
                                   </div>
                                 ) : (
@@ -1185,30 +1217,37 @@ export default function Admin() {
                                       className="admin_candidatecard_icons"
                                     />
                                     <p className="admin_candidategender">
-                                      {item.gender}
+                                      {highlightTextSafe(item.gender)}
                                     </p>
                                   </div>
                                 )}
 
-                                <div className="admin_candidateprofdiv">
-                                  <HiOutlineUserCircle
-                                    size={16}
-                                    color="#333"
-                                    className="admin_candidatecard_icons"
-                                  />
-                                  <p className="admin_candidatedesignation">
-                                    {item.designation.charAt(0).toUpperCase() +
-                                      item.designation.slice(1)}
-                                  </p>
-                                </div>
+                                {item.designation && (
+                                  <div className="admin_candidateprofdiv">
+                                    <HiOutlineUserCircle
+                                      size={16}
+                                      color="#333"
+                                      className="admin_candidatecard_icons"
+                                    />
+                                    <p className="admin_candidatedesignation">
+                                      {highlightTextSafe(
+                                        item.designation
+                                          .charAt(0)
+                                          .toUpperCase() +
+                                          item.designation.slice(1)
+                                      )}
+                                    </p>
+                                  </div>
+                                )}
 
-                                <div className="admin_candidateprofdiv">
-                                  <BsBuildings className="admin_candidatecard_icons" />
-                                  <p className="admin_candidategender">
-                                    {item.companyName}
-                                  </p>
-                                </div>
-
+                                {item.companyName && (
+                                  <div className="admin_candidateprofdiv">
+                                    <BsBuildings className="admin_candidatecard_icons" />
+                                    <p className="admin_candidategender">
+                                      {highlightTextSafe(item.companyName)}
+                                    </p>
+                                  </div>
+                                )}
                                 <div
                                   style={{
                                     display: "flex",
@@ -1252,10 +1291,12 @@ export default function Admin() {
                               </Col>
                               <Col span={18}>
                                 <p className="admin_candidate_locationtext">
-                                  {item.city
-                                    ? item.city.charAt(0).toUpperCase() +
-                                      item.city.slice(1)
-                                    : "-"}
+                                  {highlightTextSafe(
+                                    item.city
+                                      ? item.city.charAt(0).toUpperCase() +
+                                          item.city.slice(1)
+                                      : "-"
+                                  )}
                                 </p>
                               </Col>
                             </Row>
@@ -1289,8 +1330,10 @@ export default function Admin() {
                               </Col>
                               <Col span={18}>
                                 <p className="admin_candidate_locationtext">
-                                  {item.country.charAt(0).toUpperCase() +
-                                    item.country.slice(1)}
+                                  {highlightTextSafe(
+                                    item.country.charAt(0).toUpperCase() +
+                                      item.country.slice(1)
+                                  )}
                                 </p>
                               </Col>
                             </Row>
@@ -1308,15 +1351,11 @@ export default function Admin() {
                                     className="admin_candidatecard_icons"
                                   />
                                   <p className="admin_candidate_locationtext">
-                                    {item.qualification +
-                                      " " +
-                                      "at" +
-                                      " " +
-                                      item.university +
-                                      " " +
-                                      "in" +
-                                      " " +
-                                      item.graduateYear}
+                                    <>
+                                      {highlightTextSafe(item.qualification)} at{" "}
+                                      {highlightTextSafe(item.university)} in{" "}
+                                      {highlightTextSafe(item.graduateYear)}
+                                    </>
                                   </p>
                                 </div>
                               </Col>
@@ -1337,21 +1376,14 @@ export default function Admin() {
                                   }}
                                 >
                                   {item.skills.map((item, index) => {
-                                    const isHighlighted = skillsFilter.includes(
-                                      item.id
-                                    );
                                     return (
                                       <React.Fragment key={index}>
                                         <div className="admin_candidateskills_container">
-                                          <p
-                                            className={
-                                              isHighlighted
-                                                ? "highlighted-skill"
-                                                : ""
-                                            }
-                                          >
-                                            {item.name.charAt(0).toUpperCase() +
-                                              item.name.slice(1)}
+                                          <p>
+                                            {highlightTextSafe(
+                                              item.charAt(0).toUpperCase() +
+                                                item.slice(1)
+                                            )}
                                           </p>
                                         </div>
                                       </React.Fragment>
@@ -1451,15 +1483,18 @@ export default function Admin() {
                                   </p>
                                   <p className="admin_ctctext">
                                     {item.yearsOfExperience === 0 &&
-                                    item.monthOfExperience === 0
-                                      ? "Fresher"
-                                      : item.yearsOfExperience +
-                                        " " +
-                                        "Years" +
-                                        " " +
-                                        item.monthOfExperience +
-                                        " " +
-                                        "Months"}
+                                    item.monthOfExperience === 0 ? (
+                                      "Fresher"
+                                    ) : (
+                                      <>
+                                        {highlightTextSafe(
+                                          item.yearsOfExperience.toString()
+                                        )}{" "}
+                                        {highlightTextSafe(
+                                          item.monthOfExperience.toString()
+                                        )}{" "}
+                                      </>
+                                    )}
                                   </p>
                                 </Col>
                                 <Col span={8}>
@@ -1467,7 +1502,7 @@ export default function Admin() {
                                     CTC Anually
                                   </p>
                                   <p className="admin_ctctext">
-                                    {item.currentCTC}
+                                    {highlightTextSafe(item.currentCTC)}
                                   </p>
                                 </Col>
                                 <Col span={8}>
@@ -1475,7 +1510,7 @@ export default function Admin() {
                                     Notice period
                                   </p>
                                   <p className="admin_ctctext">
-                                    {item.noticePeriod}
+                                    {highlightTextSafe(item.noticePeriod)}
                                   </p>
                                 </Col>
                               </Row>
@@ -1574,6 +1609,7 @@ export default function Admin() {
             label="Years of experience"
             value={experienceYear}
             onChange={(value) => setExperienceYear(value)}
+            allowClear={true}
           />
         </div>
 
@@ -1583,6 +1619,7 @@ export default function Admin() {
             label="Years of month"
             value={experienceMonth}
             onChange={(value) => setExperienceMonth(value)}
+            allowClear={true}
           />
         </div>
       </Modal>
@@ -1822,10 +1859,9 @@ export default function Admin() {
         ]}
       >
         <div style={{ marginTop: "16px" }}>
-          <CommonSelectField
-            mode="tags"
+          <CommonMultiSelect
             label="Skills"
-            options={skillsList}
+            mode="tags"
             value={skillsFilter}
             onChange={(value) => {
               setSkillsFilter(value);

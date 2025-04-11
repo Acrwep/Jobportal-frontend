@@ -19,7 +19,6 @@ import moment from "moment";
 import CommonSelectField from "../Common/CommonSelectField";
 import CommonInputField from "../Common/CommonInputField";
 import { Layout, Menu, theme } from "antd";
-import Actelogo from "../images/acte-logo.png";
 import { MdArrowForwardIos, MdArrowBackIosNew } from "react-icons/md";
 import { FaRegFileAlt } from "react-icons/fa";
 import { PiGraduationCapDuotone } from "react-icons/pi";
@@ -126,37 +125,37 @@ export default function Favorites() {
     { id: 9, name: "Designation" },
   ];
   const experienceYearsOptions = [
-    { id: 0, name: "0 years" },
-    { id: 1, name: "1 years" },
-    { id: 2, name: "2 years" },
-    { id: 3, name: "3 years" },
-    { id: 4, name: "4 years" },
-    { id: 5, name: "5 years" },
-    { id: 6, name: "6 years" },
-    { id: 7, name: "7 years" },
-    { id: 8, name: "8 years" },
-    { id: 9, name: "9 years" },
-    { id: 10, name: "10 years" },
-    { id: 11, name: "11 years" },
-    { id: 12, name: "12 years" },
-    { id: 13, name: "13 years" },
-    { id: 14, name: "14 years" },
-    { id: 15, name: "15 years" },
+    { id: "0 Years", name: "0 years" },
+    { id: "1 Years", name: "1 years" },
+    { id: "2 Years", name: "2 years" },
+    { id: "3 Years", name: "3 years" },
+    { id: "4 Years", name: "4 years" },
+    { id: "5 Years", name: "5 years" },
+    { id: "6 Years", name: "6 years" },
+    { id: "7 Years", name: "7 years" },
+    { id: "8 Years", name: "8 years" },
+    { id: "9 Years", name: "9 years" },
+    { id: "10 Years", name: "10 years" },
+    { id: "11 Years", name: "11 years" },
+    { id: "12 Years", name: "12 years" },
+    { id: "13 Years", name: "13 years" },
+    { id: "14 Years", name: "14 years" },
+    { id: "15 Years", name: "15 years" },
   ];
   const experienceMonthsOptions = [
-    { id: 0, name: "0 months" },
-    { id: 1, name: "1 months" },
-    { id: 2, name: "2 months" },
-    { id: 3, name: "3 months" },
-    { id: 4, name: "4 months" },
-    { id: 5, name: "5 months" },
-    { id: 6, name: "6 months" },
-    { id: 7, name: "7 months" },
-    { id: 8, name: "8 months" },
-    { id: 9, name: "9 months" },
-    { id: 10, name: "10 months" },
-    { id: 11, name: "11 months" },
-    { id: 12, name: "12 months" },
+    { id: "0 Months", name: "0 months" },
+    { id: "1 Months", name: "1 months" },
+    { id: "2 Months", name: "2 months" },
+    { id: "3 Months", name: "3 months" },
+    { id: "4 Months", name: "4 months" },
+    { id: "5 Months", name: "5 months" },
+    { id: "6 Months", name: "6 months" },
+    { id: "7 Months", name: "7 months" },
+    { id: "8 Months", name: "8 months" },
+    { id: "9 Months", name: "9 months" },
+    { id: "10 Months", name: "10 months" },
+    { id: "11 Months", name: "11 months" },
+    { id: "12 Months", name: "12 months" },
   ];
 
   const [skillsList, setSkillsList] = useState([]);
@@ -224,17 +223,6 @@ export default function Favorites() {
       setTotalProfileCount(response?.data?.data?.pagination?.total);
     } catch (error) {
       console.log(error);
-    } finally {
-      getSkillsData();
-    }
-  };
-
-  const getSkillsData = async () => {
-    try {
-      const response = await getSkills();
-      setSkillsList(response?.data?.data);
-    } catch (error) {
-      CommonToaster(error?.response?.data?.message);
     }
   };
 
@@ -401,11 +389,7 @@ export default function Favorites() {
   };
 
   const handleSkillsModal = () => {
-    const result = skillsList.filter((f) =>
-      skillsFilter.some((s) => f.id === s)
-    );
-    console.log(result);
-    setSkillsFilterRender(result);
+    setSkillsFilterRender(skillsFilter);
     getCandidatesData(
       experienceYear,
       experienceMonth,
@@ -766,7 +750,7 @@ export default function Favorites() {
                     <Col span={12} className="admin_clearContainer">
                       <div className="admin_filterbuttonContainer">
                         {item.id === 1 &&
-                          (experienceYear !== "" || experienceMonth !== "") && (
+                          (experienceYear || experienceMonth) && (
                             <div
                               className="admin_filtercloseicondiv"
                               onClick={() =>
@@ -903,14 +887,14 @@ export default function Favorites() {
                         experienceYear !== "" &&
                         experienceYear !== undefined && (
                           <div className="admin_filtervaluesdiv">
-                            <p>{experienceYear + " " + "years"}</p>
+                            <p>{experienceYear}</p>
                           </div>
                         )}
                       {experienceMonth !== null &&
                         experienceMonth !== "" &&
                         experienceMonth !== undefined && (
                           <div className="admin_filtervaluesdiv">
-                            <p>{experienceMonth + " " + "months"}</p>
+                            <p>{experienceMonth}</p>
                           </div>
                         )}
                     </div>
@@ -989,7 +973,7 @@ export default function Favorites() {
                         <>
                           {skillsFilterRender.map((item, index) => (
                             <div key={index} className="admin_filtervaluesdiv">
-                              <p>{item.name}</p>
+                              <p>{item}</p>
                             </div>
                           ))}
                         </>
@@ -1079,7 +1063,7 @@ export default function Favorites() {
                                 <p
                                   className="admin_candidatename"
                                   onClick={() =>
-                                    navigate("/profile", {
+                                    navigate("/profiledetails", {
                                       state: { candidateId: item.id },
                                     })
                                   }
@@ -1111,24 +1095,30 @@ export default function Favorites() {
                                   </div>
                                 )}
 
-                                <div className="admin_candidateprofdiv">
-                                  <HiOutlineUserCircle
-                                    size={16}
-                                    color="#333"
-                                    className="admin_candidatecard_icons"
-                                  />
-                                  <p className="admin_candidatedesignation">
-                                    {item.designation.charAt(0).toUpperCase() +
-                                      item.designation.slice(1)}
-                                  </p>
-                                </div>
+                                {item.designation && (
+                                  <div className="admin_candidateprofdiv">
+                                    <HiOutlineUserCircle
+                                      size={16}
+                                      color="#333"
+                                      className="admin_candidatecard_icons"
+                                    />
+                                    <p className="admin_candidatedesignation">
+                                      {item.designation
+                                        .charAt(0)
+                                        .toUpperCase() +
+                                        item.designation.slice(1)}
+                                    </p>
+                                  </div>
+                                )}
 
-                                <div className="admin_candidateprofdiv">
-                                  <BsBuildings className="admin_candidatecard_icons" />
-                                  <p className="admin_candidategender">
-                                    {item.companyName}
-                                  </p>
-                                </div>
+                                {item.companyName && (
+                                  <div className="admin_candidateprofdiv">
+                                    <BsBuildings className="admin_candidatecard_icons" />
+                                    <p className="admin_candidategender">
+                                      {item.companyName}
+                                    </p>
+                                  </div>
+                                )}
 
                                 <div
                                   style={{
@@ -1258,21 +1248,20 @@ export default function Favorites() {
                                   }}
                                 >
                                   {item.skills.map((item, index) => {
-                                    const isHighlighted = skillsFilter.includes(
-                                      item.id
-                                    );
                                     return (
                                       <React.Fragment key={index}>
                                         <div className="admin_candidateskills_container">
                                           <p
-                                            className={
-                                              isHighlighted
-                                                ? "highlighted-skill"
-                                                : ""
-                                            }
+                                          // className={
+                                          //   isHighlighted
+                                          //     ? "highlighted-skill"
+                                          //     : ""
+                                          // }
                                           >
-                                            {item.name.charAt(0).toUpperCase() +
-                                              item.name.slice(1)}
+                                            {typeof item === "string"
+                                              ? item.charAt(0).toUpperCase() +
+                                                item.slice(1)
+                                              : item}
                                           </p>
                                         </div>
                                       </React.Fragment>
@@ -1376,11 +1365,7 @@ export default function Favorites() {
                                       ? "Fresher"
                                       : item.yearsOfExperience +
                                         " " +
-                                        "Years" +
-                                        " " +
-                                        item.monthOfExperience +
-                                        " " +
-                                        "Months"}
+                                        item.monthOfExperience}
                                   </p>
                                 </Col>
                                 <Col span={8}>
@@ -1495,6 +1480,7 @@ export default function Favorites() {
             label="Years of experience"
             value={experienceYear}
             onChange={(value) => setExperienceYear(value)}
+            allowClear={true}
           />
         </div>
 
@@ -1504,6 +1490,7 @@ export default function Favorites() {
             label="Years of month"
             value={experienceMonth}
             onChange={(value) => setExperienceMonth(value)}
+            allowClear={true}
           />
         </div>
       </Modal>
@@ -1743,10 +1730,9 @@ export default function Favorites() {
         ]}
       >
         <div style={{ marginTop: "16px" }}>
-          <CommonSelectField
-            mode="tags"
+          <CommonMultiSelect
             label="Skills"
-            options={skillsList}
+            mode="tags"
             value={skillsFilter}
             onChange={(value) => {
               setSkillsFilter(value);

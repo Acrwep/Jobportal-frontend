@@ -120,11 +120,7 @@ export default function Profile() {
                             ? "Fresher"
                             : item.yearsOfExperience +
                               " " +
-                              "Years" +
-                              " " +
-                              item.monthOfExperience +
-                              " " +
-                              "Months"}
+                              item.monthOfExperience}
                         </p>
                       </div>
                       <Divider
@@ -211,8 +207,87 @@ export default function Profile() {
                   </div>
 
                   <div className="profile_contactinfoCard">
+                    <p className="contactinfocard_heading">Course Details</p>
+                    <div className="jobprefcard_contentdiv">
+                      <p className="jobprefcard_locationheading">Course name</p>
+                      <p className="jobprefcard_locationtext">
+                        {item.courseName}
+                      </p>
+                    </div>
+                    <div className="jobprefcard_contentdiv">
+                      <p className="jobprefcard_locationheading">
+                        Course location
+                      </p>
+                      <p className="jobprefcard_locationtext">
+                        {item.courseLocation}
+                      </p>
+                    </div>
+
+                    <div className="jobprefcard_contentdiv">
+                      <p className="jobprefcard_locationheading">Course mode</p>
+                      <p className="jobprefcard_locationtext">
+                        {item.courseMode}
+                      </p>
+                    </div>
+
+                    <div className="jobprefcard_contentdiv">
+                      <p className="jobprefcard_locationheading">
+                        Course status
+                      </p>
+                      <p className="jobprefcard_locationtext">
+                        {item.courseStatus}
+                      </p>
+                    </div>
+
+                    <div className="jobprefcard_contentdiv">
+                      <p className="jobprefcard_locationheading">
+                        Mockup interview percentage
+                      </p>
+                      <p className="jobprefcard_locationtext">
+                        {item.mockupPercentage}
+                      </p>
+                    </div>
+
+                    <div className="jobprefcard_contentdiv">
+                      <p className="jobprefcard_locationheading">
+                        Course joing date
+                      </p>
+                      <p className="jobprefcard_locationtext">
+                        {moment(item.courseJoiningDate).format("DD/MM/YYYY")}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="profile_contactinfoCard">
                     <p className="contactinfocard_heading">Languages</p>
-                    <p className="languagecard_text">Tamil, English</p>
+                    {item.languages.map((lan) => {
+                      return (
+                        <Row>
+                          <Col span={6}>
+                            <p className="languagecard_text">{lan.name}</p>
+                          </Col>
+                          <Col span={18} style={{ display: "flex" }}>
+                            {lan.levelStatus.map((item, index) => (
+                              <>
+                                {lan.levelStatus.length - 1 === index ? (
+                                  <div style={{ display: "flex" }}>
+                                    <p className="languagecard_statustext">
+                                      {item}
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <div style={{ display: "flex" }}>
+                                    <p className="languagecard_statustext">
+                                      {item + ","}
+                                    </p>
+                                  </div>
+                                )}
+                              </>
+                            ))}
+                          </Col>
+                        </Row>
+                      );
+                    })}
                   </div>
                 </Col>
 
@@ -238,8 +313,7 @@ export default function Profile() {
                           <React.Fragment key={index}>
                             <div className="admin_candidateskills_container">
                               <p>
-                                {item.name.charAt(0).toUpperCase() +
-                                  item.name.slice(1)}
+                                {item.charAt(0).toUpperCase() + item.slice(1)}
                               </p>
                             </div>
                           </React.Fragment>
@@ -280,11 +354,7 @@ export default function Profile() {
                             ? "Fresher"
                             : item.yearsOfExperience +
                               " " +
-                              "Years" +
-                              " " +
-                              item.monthOfExperience +
-                              " " +
-                              "Months"}
+                              item.monthOfExperience}
                         </p>
                       </div>
                     </div>
@@ -297,10 +367,10 @@ export default function Profile() {
                       <IoBookOutline size={20} color="#333" />
                       <div>
                         <p className="experiencecard_companyname">
-                          Bachelor Of Technology (B.Tech/B.E), Computers
+                          {item.qualification}
                         </p>
                         <p className="experiencecard_companyexp">
-                          2023 - Canara Engineering College, Mangalore
+                          {item.graduateYear} - {item.university}
                         </p>
                       </div>
                     </div>

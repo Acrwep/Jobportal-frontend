@@ -57,6 +57,17 @@ export const candidateRegistration = async (payload) => {
   }
 };
 
+export const searchByKeyword = async (payload) => {
+  try {
+    const response = await api.get("/api/searchByKeyword", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getCandidates = async (payload) => {
   try {
     const response = await api.get("/api/getCandidates", {
@@ -160,6 +171,15 @@ export const updateFolder = async (payload) => {
 export const getFolders = async (userId) => {
   try {
     const response = await api.get(`/api/getfolders?userId=${userId}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteFolder = async (folderId) => {
+  try {
+    const response = await api.delete(`/api/deletefolder?folderId=${folderId}`);
     return response;
   } catch (error) {
     throw error;

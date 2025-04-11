@@ -3,7 +3,8 @@ import "./styles.css";
 import CommonInputField from "../Common/CommonInputField";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import CommonSelectField from "../Common/CommonSelectField";
-import { Row, Col, Button, Checkbox, Divider, Upload, Input } from "antd";
+import { Row, Col, Button, Checkbox, Divider, Upload, Input, Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 import CommonDatePicker from "../Common/CommonDatePicker";
 import { AiOutlineDelete } from "react-icons/ai";
 import Actelogo from "../images/acte-logo.png";
@@ -22,6 +23,8 @@ import { CommonToaster } from "../Common/CommonToaster";
 import axios from "axios";
 import { CloudUploadOutlined } from "@ant-design/icons";
 import { Country, State, City } from "country-state-city";
+import { candidateRegistration } from "../Common/action";
+import moment from "moment";
 
 export default function CandidateRegister() {
   const api = axios.create({
@@ -145,6 +148,10 @@ export default function CandidateRegister() {
   //course status usestates
   const [courseName, setCourseName] = useState("");
   const [courseNameError, setCourseNameError] = useState("");
+  const courseLocationOptions = [
+    { id: "Anna nagar", name: "Anna nagar" },
+    { id: "Velachery", name: "Velachery" },
+  ];
   const [courseLocation, setCourseLocation] = useState("");
   const [courseLocationError, setCourseLocationError] = useState("");
   const [courseJoiningDate, setCourseJoiningDate] = useState(null);
@@ -165,11 +172,11 @@ export default function CandidateRegister() {
   const mockUpPercentageOptions = [
     { id: 1, name: ">25" },
     { id: 2, name: ">50" },
-    { id: 2, name: ">75" },
-    { id: 2, name: ">90" },
+    { id: 3, name: ">75" },
+    { id: 4, name: ">90" },
   ];
-  const [mockupPrecentage, setMockupPrecentage] = useState("");
-  //profile info usestates
+  const [mockupPrecentage, setMockupPrecentage] = useState(null);
+  //profiles info usestates
   const [gender, setGender] = useState(null);
   const [genderError, setGenderError] = useState();
   const [noticePeriod, setNoticePeriod] = useState("");
@@ -235,7 +242,6 @@ export default function CandidateRegister() {
   const [profileInfoValidationTrigger, setProfileInfoValidationTrigger] =
     useState(false);
   const [resumeValidationTrigger, setResumeValidationTrigger] = useState(false);
-  const [validationTrigger, setValidationTrigger] = useState(false);
 
   useEffect(() => {
     const countries = Country.getAllCountries();
@@ -635,7 +641,106 @@ export default function CandidateRegister() {
       setPageSection(7);
       return;
     }
-    formReset();
+    handleRegister();
+  };
+
+  const formatDateTimeIST = (date) => {
+    return new Intl.DateTimeFormat("en-GB", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // 24-hour format
+      timeZone: "Asia/Kolkata", // IST timezone
+    })
+      .format(date)
+      .replace(",", ""); // Remove comma
+  };
+
+  const convertToBackendFormat = (dateString) => {
+    const [datePart, timePart] = dateString.split(" ");
+    const [day, month, year] = datePart.split("/");
+    return `${year}-${month}-${day} ${timePart}`;
+  };
+
+  const handleRegister = async () => {
+    const formatJoingdate = formatDateTimeIST(new Date(courseJoiningDate));
+
+    const payload = {
+      firstName: firstName,
+      lastName: lastName,
+      mobile: mobile,
+      email: email,
+      country: country,
+      state: state,
+      city: city,
+      pincode: pincode,
+      yearsOfExperience: experienceYear + " " + "Years",
+      monthOfExperience: experienceMonth + " " + "Months",
+      companyName: companyName,
+      designation: designation,
+      companyStartdate: moment(startDate).format("YYYY-MM-DD HH:mm:ss"),
+      companyEnddate: endDate
+        ? moment(endDate).format("YYYY-MM-DD HH:mm:ss")
+        : null,
+      workingStatus: workingStatus,
+      skills: skills,
+      qualification: qualification,
+      university: university,
+      graduateYear: graduateYear,
+      typeOfEducation: typeofEducation,
+      gender: gender,
+      preferredJobTitles: jobTitles,
+      preferredJobLocations: jobLocations,
+      noticePeriod: noticePeriod,
+      currentCTC: ctc,
+      expectedCTC: ectc,
+      linkedinURL: linkedinUrl,
+      profileImage: profilePicture,
+      profileSummary: summary,
+      languages: languages,
+      resume: resume,
+      courseName: courseName,
+      courseLocation: courseLocation,
+      courseMode: courseMode === 1 ? "Offline" : "Online",
+      courseStatus: courseStatus === 1 ? "Inprogress" : "Completed",
+      mockupPercentage:
+        mockupPrecentage === 1
+          ? ">25"
+          : mockupPrecentage === 2
+          ? ">50"
+          : mockupPrecentage === 3
+          ? ">75"
+          : ">90",
+      courseJoiningDate: convertToBackendFormat(formatJoingdate),
+      createdAt: new Date(),
+    };
+    console.log("registration payload", payload);
+    setLoading(true);
+    try {
+      const response = await candidateRegistration(payload);
+      console.log("registration response", response);
+      CommonToaster("Register successfull!");
+      formReset();
+    } catch (error) {
+      console.log("registration error", error);
+      setLoading(false);
+      const Error = error?.response?.data?.details;
+
+      if (Error.includes("for key 'mobile'")) {
+        CommonToaster("Mobile number already exists");
+      } else if (Error.includes("for key 'email'")) {
+        CommonToaster("Email already exists");
+      } else {
+        CommonToaster(error?.response?.data?.message || "Error while register");
+      }
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
   };
 
   const formReset = () => {
@@ -1278,16 +1383,14 @@ export default function CandidateRegister() {
                     xxl={12}
                     className="registration_fieldcolumndiv"
                   >
-                    <CommonInputField
+                    <CommonSelectField
+                      options={courseLocationOptions}
                       label="Branch location"
-                      mandatory={true}
-                      value={courseLocation}
-                      onChange={(e) => {
-                        setCourseLocation(e.target.value);
+                      allowClear={true}
+                      onChange={(value) => {
+                        setCourseLocation(value);
                         if (courseValidationTrigger) {
-                          setCourseLocationError(
-                            addressValidator(e.target.value)
-                          );
+                          setCourseLocationError(addressValidator(value));
                         }
                       }}
                       error={courseLocationError}
@@ -1339,6 +1442,7 @@ export default function CandidateRegister() {
                       mandatory={false}
                       options={mockUpPercentageOptions}
                       value={mockupPrecentage}
+                      allowClear={true}
                       onChange={(value) => {
                         setMockupPrecentage(value);
                       }}
@@ -1659,12 +1763,26 @@ export default function CandidateRegister() {
                   </>
                 )}
               </div>
-              <button
-                className="candidate_forwardbutton"
-                onClick={handleForward}
-              >
-                <IoIosArrowForward size={26} color="#ffffff" />
-              </button>
+              {loading ? (
+                <button className="candidate_forwardloadingbutton">
+                  <Spin
+                    indicator={
+                      <LoadingOutlined
+                        spin
+                        style={{ marginRight: "4px", color: "#ffffff" }}
+                      />
+                    }
+                    size={26}
+                  />{" "}
+                </button>
+              ) : (
+                <button
+                  className="candidate_forwardbutton"
+                  onClick={handleForward}
+                >
+                  <IoIosArrowForward size={26} color="#ffffff" />
+                </button>
+              )}
             </div>
           </Col>
         </Row>

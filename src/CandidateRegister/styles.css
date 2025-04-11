@@ -105,6 +105,19 @@
   cursor: pointer;
   box-shadow: #0057b33b 0px 8px 24px;
 }
+.candidate_forwardloadingbutton {
+  background-color: #0056b3;
+  padding: 17px;
+  outline: 0 !important;
+  border-radius: 50%;
+  border: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: default;
+  opacity: 0.7;
+  box-shadow: #0057b33b 0px 8px 24px;
+}
 .candidate_backwarddiv {
   display: flex;
   justify-content: center;

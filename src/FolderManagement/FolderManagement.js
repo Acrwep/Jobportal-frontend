@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Header/Header";
 import "./styles.css";
-import { Row, Col, Modal } from "antd";
+import { Row, Col, Modal, Button } from "antd";
 import { TbEdit } from "react-icons/tb";
 import {
+  deleteFolder,
   getFolders,
   getMultipleCandidatesById,
   updateFolder,
@@ -15,13 +16,16 @@ import moment from "moment";
 import CommonInputField from "../Common/CommonInputField";
 import { addressValidator } from "../Common/Validation";
 import { CommonToaster } from "../Common/CommonToaster";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 export default function FolderManagement() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [folders, setFolders] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [folderId, setFolderId] = useState("");
+  const [deleteFolderId, setDeleteFolderId] = useState(null);
   const [folderName, setFolderName] = useState("");
   const [folderNameError, setFolderNameError] = useState("");
 
@@ -52,14 +56,19 @@ export default function FolderManagement() {
       dispatch(storeFolderProfiles(response?.data?.data));
     } catch (error) {
       console.log(error);
+      dispatch(storeFolderProfiles([]));
     } finally {
       setTimeout(() => {
-        navigate("/folderprofiles");
+        navigate("/folderprofiles", {
+          state: {
+            folderName: item.name,
+          },
+        });
       }, 300);
     }
   };
 
-  const handleModal = async () => {
+  const handleEdit = async () => {
     const nameValidate = addressValidator(folderName);
 
     setFolderNameError(nameValidate);
@@ -78,6 +87,19 @@ export default function FolderManagement() {
       getFoldersData();
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await deleteFolder(deleteFolderId);
+      CommonToaster("Folder deleted");
+      setIsDeleteModalOpen(false);
+      setDeleteFolderId(null);
+      getFoldersData();
+    } catch (error) {
+      console.log(error);
+      CommonToaster("Unable to delete. Try again later");
     }
   };
 
@@ -123,7 +145,16 @@ export default function FolderManagement() {
                             setIsModalOpen(true);
                             setFolderId(item.id);
                           }}
+                          style={{ cursor: "pointer", marginRight: "16px" }}
+                        />
+                        <RiDeleteBinLine
+                          size={22}
+                          color="#d32215"
                           style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            setIsDeleteModalOpen(true);
+                            setDeleteFolderId(item.id);
+                          }}
                         />
                       </Col>
                     </Row>
@@ -142,12 +173,12 @@ export default function FolderManagement() {
       <Modal
         title="Update Folder"
         open={isModalOpen}
-        onOk={handleModal}
+        onOk={handleEdit}
         onCancel={() => {
           setIsModalOpen(false);
         }}
         footer={[
-          <button className="admin_modalsubmitbutton" onClick={handleModal}>
+          <button className="admin_modalsubmitbutton" onClick={handleEdit}>
             Submit
           </button>,
         ]}
@@ -163,6 +194,32 @@ export default function FolderManagement() {
             value={folderName}
             error={folderNameError}
           />
+        </div>
+      </Modal>
+
+      <Modal
+        open={isDeleteModalOpen}
+        onOk={handleDelete}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+        }}
+        footer={[
+          <Button
+            className="folders_modalcancelbutton"
+            onClick={() => setIsDeleteModalOpen(false)}
+            style={{ marginRight: "16px" }}
+          >
+            Cancel
+          </Button>,
+          <Button className="folders_modalsubmitbutton" onClick={handleDelete}>
+            Yes
+          </Button>,
+        ]}
+      >
+        <div style={{ marginTop: "6px" }}>
+          <p style={{ fontWeight: 500, fontSize: "16px" }}>
+            Are you sure you want to delete?
+          </p>
         </div>
       </Modal>
     </div>

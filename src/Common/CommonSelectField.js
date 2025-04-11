@@ -31,6 +31,8 @@ export default function CommonSelectField({
   mode,
   placeholder,
   className,
+  labelClassName,
+  selectClassName,
   style,
   defaultValue,
   allowClear,
@@ -41,7 +43,11 @@ export default function CommonSelectField({
     <div style={style} className={className}>
       {label ? (
         <div style={{ display: "flex" }}>
-          <label className="commonfield_label">{label}</label>
+          <label
+            className={labelClassName ? labelClassName : "commonfield_label"}
+          >
+            {label}
+          </label>
           {mandatory === true ? <p className="commonfield_asterisk">*</p> : ""}
         </div>
       ) : (
@@ -50,7 +56,9 @@ export default function CommonSelectField({
       <Select
         className={
           error === "" || error === null || error === undefined
-            ? "commonSelectfield"
+            ? selectClassName
+              ? selectClassName
+              : "commonSelectfield"
             : "commonSelectfield_error"
         }
         style={{ width: "100%" }}
@@ -66,7 +74,7 @@ export default function CommonSelectField({
         placeholder={placeholder}
         showSearch={true}
         disabled={disabled}
-        allowClear={false}
+        allowClear={allowClear ? allowClear : false}
         filterOption={(input, option) =>
           option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }

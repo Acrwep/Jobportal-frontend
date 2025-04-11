@@ -1,6 +1,6 @@
 .admin_headerContainer {
   border-bottom: 1px solid #e4e2e0;
-  padding: 19px 32px;
+  padding: 12px 32px;
   color: #2d2d2d;
   font-size: 14px;
   background-color: #ffffff;
@@ -39,4 +39,32 @@
 .admin_header {
   font-size: 24px;
   font-weight: 600;
+}
+.admin_headermodalsubmitbutton {
+  width: max-content;
+  background-color: #0056b3;
+  border-color: #0056b3 !important;
+  color: #ffffff;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  padding: 8px 19px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+.admin_headermodalsubmitbutton:hover {
+  background-color: #0056b3 !important;
+  border-color: #0056b3 !important;
+  color: #ffffff !important;
+  opacity: 0.7;
+}
+.admin_headermodalcancelbutton {
+  margin-top: 12px;
+}
+.admin_headermodalcancelbutton:hover {
+  border-color: #0056b3 !important;
+  color: #0056b3 !important;
 }

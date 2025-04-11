@@ -62,7 +62,7 @@ export default function Login() {
 
       setTimeout(() => {
         setLoading(false);
-        navigate("/admin");
+        navigate("/search");
       }, 1000);
     } catch (error) {
       setLoading(false);
@@ -71,7 +71,13 @@ export default function Login() {
   };
 
   return (
-    <div style={{ backgroundColor: "#f3f2f1" }}>
+    <div
+      style={{
+        backgroundColor: "#f3f2f1",
+        overflowY: "hidden",
+        height: "100vh",
+      }}
+    >
       <div className="login_headerContainer">
         <img src={Actelogo} className="login_actelogo" />
       </div>
@@ -108,7 +114,7 @@ export default function Login() {
                 </p>
               </div>
             </div>
-            <div style={{ marginTop: "22px", position: "relative" }}>
+            <div style={{ marginTop: "24px", position: "relative" }}>
               <label className="inputfields_label">Password</label>
               <Input.Password
                 className={

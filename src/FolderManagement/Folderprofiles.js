@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../Header/Header";
 import "./styles.css";
 import { Row, Col, Modal } from "antd";
@@ -25,6 +25,7 @@ import { addToFavorite, getCandidates } from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
 
 export default function FolderProfiles() {
+  const location = useLocation();
   pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     "pdfjs-dist/build/pdf.worker.min.mjs",
     import.meta.url
@@ -32,6 +33,7 @@ export default function FolderProfiles() {
   const navigate = useNavigate();
   const candidates = useSelector((state) => state.folderprofiles);
   const folderFilters = useSelector((state) => state.folderfilters);
+  const [folderName, setFolderName] = useState("");
 
   const [candidatesList, setCandidatesList] = useState([]);
   const [skillsFilter, setSkillsFilter] = useState([]);
@@ -49,6 +51,8 @@ export default function FolderProfiles() {
 
   useEffect(() => {
     setCandidatesList(candidates);
+    console.log("locationnnn", location);
+    setFolderName(location.state.folderName);
   }, []);
 
   const handleContactInfoModal = (
@@ -116,7 +120,7 @@ export default function FolderProfiles() {
 
       <div className="folders_innercontainer">
         <p className="folders_heading">
-          Test{" "}
+          {folderName}{" "}
           <span style={{ fontSize: "13px", color: "gray" }}>
             ({candidatesList.length} profiles found)
           </span>
@@ -157,7 +161,7 @@ export default function FolderProfiles() {
                             <p
                               className="admin_candidatename"
                               onClick={() =>
-                                navigate("/profile", {
+                                navigate("/profiledetails", {
                                   state: { candidateId: item.id },
                                 })
                               }
@@ -334,21 +338,12 @@ export default function FolderProfiles() {
                               }}
                             >
                               {item.skills.map((item, index) => {
-                                const isHighlighted = skillsFilter.includes(
-                                  item.id
-                                );
                                 return (
                                   <React.Fragment key={index}>
                                     <div className="admin_candidateskills_container">
-                                      <p
-                                        className={
-                                          isHighlighted
-                                            ? "highlighted-skill"
-                                            : ""
-                                        }
-                                      >
-                                        {item.name.charAt(0).toUpperCase() +
-                                          item.name.slice(1)}
+                                      <p>
+                                        {item.charAt(0).toUpperCase() +
+                                          item.slice(1)}
                                       </p>
                                     </div>
                                   </React.Fragment>
@@ -435,11 +430,7 @@ export default function FolderProfiles() {
                                   ? "Fresher"
                                   : item.yearsOfExperience +
                                     " " +
-                                    "Years" +
-                                    " " +
-                                    item.monthOfExperience +
-                                    " " +
-                                    "Months"}
+                                    item.monthOfExperience}
                               </p>
                             </Col>
                             <Col span={8}>

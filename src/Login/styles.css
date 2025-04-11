@@ -7,10 +7,10 @@
   /* align-items: center; */
 }
 .login_headerContainer {
-  padding: 32px 54px;
+  padding: 22px 54px;
 }
 .login_actelogo {
-  width: 100px;
+  width: 240px;
 }
 .login_card {
   background-color: rgb(255, 255, 255);
@@ -18,8 +18,8 @@
   border-style: solid;
   border-width: 1px;
   border-color: rgb(212, 210, 208);
-  padding: 32px 24px;
-  width: 310px;
+  padding: 40px 24px;
+  width: 340px;
   height: 300px;
   margin: 50px 0px;
 }
@@ -99,7 +99,7 @@
   background-color: #0056b3;
   box-shadow: 0 2px 0 rgba(88, 5, 255, 0.06);
   font-size: 14px;
-  height: 33px;
+  height: 35px;
   width: 100%;
   font-weight: 600;
   border-radius: 6px;

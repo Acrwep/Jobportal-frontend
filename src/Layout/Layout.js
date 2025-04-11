@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  Navigate,
+} from "react-router-dom";
 import Login from "../Login/Login";
 import Admin from "../Admin/Admin";
 import FolderManagement from "../FolderManagement/FolderManagement";
@@ -21,16 +27,12 @@ const Layout = () => {
       const accessToken = localStorage.getItem("Accesstoken");
       if (accessToken) {
         setShowPages(true);
-        navigate(location.pathname);
-      } else {
         if (location.pathname === "/") {
-          navigate("/");
-          setShowPages(false);
-        } else if (location.pathname === "/register") {
-          navigate("/register");
-          setShowPages(false);
-        } else if (location.pathname === "/search") {
           navigate("/search");
+        }
+      } else {
+        if (location.pathname === "/register") {
+          navigate("/register");
           setShowPages(false);
         } else {
           navigate("/login");
@@ -50,30 +52,25 @@ const Layout = () => {
   }, []);
   return (
     <div>
-      {location.pathname === "/" ? (
-        <Routes>
-          <Route path="/" element={<CandidateRegister />} />
-        </Routes>
-      ) : location.pathname === "/login" ? (
+      {location.pathname === "/login" ? (
         <Routes>
           <Route path="/login" element={<Login />} />
         </Routes>
       ) : location.pathname === "/register" ? (
         <Routes>
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      ) : location.pathname === "/search" ? (
-        <Routes>
-          <Route path="/search" element={<AdminSearch />} />
+          <Route path="/register" element={<CandidateRegister />} />
         </Routes>
       ) : showPages === true ? (
         <Routes>
-          <Route path="/admin" element={<Admin />} />
-          {/* <Route path="/search" element={<AdminSearch />} /> */}
+          <Route path="/profiles" element={<Admin />} />
+          <Route path="/search" element={<AdminSearch />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/foldermanagement" element={<FolderManagement />} />
           <Route path="/folderprofiles" element={<FolderProfiles />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profiledetails" element={<Profile />} />
+
+          {/* Catch-all route for unmatched paths */}
+          <Route path="*" element={<Navigate to="/search" />} />
         </Routes>
       ) : (
         ""
