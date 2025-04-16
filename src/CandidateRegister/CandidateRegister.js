@@ -398,22 +398,22 @@ export default function CandidateRegister() {
   };
 
   const handleForward = () => {
-    setPageSection(pageSection + 1);
-    // if (pageSection === 1) {
-    //   handleContactInfoSubmit();
-    // } else if (pageSection === 2) {
-    //   handleExperienceSubmit();
-    // } else if (pageSection === 3) {
-    //   handleSkillsSubmit();
-    // } else if (pageSection === 4) {
-    //   handleEducationSubmit();
-    // } else if (pageSection === 5) {
-    //   handleCourseSubmit();
-    // } else if (pageSection === 6) {
-    //   handleProfileInfoSubmit();
-    // } else if (pageSection === 7) {
-    //   handleResumeSubmit();
-    // }
+    // setPageSection(pageSection + 1);
+    if (pageSection === 1) {
+      handleContactInfoSubmit();
+    } else if (pageSection === 2) {
+      handleExperienceSubmit();
+    } else if (pageSection === 3) {
+      handleSkillsSubmit();
+    } else if (pageSection === 4) {
+      handleEducationSubmit();
+    } else if (pageSection === 5) {
+      handleCourseSubmit();
+    } else if (pageSection === 6) {
+      handleProfileInfoSubmit();
+    } else if (pageSection === 7) {
+      handleResumeSubmit();
+    }
   };
 
   const handleContactInfoSubmit = async () => {
