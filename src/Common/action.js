@@ -185,3 +185,12 @@ export const deleteFolder = async (folderId) => {
     throw error;
   }
 };
+
+export const updateEligibleCandidate = async (payload) => {
+  try {
+    const response = await api.put("/api/updateEligibleCandidate", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

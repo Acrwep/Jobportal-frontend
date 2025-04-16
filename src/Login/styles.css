@@ -23,6 +23,16 @@
   height: 300px;
   margin: 50px 0px;
 }
+@media (min-width: 320px) and (max-width: 424px) {
+  .login_card {
+    width: 75%;
+  }
+}
+@media (min-width: 320px) and (max-width: 768px) {
+  .login_card {
+    margin: 20px 0px;
+  }
+}
 .logincard_heading {
   font-size: 24px;
   font-weight: 600;

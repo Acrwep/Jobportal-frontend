@@ -148,8 +148,20 @@
 }
 .admin_checkiconContainer {
   position: absolute;
-  left: 12px;
   top: 10px;
+  padding: 0px 12px;
+  display: flex;
+  width: 96%;
+  justify-content: space-between;
+}
+.admin_eligiblecandidateContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.admin_eligibleheading {
+  color: #333;
+  margin: 1px !important;
 }
 .admin_candidatesDetailsmainContainer {
   padding: 40px 20px 20px;
@@ -466,6 +478,9 @@
 }
 .adminsearch_filterselectinput {
   height: 34px !important;
+}
+.adminsearch_locationselectinput {
+  height: auto !important;
 }
 .adminsearch_buttonContainer {
   display: flex;

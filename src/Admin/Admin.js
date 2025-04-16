@@ -22,6 +22,7 @@ import {
   getFavorites,
   getSkills,
   searchByKeyword,
+  updateEligibleCandidate,
 } from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
 import moment from "moment";
@@ -212,15 +213,39 @@ export default function Admin() {
     designation,
     skills
   ) => {
-    console.log("skills list", skills);
     const keyword = localStorage.getItem("searchKeyword");
+    const branchLoaction = localStorage.getItem("courseLocation");
+    const courseNamefromLocal = localStorage.getItem("courseName");
+    const courseStatusfromLocal = localStorage.getItem("courseStatus");
+    const eligibleStatusFromLocal = localStorage.getItem("eligibleStatus");
+    const courseJoiningStartDate = localStorage.getItem(
+      "courseJoiningStartDate"
+    );
+    const courseJoiningEndDate = localStorage.getItem("courseJoiningEndDate");
+
     const convertJson = JSON.parse(keyword);
     const searchBykeyword = convertJson.join(" ");
+
+    const convertLocationJson = JSON.parse(branchLoaction);
+    let courseLocation;
+    if (convertLocationJson) {
+      courseLocation = convertLocationJson.join(" ");
+    }
 
     const userId = localStorage.getItem("loginUserId");
 
     const payload = {
       q: searchBykeyword,
+      ...(courseNamefromLocal && { courseName: courseNamefromLocal }),
+      ...(eligibleStatusFromLocal && {
+        eligibleStatus: eligibleStatusFromLocal === "true" ? true : false,
+      }),
+      ...(courseLocation && { courseLocation: courseLocation }),
+      ...(courseStatusfromLocal && { courseStatus: courseStatusfromLocal }),
+      startJoingingDate:
+        courseJoiningStartDate === "undefined" ? "" : courseJoiningStartDate,
+      endJoiningDate:
+        courseJoiningEndDate === "undefined" ? "" : courseJoiningEndDate,
       // userId: userId,
       yearsOfExperience:
         yearsOfExperience != undefined ? yearsOfExperience : experienceYear,
@@ -741,6 +766,21 @@ export default function Admin() {
     setSelectedCandidates(filterIds);
   };
 
+  const handleEligibleCandidate = async (e, Id) => {
+    const payload = {
+      eligibleStatus: e.target.checked,
+      candidateId: Id,
+    };
+    try {
+      await updateEligibleCandidate(payload);
+      CommonToaster("Updated");
+      getCandidatesData();
+    } catch (error) {
+      console.log("eligible error", error);
+      CommonToaster("Unable to update. Try again later");
+    }
+  };
+
   const highlightTextSafe = (text) => {
     if (!text) return null;
 
@@ -1158,6 +1198,19 @@ export default function Admin() {
                             onChange={(e) => handleCandidateSelect(e, item.id)}
                             checked={item.isSelect ? item.isSelect : false}
                           />
+                          <div className="admin_eligiblecandidateContainer">
+                            <p className="admin_eligibleheading">
+                              Eligible Candidate
+                            </p>
+                            <Checkbox
+                              onChange={(e) =>
+                                handleEligibleCandidate(e, item.id)
+                              }
+                              checked={
+                                item.eligibleCandidates === 0 ? false : true
+                              }
+                            />
+                          </div>
                         </div>
                         <Row
                           gutter={16}

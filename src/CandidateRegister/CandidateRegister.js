@@ -146,23 +146,30 @@ export default function CandidateRegister() {
   const [typeofEducation, setTypeofEducation] = useState(null);
   const [typeofEducationError, setTypeofEducationError] = useState();
   //course status usestates
+  const courseNameOptions = [
+    { id: "Fullstack Development", name: "Fullstack Development" },
+    { id: "Software Testing", name: "Software Testing" },
+    { id: "Data Science", name: "Data Science" },
+    { id: "Data Analytics", name: "Data Analytics" },
+    { id: "Cloud Computing", name: "Cloud Computing" },
+    { id: "UI/UX", name: "UI/UX" },
+    { id: "Digital Marketing", name: "Digital Marketing" },
+  ];
   const [courseName, setCourseName] = useState("");
   const [courseNameError, setCourseNameError] = useState("");
   const courseLocationOptions = [
+    { id: "Online", name: "Online" },
     { id: "Anna nagar", name: "Anna nagar" },
     { id: "Velachery", name: "Velachery" },
+    { id: "OMR", name: "OMR" },
+    { id: "Porur", name: "Porur" },
+    { id: "Electronic City", name: "Electronic City" },
+    { id: "BTM Layout", name: "BTM Layout" },
   ];
   const [courseLocation, setCourseLocation] = useState("");
   const [courseLocationError, setCourseLocationError] = useState("");
   const [courseJoiningDate, setCourseJoiningDate] = useState(null);
   const [courseJoiningDateError, setCourseJoiningDateError] = useState("");
-  const courseModeOptions = [
-    { id: 1, name: "Offline" },
-    { id: 2, name: "Online" },
-  ];
-  const [courseMode, setCourseMode] = useState(null);
-  const [courseModeError, setCourseModeError] = useState("");
-
   const courseStatusOptions = [
     { id: 1, name: "Inprogress" },
     { id: 2, name: "Completed" },
@@ -391,22 +398,22 @@ export default function CandidateRegister() {
   };
 
   const handleForward = () => {
-    // setPageSection(pageSection + 1);
-    if (pageSection === 1) {
-      handleContactInfoSubmit();
-    } else if (pageSection === 2) {
-      handleExperienceSubmit();
-    } else if (pageSection === 3) {
-      handleSkillsSubmit();
-    } else if (pageSection === 4) {
-      handleEducationSubmit();
-    } else if (pageSection === 5) {
-      handleCourseSubmit();
-    } else if (pageSection === 6) {
-      handleProfileInfoSubmit();
-    } else if (pageSection === 7) {
-      handleResumeSubmit();
-    }
+    setPageSection(pageSection + 1);
+    // if (pageSection === 1) {
+    //   handleContactInfoSubmit();
+    // } else if (pageSection === 2) {
+    //   handleExperienceSubmit();
+    // } else if (pageSection === 3) {
+    //   handleSkillsSubmit();
+    // } else if (pageSection === 4) {
+    //   handleEducationSubmit();
+    // } else if (pageSection === 5) {
+    //   handleCourseSubmit();
+    // } else if (pageSection === 6) {
+    //   handleProfileInfoSubmit();
+    // } else if (pageSection === 7) {
+    //   handleResumeSubmit();
+    // }
   };
 
   const handleContactInfoSubmit = async () => {
@@ -555,21 +562,18 @@ export default function CandidateRegister() {
 
   const handleCourseSubmit = () => {
     setCourseValidationTrigger(true);
-    const courseNameValidate = addressValidator(courseName);
-    const courseModeValidate = selectValidator(courseMode);
+    const courseNameValidate = selectValidator(courseName);
     const courseLocationValidate = addressValidator(courseLocation);
     const courseJoiningValidate = selectValidator(courseJoiningDate);
     const courseStatusValidate = selectValidator(courseStatus);
 
     setCourseNameError(courseNameValidate);
-    setCourseModeError(courseModeValidate);
     setCourseLocationError(courseLocationValidate);
     setCourseJoiningDateError(courseJoiningValidate);
     setCourseStatusError(courseStatusValidate);
 
     if (
       courseNameValidate ||
-      courseModeValidate ||
       courseLocationValidate ||
       courseJoiningValidate ||
       courseStatusValidate
@@ -704,7 +708,6 @@ export default function CandidateRegister() {
       resume: resume,
       courseName: courseName,
       courseLocation: courseLocation,
-      courseMode: courseMode === 1 ? "Offline" : "Online",
       courseStatus: courseStatus === 1 ? "Inprogress" : "Completed",
       mockupPercentage:
         mockupPrecentage === 1
@@ -793,8 +796,6 @@ export default function CandidateRegister() {
     setTypeofEducationError("");
     setCourseName("");
     setCourseNameError("");
-    setCourseMode(null);
-    setCourseModeError("");
     setCourseLocation("");
     setCourseLocationError("");
     setCourseJoiningDate(null);
@@ -1343,46 +1344,21 @@ export default function CandidateRegister() {
                     xxl={12}
                     className="registration_fieldcolumndiv"
                   >
-                    <CommonInputField
+                    <CommonSelectField
                       label="Course name"
                       mandatory={true}
                       value={courseName}
-                      onChange={(e) => {
-                        setCourseName(e.target.value);
+                      options={courseNameOptions}
+                      onChange={(value) => {
+                        setCourseName(value);
                         if (courseValidationTrigger) {
-                          setCourseNameError(addressValidator(e.target.value));
+                          setCourseNameError(selectValidator(value));
                         }
                       }}
                       error={courseNameError}
                     />
                   </Col>
                   <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
-                    <CommonSelectField
-                      label="Course mode"
-                      mandatory={true}
-                      options={courseModeOptions}
-                      value={courseMode}
-                      onChange={(value) => {
-                        setCourseMode(value);
-                        if (courseValidationTrigger) {
-                          setCourseModeError(selectValidator(value));
-                        }
-                      }}
-                      error={courseModeError}
-                    />
-                  </Col>
-                </Row>
-
-                <Row gutter={24} className="registration_fieldrowdiv">
-                  <Col
-                    xs={24}
-                    sm={24}
-                    md={24}
-                    lg={12}
-                    xl={12}
-                    xxl={12}
-                    className="registration_fieldcolumndiv"
-                  >
                     <CommonSelectField
                       options={courseLocationOptions}
                       label="Branch location"
@@ -1396,7 +1372,18 @@ export default function CandidateRegister() {
                       error={courseLocationError}
                     />
                   </Col>
-                  <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
+                </Row>
+
+                <Row gutter={24} className="registration_fieldrowdiv">
+                  <Col
+                    xs={24}
+                    sm={24}
+                    md={24}
+                    lg={12}
+                    xl={12}
+                    xxl={12}
+                    className="registration_fieldcolumndiv"
+                  >
                     <CommonDatePicker
                       label="Course joining date"
                       mandatory={true}
@@ -1410,18 +1397,7 @@ export default function CandidateRegister() {
                       error={courseJoiningDateError}
                     />
                   </Col>
-                </Row>
-
-                <Row gutter={24} className="registration_fieldrowdiv">
-                  <Col
-                    xs={24}
-                    sm={24}
-                    md={24}
-                    lg={12}
-                    xl={12}
-                    xxl={12}
-                    className="registration_fieldcolumndiv"
-                  >
+                  <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                     <CommonSelectField
                       label="Course status"
                       mandatory={true}
@@ -1436,7 +1412,18 @@ export default function CandidateRegister() {
                       error={courseStatusError}
                     />
                   </Col>
-                  <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
+                </Row>
+
+                <Row gutter={24} className="registration_fieldrowdiv">
+                  <Col
+                    xs={24}
+                    sm={24}
+                    md={24}
+                    lg={12}
+                    xl={12}
+                    xxl={12}
+                    className="registration_fieldcolumndiv"
+                  >
                     <CommonSelectField
                       label="Mockup interview percentage"
                       mandatory={false}
@@ -1447,6 +1434,18 @@ export default function CandidateRegister() {
                         setMockupPrecentage(value);
                       }}
                     />
+                  </Col>
+                  <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
+                    {/* <CommonSelectField
+                      label="Mockup interview percentage"
+                      mandatory={false}
+                      options={mockUpPercentageOptions}
+                      value={mockupPrecentage}
+                      allowClear={true}
+                      onChange={(value) => {
+                        setMockupPrecentage(value);
+                      }}
+                    /> */}
                   </Col>
                 </Row>
               </div>

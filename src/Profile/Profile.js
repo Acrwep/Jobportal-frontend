@@ -224,13 +224,6 @@ export default function Profile() {
                     </div>
 
                     <div className="jobprefcard_contentdiv">
-                      <p className="jobprefcard_locationheading">Course mode</p>
-                      <p className="jobprefcard_locationtext">
-                        {item.courseMode}
-                      </p>
-                    </div>
-
-                    <div className="jobprefcard_contentdiv">
                       <p className="jobprefcard_locationheading">
                         Course status
                       </p>
@@ -254,6 +247,17 @@ export default function Profile() {
                       </p>
                       <p className="jobprefcard_locationtext">
                         {moment(item.courseJoiningDate).format("DD/MM/YYYY")}
+                      </p>
+                    </div>
+
+                    <div className="jobprefcard_contentdiv">
+                      <p className="jobprefcard_locationheading">
+                        Eligible status
+                      </p>
+                      <p className="jobprefcard_locationtext">
+                        {item.eligibleCandidates === 0
+                          ? "Not Eligible"
+                          : "Eligible"}
                       </p>
                     </div>
                   </div>

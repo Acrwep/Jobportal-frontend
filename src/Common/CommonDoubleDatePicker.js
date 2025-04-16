@@ -30,7 +30,7 @@ export default function CommonDoubleDatePicker({ onChange, value, label }) {
     return current && current > moment().endOf("day");
   };
   return (
-    <div>
+    <div className="commonInputfield_container">
       <div style={{ display: "flex" }}>
         {label && (
           <label style={{ marginBottom: "4px", fontSize: "12px" }}>

@@ -11,30 +11,40 @@ import { CommonToaster } from "../Common/CommonToaster";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Header from "../Header/Header";
+import CommonMultiSelect from "../Common/CommonMultiSelect";
 
 export default function AdminSearch() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [keyword, setKeyword] = useState([]);
   const courseNameOptions = [
-    { id: "Java fullstack development", name: "Java fullstack development" },
-    {
-      id: "Python fullstack development",
-      name: "Python fullstack development",
-    },
+    { id: "Fullstack Development", name: "Fullstack Development" },
+    { id: "Software Testing", name: "Software Testing" },
+    { id: "Data Science", name: "Data Science" },
+    { id: "Data Analytics", name: "Data Analytics" },
+    { id: "Cloud Computing", name: "Cloud Computing" },
+    { id: "UI/UX", name: "UI/UX" },
+    { id: "Digital Marketing", name: "Digital Marketing" },
   ];
+
   const [courseName, setCourseName] = useState("");
+
   const courseLocationOptions = [
+    { id: "Online", name: "Online" },
     { id: "Anna nagar", name: "Anna nagar" },
     { id: "Velachery", name: "Velachery" },
+    { id: "OMR", name: "OMR" },
+    { id: "Porur", name: "Porur" },
+    { id: "Electronic City", name: "Electronic City" },
+    { id: "BTM Layout", name: "BTM Layout" },
   ];
   const [courseLocation, setCourseLocation] = useState("");
-  const [courseJoiningDate, setCourseJoiningDate] = useState([]);
-  const courseModeOptions = [
-    { id: "Offline", name: "Offline" },
-    { id: "Online", name: "Online" },
+  const eligibleStatusOptions = [
+    { id: 1, name: "Eligible" },
+    { id: 2, name: "Not Eligible" },
   ];
-  const [courseMode, setCourseMode] = useState(null);
+  const [eligibleStatus, setEligibleStatus] = useState(null);
+  const [courseJoiningDate, setCourseJoiningDate] = useState([]);
 
   const courseStatusOptions = [
     { id: "Inprogress", name: "Inprogress" },
@@ -56,12 +66,32 @@ export default function AdminSearch() {
   };
 
   const handleSearchSubmit = async () => {
-    console.log("keyworddd", keyword, courseJoiningDate);
+    console.log(
+      "keyworddd",
+      keyword,
+      courseLocation,
+      courseJoiningDate[0],
+      courseJoiningDate[1]
+    );
     if (keyword.length <= 0) {
       CommonToaster("Keyword is required");
       return;
     }
     localStorage.setItem("searchKeyword", JSON.stringify(keyword));
+    localStorage.setItem("courseLocation", JSON.stringify(courseLocation));
+    localStorage.setItem("courseName", courseName);
+    localStorage.setItem("courseStatus", courseStatus);
+    if (eligibleStatus === null) {
+      localStorage.removeItem("eligibleStatus");
+    } else {
+      localStorage.setItem(
+        "eligibleStatus",
+        eligibleStatus === 1 ? true : false
+      );
+    }
+    localStorage.setItem("courseJoiningStartDate", courseJoiningDate[0]);
+    localStorage.setItem("courseJoiningEndDate", courseJoiningDate[1]);
+
     const splitBySpace = keyword.join(" ");
     console.log(splitBySpace);
 
@@ -69,8 +99,7 @@ export default function AdminSearch() {
     const payload = {
       q: splitBySpace,
       ...(courseName && { courseName: courseName }),
-      ...(courseLocation && { courseLocation: courseLocation }),
-      ...(courseMode && { courseMode: courseMode }),
+      ...(courseLocation.length >= 1 && { courseLocation: courseLocation }),
       ...(courseStatus && { courseStatus: courseStatus }),
       ...(courseJoiningDate.length >= 1 &&
         courseJoiningDate[0] != "" && {
@@ -80,6 +109,9 @@ export default function AdminSearch() {
         courseJoiningDate[1] != "" && {
           endJoiningDate: courseJoiningDate[1],
         }),
+      ...(eligibleStatus && {
+        eligibleStatus: eligibleStatus === 1 ? true : false,
+      }),
     };
     try {
       const response = await searchByKeyword(payload);
@@ -132,21 +164,40 @@ export default function AdminSearch() {
         <div className="adminsearch_filterContainer">
           <p style={{ fontWeight: 600 }}>Filters</p>
           <div className="adminsearch_filter_searchContainer">
-            <CommonSelectField
-              options={courseLocationOptions}
-              label="Branch location"
-              style={{ width: "18%" }}
-              allowClear={true}
-              labelClassName="adminsearch_filterselectlabel"
-              selectClassName="adminsearch_filterselectinput"
-              onChange={(value) => {
-                setCourseLocation(value);
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "20%",
               }}
-            />
+            >
+              <label
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 400,
+                  marginBottom: "4px",
+                }}
+              >
+                Branches / Online
+              </label>
+              <Select
+                options={courseLocationOptions.map((item) => ({
+                  value: item.id ? item.id : item.name,
+                  label: item.full_Name ? item.full_Name : item.name,
+                }))}
+                label="Branch location"
+                style={{ width: "100%", minHeight: "35px" }}
+                allowClear={true}
+                onChange={(value) => {
+                  setCourseLocation(value);
+                }}
+                mode="tags"
+              />
+            </div>
             <CommonSelectField
               options={courseNameOptions}
               label="Course name"
-              style={{ width: "18%" }}
+              style={{ width: "20%" }}
               allowClear={true}
               labelClassName="adminsearch_filterselectlabel"
               selectClassName="adminsearch_filterselectinput"
@@ -155,27 +206,27 @@ export default function AdminSearch() {
               }}
             />
             <CommonSelectField
-              options={courseModeOptions}
-              label="Course mode"
-              style={{ width: "18%" }}
-              allowClear={true}
-              labelClassName="adminsearch_filterselectlabel"
-              selectClassName="adminsearch_filterselectinput"
-              onChange={(value) => {
-                setCourseMode(value);
-              }}
-            />
-          </div>
-          <div className="adminsearch_filter_searchContainer">
-            <CommonSelectField
               options={courseStatusOptions}
               label="Course status"
-              style={{ width: "18%" }}
+              style={{ width: "20%" }}
               allowClear={true}
               labelClassName="adminsearch_filterselectlabel"
               selectClassName="adminsearch_filterselectinput"
               onChange={(value) => {
                 setCourseStatus(value);
+              }}
+            />
+          </div>
+          <div className="adminsearch_filter_searchContainer">
+            <CommonSelectField
+              options={eligibleStatusOptions}
+              label="Eligible status"
+              style={{ width: "20%" }}
+              allowClear={true}
+              labelClassName="adminsearch_filterselectlabel"
+              selectClassName="adminsearch_filterselectinput"
+              onChange={(value) => {
+                setEligibleStatus(value);
               }}
             />
             <CommonDoubleDatePicker
