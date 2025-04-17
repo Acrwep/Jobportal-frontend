@@ -109,13 +109,13 @@ export default function Header() {
             onClick={() => setIsModalOpen(false)}
             style={{ marginRight: "16px" }}
           >
-            Cancel
+            No
           </Button>,
           <button
             className="admin_headermodalsubmitbutton"
             onClick={handleLogout}
           >
-            Ok
+            Yes
           </button>,
         ]}
         width="34%"

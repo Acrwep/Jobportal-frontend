@@ -9,6 +9,7 @@
 }
 .folders_heading {
   font-weight: 600;
+  font-size: 18px;
   margin-bottom: 16px !important;
 }
 .folders_listContainer {
@@ -42,8 +43,18 @@
 }
 .folders_modalsubmitbutton {
   margin-top: 12px;
+  border-color: #d32215;
+  color: #d32215;
 }
 .folders_modalsubmitbutton:hover {
   border-color: #d32215 !important;
-  color: #d32215 !important;
+  background-color: #d32215 !important;
+  color: white !important;
+}
+
+/* folder profiles styles */
+.folderprofiles_mainContainer {
+  height: 100%;
+  background-color: rgba(128, 128, 128, 0.11);
+  position: relative;
 }

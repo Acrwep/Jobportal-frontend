@@ -49,23 +49,25 @@ export default function FolderManagement() {
     const payload = {
       candidateIds: JSON.parse(item.candidateIds),
     };
+    setTimeout(() => {
+      navigate("/folderprofiles", {
+        state: {
+          folderName: item.name,
+          candidateIds: JSON.parse(item.candidateIds),
+        },
+      });
+    }, 300);
     // dispatch(storeFolderFilters([payload]));
-    try {
-      const response = await getMultipleCandidatesById(payload);
-      console.log("candidates response", response?.data?.data);
-      dispatch(storeFolderProfiles(response?.data?.data));
-    } catch (error) {
-      console.log(error);
-      dispatch(storeFolderProfiles([]));
-    } finally {
-      setTimeout(() => {
-        navigate("/folderprofiles", {
-          state: {
-            folderName: item.name,
-          },
-        });
-      }, 300);
-    }
+    // try {
+    //   const response = await getMultipleCandidatesById(payload);
+    //   console.log("candidates response", response?.data?.data);
+    //   dispatch(storeFolderProfiles(response?.data?.data));
+    // } catch (error) {
+    //   console.log(error);
+    //   dispatch(storeFolderProfiles([]));
+    // } finally {
+
+    // }
   };
 
   const handleEdit = async () => {
@@ -209,7 +211,7 @@ export default function FolderManagement() {
             onClick={() => setIsDeleteModalOpen(false)}
             style={{ marginRight: "16px" }}
           >
-            Cancel
+            No
           </Button>,
           <Button className="folders_modalsubmitbutton" onClick={handleDelete}>
             Yes
