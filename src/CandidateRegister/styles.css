@@ -15,8 +15,18 @@
   align-items: center;
   padding-left: 32px;
 }
+@media (min-width: 320px) and (max-width: 425px) {
+  .candidate_headerlogoContainer {
+    padding-left: 19px;
+  }
+}
 .candidateregister_actelogo {
   width: 220px;
+}
+@media (min-width: 320px) and (max-width: 425px) {
+  .candidateregister_actelogo {
+    width: 160px;
+  }
 }
 .candidate_headertextContainer {
   display: flex;
@@ -26,21 +36,22 @@
   font-size: 15px;
   padding-right: 32px;
 }
-/* .candidate_maincontainer {
-  position: relative;
-  padding: 34px 0px;
-  display: flex;
-  justify-content: center;
-  overflow-y: auto;
-  height: 70vh;
-  overflow-x: hidden;
-} */
+.candidate_headerheading {
+  color: #0056b3;
+  font-weight: 500;
+}
+@media (min-width: 320px) and (max-width: 425px) {
+  .candidate_headerheading {
+    font-size: 13px;
+  }
+}
 .candidate_maincontainer {
   width: 100%;
   background-color: #f8f9fa;
   margin-top: 60px;
   height: 90vh;
 }
+
 .candidate_formColcontainer {
   padding: 45px 65px;
   height: 90vh;
@@ -48,13 +59,332 @@
 @media (min-width: 300px) and (max-width: 986px) {
   .candidate_formColcontainer {
     padding: 24px;
+    margin-bottom: 60px;
+    height: 100%;
   }
+}
+.registration_actelogo {
+  width: 220px;
+}
+.registration_headertextContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-weight: 500;
+  font-size: 15px;
+}
+.registration_leftcardColdiv {
+  display: flex;
+  justify-content: center;
+}
+@media (min-width: 300px) and (max-width: 991px) {
+  .registration_leftcardColdiv {
+    display: none;
+  }
+}
+.registration_leftcardContainer {
+  border: 1px solid #e7e7f1;
+  border-radius: 10px;
+  width: 310px;
+  position: fixed;
+  margin-top: 45px;
+  background-color: #ffffff;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
+}
+.registration_cardimage {
+  width: 152px;
+  text-align: center;
+  padding: 0px 60px;
+}
+.registration_cardtextdiv {
+  display: flex;
+  margin-top: 19px;
+}
+.registration_cardtext {
+  margin-left: 6px !important;
+  color: #474d6a;
+  font-size: 13px;
+  font-weight: 500;
+}
+.registration_cardheading {
+  font-weight: 500;
+  font-size: 18px;
+  margin-top: 16px !important;
+  text-align: center;
+}
+.registration_formColcontainer {
+  padding: 45px 65px;
+}
+@media (min-width: 300px) and (max-width: 986px) {
+  .registration_formColcontainer {
+    padding: 24px;
+  }
+}
+.registration_sectionheadings {
+  color: rgb(45, 45, 45) !important;
+  font-weight: 700;
+  font-size: 1.75rem;
+}
+.registration_fieldrowdiv {
+  margin-top: 22px;
+}
+@media (min-width: 300px) and (max-width: 986px) {
+  .registration_fieldcolumndiv {
+    margin-bottom: 22px;
+  }
+}
+.registration_sectiondivider {
+  border-color: rgba(128, 128, 128, 0.425) !important;
+  margin-top: 30px !important;
+  margin-bottom: 16px !important;
+  margin: 0;
+}
+.registration_addcompanybutton {
+  box-sizing: border-box;
+  background: none transparent;
+  appearance: none;
+  text-align: start;
+  text-decoration: none;
+  border: 1px solid rgb(212, 210, 208);
+  cursor: pointer;
+  width: max-content;
+  font-weight: 600;
+  border-radius: 6px;
+  color: #0056b3;
+  margin-top: 6px;
+  border-color: #0056b3 !important;
+}
+.registration_addcompanybutton:hover {
+  background-color: #0057b32a !important;
+  color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
+.registration_deletecompanybutton {
+  box-sizing: border-box;
+  background: none rgb(255, 255, 255);
+  appearance: none;
+  text-decoration: none;
+  border: 1px solid rgb(212, 210, 208);
+  cursor: pointer;
+  width: max-content;
+  font-weight: 600;
+  border-radius: 6px;
+  color: rgb(169, 37, 43);
+  border-color: rgb(169, 37, 43) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.registration_deletecompanybutton:hover {
+  background-color: rgb(254, 238, 239) !important;
+  color: rgb(131, 22, 27) !important;
+}
+.registration_companyfields_divider {
+  border-color: rgba(128, 128, 128, 0.219) !important;
+  margin: 38px 0px 21px !important;
+}
+.candidate_companydeleterowdiv {
+  margin-top: 22px;
+}
+.registration_uploadprofileContainer {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  /* margin-top: 22px; */
+  width: 100%;
+}
+@media (min-width: 300px) and (max-width: 1023px) {
+  .registration_uploadprofileContainer {
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+}
+.registration_profilechoosebutton {
+  margin-left: 12px;
+  width: 100%;
+  background-color: transparent;
+}
+@media (min-width: 1000px) and (max-width: 1070px) {
+  .registration_profilechoosebutton {
+    width: 70px;
+    font-size: 13px;
+  }
+}
+.registration_profilechoosebutton:hover {
+  border-color: #0056b3 !important;
+  color: #0056b3 !important;
+  background-color: transparent !important;
+}
+.registration_skillsdescription {
+  color: gray;
+  font-weight: 500;
+  margin-top: 1px !important;
+  font-size: 14px;
+  margin-bottom: 20px !important;
+}
+.registration_uploadresumebutton_div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+}
+.registration_uploadresumebutton {
+  box-sizing: border-box;
+  background: none rgb(255, 255, 255);
+  appearance: none;
+  text-align: start;
+  text-decoration: none;
+  border: 1px solid rgb(212, 210, 208);
+  cursor: pointer;
+  width: max-content;
+  font-weight: 600;
+  border-radius: 6px;
+  color: #0056b3;
+  border-color: #0056b3 !important;
+  padding: 19px;
+}
+.registration_uploadresumebutton:hover {
+  background-color: #0057b32a !important;
+  color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
+.registration_summarytextarea {
+  background-color: transparent !important;
+}
+.registration_summarytextarea:hover {
+  border-color: #0056b3 !important;
+}
+.registration_summarytextarea:focus-within {
+  border-color: #0056b3 !important;
+  box-shadow: 0 0 0 2px #0057b349 !important;
+}
+.registration_errorsummarytextarea {
+  background-color: transparent !important;
+  border-color: #ff4d4f !important;
+}
+.registration_errorsummarytextarea:hover {
+  border-color: #ff4d4f !important;
+}
+.registration_errorsummarytextarea:focus-within {
+  border-color: #ff4d4f !important;
+  box-shadow: 0 0 0 2px rgba(255, 38, 5, 0.06) !important;
+}
+.registration_summarytextarealabel {
+  font-weight: 600 !important;
+  margin-bottom: 6px !important;
+}
+.registration_summarytextareaasterisk {
+  color: rgba(255, 0, 0, 0.863);
+  margin-left: 3px !important;
+}
+.registration_summaryerrortext {
+  margin-top: 2px !important;
+  color: #ff4d4f;
+}
+.registration_languagesmainContainer {
+  margin-top: 22px;
+}
+@media (min-width: 300px) and (max-width: 1023px) {
+  .registration_languagesmainContainer {
+    margin-top: 0px;
+  }
+}
+.registration_languagesContainer {
+  align-items: center;
+  margin-bottom: 22px;
+}
+.registration_resumeContainer {
+  border: 1px solid #0056b3;
+  color: #0056b3;
+  border-radius: 6px;
+  padding: 5px 9px;
+  width: 120px;
+  margin-top: 12px;
+}
+.registration_registerbutton {
+  box-sizing: border-box;
+  background-color: #0056b3;
+  appearance: none;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  width: max-content;
+  font-weight: 600;
+  border-radius: 6px;
+  color: #ffffff;
+  border-color: #0056b3 !important;
+  padding: 18px 32px;
+  font-size: 15px;
+}
+.registration_registerbutton_div {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}
+.registration_registerbutton:hover {
+  background-color: #0056b3 !important;
+  color: #ffffff !important;
+  border-color: #0056b3 !important;
+  opacity: 0.7;
+}
+.loading_registration_registerbutton {
+  box-sizing: border-box;
+  background-color: #0056b3;
+  appearance: none;
+  width: max-content;
+  font-weight: 600;
+  border-radius: 6px;
+  color: #ffffff;
+  border-color: #0056b3 !important;
+  padding: 18px 17px;
+  opacity: 0.7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: no-drop;
+}
+.loading_registration_registerbutton:hover {
+  box-sizing: border-box;
+  background-color: #0056b3 !important;
+  appearance: none;
+  width: max-content;
+  font-weight: 600;
+  border-radius: 6px;
+  color: #ffffff !important;
+  border-color: #0056b3 !important;
+  padding: 18px 17px;
+  opacity: 0.7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.registration_resumenameContainer {
+  width: max-content;
+  color: #0056b3;
+  background-color: #0057b32a;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-weight: 600;
+  margin-top: 12px;
+}
+.registration_resumename {
+  font-size: 14px;
 }
 .registration_personalinfosection {
   height: 60vh;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0px 12px 0px 0px;
+}
+@media (min-width: 300px) and (max-width: 986px) {
+  .registration_personalinfosection {
+    height: 100%;
+  }
 }
 .candidate_subcontainer {
   display: flex;
@@ -93,6 +423,12 @@
   justify-content: space-between;
   width: 85%;
 }
+@media (min-width: 300px) and (max-width: 986px) {
+  .candidate_footercontainer {
+    bottom: -42px;
+    right: 32px;
+  }
+}
 .candidate_forwardbutton {
   background-color: #0056b3;
   padding: 15px;
@@ -104,6 +440,11 @@
   align-items: center;
   cursor: pointer;
   box-shadow: #0057b33b 0px 8px 24px;
+}
+@media (min-width: 300px) and (max-width: 986px) {
+  .candidate_forwardbutton {
+    padding: 12px;
+  }
 }
 .candidate_forwardloadingbutton {
   background-color: #0056b3;
@@ -181,12 +522,6 @@
   align-items: center;
   margin-bottom: 20px;
 }
-/* .candidate_companydetailsmaindiv {
-  overflow-y: auto;
-  height: 70vh;
-  overflow-x: hidden;
-  padding: 0px 6px;
-} */
 .candidate_companydeletebutton:hover {
   border-color: #ff4d4f !important;
   color: #ff4d4f !important;
@@ -207,4 +542,10 @@
   border-color: #0056b3 !important;
   color: #ffffff !important;
   opacity: 0.7;
+}
+@media (min-width: 300px) and (max-width: 767px) {
+  .registration_languageslevelContainer {
+    margin-top: 22px;
+    margin-bottom: 12px;
+  }
 }

@@ -398,22 +398,25 @@ export default function CandidateRegister() {
   };
 
   const handleForward = () => {
-    // setPageSection(pageSection + 1);
-    if (pageSection === 1) {
-      handleContactInfoSubmit();
-    } else if (pageSection === 2) {
-      handleExperienceSubmit();
-    } else if (pageSection === 3) {
-      handleSkillsSubmit();
-    } else if (pageSection === 4) {
-      handleEducationSubmit();
-    } else if (pageSection === 5) {
-      handleCourseSubmit();
-    } else if (pageSection === 6) {
+    setPageSection(pageSection + 1);
+    if (pageSection === 6) {
       handleProfileInfoSubmit();
-    } else if (pageSection === 7) {
-      handleResumeSubmit();
     }
+    // if (pageSection === 1) {
+    //   handleContactInfoSubmit();
+    // } else if (pageSection === 2) {
+    //   handleExperienceSubmit();
+    // } else if (pageSection === 3) {
+    //   handleSkillsSubmit();
+    // } else if (pageSection === 4) {
+    //   handleEducationSubmit();
+    // } else if (pageSection === 5) {
+    //   handleCourseSubmit();
+    // } else if (pageSection === 6) {
+    //   handleProfileInfoSubmit();
+    // } else if (pageSection === 7) {
+    //   handleResumeSubmit();
+    // }
   };
 
   const handleContactInfoSubmit = async () => {
@@ -829,14 +832,24 @@ export default function CandidateRegister() {
   };
 
   return (
-    <div style={{ position: "relative", backgroundColor: "#f8f9fa" }}>
+    <div
+      style={{
+        position: "relative",
+        backgroundColor: "#f8f9fa",
+      }}
+    >
       <div className="candidate_headerContainer">
         <Row align="middle">
           <Col span={12} className="candidate_headerlogoContainer">
             <img src={Actelogo} className="candidateregister_actelogo" />
           </Col>
           <Col span={12} className="candidate_headertextContainer">
-            <p style={{ color: "#0056b3", fontWeight: "500" }}>Register here</p>
+            <p
+              className="candidate_headerheading"
+              style={{ color: "#0056b3", fontWeight: "500" }}
+            >
+              Register here
+            </p>
           </Col>
         </Row>
       </div>
@@ -1578,7 +1591,7 @@ export default function CandidateRegister() {
                   </Col>
                 </Row>
 
-                <Row className="registration_fieldrowdiv">
+                <Row className="registration_fieldrowdiv" gutter={24}>
                   <Col
                     xs={24}
                     sm={24}
@@ -1652,14 +1665,14 @@ export default function CandidateRegister() {
                   </Col>
                 </Row>
 
-                <div style={{ marginTop: "22px" }}>
+                <div className="registration_languagesmainContainer">
                   {languages.map((lang, index) => (
                     <React.Fragment key={lang.id}>
                       <Row
                         gutter={16}
                         className="registration_languagesContainer"
                       >
-                        <Col xs={24} sm={24} md={24} lg={9}>
+                        <Col xs={24} sm={24} md={9} lg={9}>
                           <CommonInputField
                             label={`Language ${index + 1} `}
                             mandatory={true}
@@ -1670,7 +1683,13 @@ export default function CandidateRegister() {
                             error={lang.languageError}
                           />
                         </Col>
-                        <Col xs={24} sm={24} md={24} lg={9}>
+                        <Col
+                          xs={24}
+                          sm={24}
+                          md={9}
+                          lg={9}
+                          className="registration_languageslevelContainer"
+                        >
                           <Checkbox.Group
                             options={languageLevelOptions}
                             value={lang.levelStatus}
@@ -1683,7 +1702,7 @@ export default function CandidateRegister() {
                             }
                           />
                         </Col>
-                        <Col xs={24} sm={24} md={24} lg={6}>
+                        <Col xs={24} sm={24} md={6} lg={6}>
                           <Button
                             onClick={() => deleteLanguage(index)}
                             className="registration_deletecompanybutton"

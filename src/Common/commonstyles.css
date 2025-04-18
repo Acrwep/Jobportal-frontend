@@ -107,3 +107,26 @@
   border-radius: 6px !important;
   display: flex;
 }
+/* session expired modal styles */
+.sessionmodal_okbuttonContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+.sessionmodal_okbutton {
+  color: #fff;
+  background-color: #0056b3 !important;
+  border: none;
+  font-size: 14px;
+  height: 30px;
+  width: 64px;
+  border-radius: 6px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+.sessionmodal_okbutton:hover {
+  opacity: 0.7;
+}
+.sessionmodal_okbutton:active {
+  transform: scale(0.9);
+}

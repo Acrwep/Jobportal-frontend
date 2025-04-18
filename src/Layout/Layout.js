@@ -50,6 +50,23 @@ const Layout = () => {
       window.removeEventListener("localStorageUpdated", handleStorageUpdate);
     };
   }, []);
+
+  useEffect(() => {
+    //handle navigate to login page when token expire
+    const handleTokenExpire = () => {
+      navigate("/login");
+    };
+
+    window.addEventListener("tokenExpireUpdated", handleTokenExpire);
+
+    // Initial load
+    // handleTokenExpire();
+
+    return () => {
+      window.removeEventListener("tokenExpireUpdated", handleTokenExpire);
+    };
+  }, []);
+
   return (
     <div>
       {location.pathname === "/login" ? (

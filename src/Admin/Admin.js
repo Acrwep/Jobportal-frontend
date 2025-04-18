@@ -232,10 +232,14 @@ export default function Admin() {
       }),
       ...(courseLocation && { courseLocation: courseLocation }),
       ...(courseStatusfromLocal && { courseStatus: courseStatusfromLocal }),
-      startJoingingDate:
-        courseJoiningStartDate === "undefined" ? "" : courseJoiningStartDate,
-      endJoiningDate:
-        courseJoiningEndDate === "undefined" ? "" : courseJoiningEndDate,
+      ...(courseJoiningStartDate === "undefined" ||
+      courseJoiningStartDate === ""
+        ? {}
+        : { startJoingingDate: courseJoiningStartDate }),
+
+      ...(courseJoiningEndDate === "undefined" || courseJoiningEndDate === ""
+        ? {}
+        : { endJoiningDate: courseJoiningEndDate }),
       // userId: userId,
       yearsOfExperience:
         yearsOfExperience != undefined ? yearsOfExperience : experienceYear,
@@ -516,11 +520,58 @@ export default function Admin() {
     setGender(null);
     setCompanyName("");
 
+    const keyword = localStorage.getItem("searchKeyword");
+    const branchLoaction = localStorage.getItem("courseLocation");
+    const courseNamefromLocal = localStorage.getItem("courseName");
+    const courseStatusfromLocal = localStorage.getItem("courseStatus");
+    const eligibleStatusFromLocal = localStorage.getItem("eligibleStatus");
+    const courseJoiningStartDate = localStorage.getItem(
+      "courseJoiningStartDate"
+    );
+    const courseJoiningEndDate = localStorage.getItem("courseJoiningEndDate");
+
+    const convertJson = JSON.parse(keyword);
+    const searchBykeyword = convertJson.join(" ");
+
+    const convertLocationJson = JSON.parse(branchLoaction);
+    let courseLocation;
+    if (convertLocationJson) {
+      courseLocation = convertLocationJson.join(" ");
+    }
+
+    const payload = {
+      q: searchBykeyword,
+      ...(courseNamefromLocal && { courseName: courseNamefromLocal }),
+      ...(eligibleStatusFromLocal && {
+        eligibleStatus: eligibleStatusFromLocal === "true" ? true : false,
+      }),
+      ...(courseLocation && { courseLocation: courseLocation }),
+      ...(courseStatusfromLocal && { courseStatus: courseStatusfromLocal }),
+
+      ...(courseJoiningStartDate === "undefined" ||
+      courseJoiningStartDate === ""
+        ? {}
+        : { startJoingingDate: courseJoiningStartDate }),
+
+      ...(courseJoiningEndDate === "undefined" || courseJoiningEndDate === ""
+        ? {}
+        : { endJoiningDate: courseJoiningEndDate }),
+      // startJoingingDate:
+      //   courseJoiningStartDate === "undefined" ? "" : courseJoiningStartDate,
+      // endJoiningDate:
+      //   courseJoiningEndDate === "undefined" ? "" : courseJoiningEndDate,
+      page: pagination.currentPage,
+      limit: pagination.limit,
+    };
     try {
-      const response = await getCandidates();
+      const response = await searchByKeyword(payload);
       console.log("candidates response", response);
       setCandidates(response?.data?.data?.data);
       setTotalProfileCount(response?.data?.data?.pagination?.total);
+      setPagination((prev) => ({
+        ...prev,
+        totalRecords: response?.data?.data?.pagination?.total, // Total data count from API
+      }));
     } catch (error) {
       console.log(error);
     }
