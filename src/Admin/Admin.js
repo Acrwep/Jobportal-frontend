@@ -530,10 +530,6 @@ export default function Admin() {
     const searchBykeyword = convertJson.join(" ");
 
     const convertLocationJson = JSON.parse(branchLoaction);
-    let courseLocation;
-    if (convertLocationJson) {
-      courseLocation = convertLocationJson.join(" ");
-    }
 
     const payload = {
       q: searchBykeyword,
@@ -541,7 +537,7 @@ export default function Admin() {
       ...(eligibleStatusFromLocal && {
         eligibleStatus: eligibleStatusFromLocal === "true" ? true : false,
       }),
-      ...(courseLocation && { courseLocation: courseLocation }),
+      ...(convertLocationJson && { courseLocation: convertLocationJson }),
       ...(courseStatusfromLocal && { courseStatus: courseStatusfromLocal }),
 
       ...(courseJoiningStartDate === "undefined" ||

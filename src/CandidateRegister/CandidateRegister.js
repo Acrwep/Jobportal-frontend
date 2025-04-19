@@ -670,6 +670,7 @@ export default function CandidateRegister() {
   };
 
   const handleRegister = async () => {
+    const today = new Date();
     const formatJoingdate = formatDateTimeIST(new Date(courseJoiningDate));
 
     const payload = {
@@ -691,7 +692,9 @@ export default function CandidateRegister() {
           : experienceMonth + " " + "Months",
       companyName: companyName,
       designation: designation,
-      companyStartdate: moment(startDate).format("YYYY-MM-DD HH:mm:ss"),
+      companyStartdate: startDate
+        ? moment(startDate).format("YYYY-MM-DD HH:mm:ss")
+        : null,
       companyEnddate: endDate
         ? moment(endDate).format("YYYY-MM-DD HH:mm:ss")
         : null,
@@ -724,7 +727,7 @@ export default function CandidateRegister() {
           ? ">75"
           : ">90",
       courseJoiningDate: convertToBackendFormat(formatJoingdate),
-      createdAt: new Date(),
+      createdAt: moment(today).format("YYYY-MM-DD HH:mm:ss"),
     };
     console.log("registration payload", payload);
     setLoading(true);
@@ -1393,6 +1396,7 @@ export default function CandidateRegister() {
                           setCourseLocationError(selectValidator(value));
                         }
                       }}
+                      value={courseLocation}
                       error={courseLocationError}
                     />
                   </Col>
