@@ -89,7 +89,8 @@ export default function Profile() {
                           {item.companyName}
                         </p>
                         <p className="profilecard_candidategender">
-                          {item.companyStartdate === null &&
+                          {(item.companyStartdate === null ||
+                            item.companyStartdate === "0000-00-00 00:00:00") &&
                           item.companyEnddate === null
                             ? "Fresher"
                             : item.companyStartdate != null &&
@@ -336,11 +337,13 @@ export default function Profile() {
                           {item.designation}
                         </p>
                         <p className="experiencecard_companyexp">
-                          {item.companyName} |{" "}
-                          {item.companyStartdate === null &&
+                          {item.companyName ? item.companyName + "|" : ""}{" "}
+                          {(item.companyStartdate === null ||
+                            item.companyStartdate === "0000-00-00 00:00:00") &&
                           item.companyEnddate === null
                             ? "Fresher"
                             : item.companyStartdate != null &&
+                              item.companyStartdate === "0000-00-00 00:00:00" &&
                               item.companyEnddate === null
                             ? moment(item.companyStartdate).format("MMM YYYY") +
                               " " +

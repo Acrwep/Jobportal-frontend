@@ -38,7 +38,7 @@ export default function AdminSearch() {
     { id: "Electronic City", name: "Electronic City" },
     { id: "BTM Layout", name: "BTM Layout" },
   ];
-  const [courseLocation, setCourseLocation] = useState("");
+  const [courseLocation, setCourseLocation] = useState([]);
   const eligibleStatusOptions = [
     { id: 1, name: "Eligible" },
     { id: 2, name: "Not Eligible" },
@@ -69,12 +69,28 @@ export default function AdminSearch() {
     console.log(
       "keyworddd",
       keyword,
+      "loca",
       courseLocation,
+      "name",
+      courseName,
+      "status",
+      courseStatus,
+      "eli",
+      eligibleStatus,
+      courseJoiningDate,
       courseJoiningDate[0],
       courseJoiningDate[1]
     );
-    if (keyword.length <= 0) {
-      CommonToaster("Keyword is required");
+    if (
+      keyword.length <= 0 &&
+      courseLocation.length <= 0 &&
+      (courseName === "" || courseName === undefined) &&
+      (courseStatus === "" || courseStatus === undefined) &&
+      (eligibleStatus === null || eligibleStatus === undefined) &&
+      (courseJoiningDate[0] === undefined || courseJoiningDate[0] === "") &&
+      (courseJoiningDate[1] === undefined || courseJoiningDate[1] === "")
+    ) {
+      CommonToaster("Atleast one filter is required");
       return;
     }
     localStorage.setItem("searchKeyword", JSON.stringify(keyword));
@@ -110,7 +126,7 @@ export default function AdminSearch() {
           endJoiningDate: courseJoiningDate[1],
         }),
       ...(eligibleStatus && {
-        eligibleStatus: eligibleStatus === 1 ? true : false,
+        eligibleStatus: eligibleStatus === 1 ? 1 : 0,
       }),
     };
     try {

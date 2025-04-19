@@ -398,25 +398,22 @@ export default function CandidateRegister() {
   };
 
   const handleForward = () => {
-    setPageSection(pageSection + 1);
-    if (pageSection === 6) {
+    // setPageSection(pageSection + 1);
+    if (pageSection === 1) {
+      handleContactInfoSubmit();
+    } else if (pageSection === 2) {
+      handleExperienceSubmit();
+    } else if (pageSection === 3) {
+      handleSkillsSubmit();
+    } else if (pageSection === 4) {
+      handleEducationSubmit();
+    } else if (pageSection === 5) {
+      handleCourseSubmit();
+    } else if (pageSection === 6) {
       handleProfileInfoSubmit();
+    } else if (pageSection === 7) {
+      handleResumeSubmit();
     }
-    // if (pageSection === 1) {
-    //   handleContactInfoSubmit();
-    // } else if (pageSection === 2) {
-    //   handleExperienceSubmit();
-    // } else if (pageSection === 3) {
-    //   handleSkillsSubmit();
-    // } else if (pageSection === 4) {
-    //   handleEducationSubmit();
-    // } else if (pageSection === 5) {
-    //   handleCourseSubmit();
-    // } else if (pageSection === 6) {
-    //   handleProfileInfoSubmit();
-    // } else if (pageSection === 7) {
-    //   handleResumeSubmit();
-    // }
   };
 
   const handleContactInfoSubmit = async () => {
@@ -566,7 +563,7 @@ export default function CandidateRegister() {
   const handleCourseSubmit = () => {
     setCourseValidationTrigger(true);
     const courseNameValidate = selectValidator(courseName);
-    const courseLocationValidate = addressValidator(courseLocation);
+    const courseLocationValidate = selectValidator(courseLocation);
     const courseJoiningValidate = selectValidator(courseJoiningDate);
     const courseStatusValidate = selectValidator(courseStatus);
 
@@ -684,8 +681,14 @@ export default function CandidateRegister() {
       state: state,
       city: city,
       pincode: pincode,
-      yearsOfExperience: experienceYear + " " + "Years",
-      monthOfExperience: experienceMonth + " " + "Months",
+      yearsOfExperience:
+        experienceYear === "0 years"
+          ? "0 Years"
+          : experienceYear + " " + "Years",
+      monthOfExperience:
+        experienceMonth === "0 months"
+          ? "0 Months"
+          : experienceMonth + " " + "Months",
       companyName: companyName,
       designation: designation,
       companyStartdate: moment(startDate).format("YYYY-MM-DD HH:mm:ss"),
@@ -1069,7 +1072,14 @@ export default function CandidateRegister() {
             ) : pageSection === 2 ? (
               //experience
               <div>
-                <p className="registration_sectionheadings">Experience</p>
+                <p
+                  className="registration_sectionheadings"
+                  onClick={() => {
+                    console.log(experienceYear, experienceMonth);
+                  }}
+                >
+                  Experience
+                </p>
                 <Row
                   gutter={24}
                   className="registration_fieldrowdiv"
@@ -1375,11 +1385,12 @@ export default function CandidateRegister() {
                     <CommonSelectField
                       options={courseLocationOptions}
                       label="Branch location"
+                      mandatory={true}
                       allowClear={true}
                       onChange={(value) => {
                         setCourseLocation(value);
                         if (courseValidationTrigger) {
-                          setCourseLocationError(addressValidator(value));
+                          setCourseLocationError(selectValidator(value));
                         }
                       }}
                       error={courseLocationError}

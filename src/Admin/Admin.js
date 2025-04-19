@@ -217,10 +217,6 @@ export default function Admin() {
     const searchBykeyword = convertJson.join(" ");
 
     const convertLocationJson = JSON.parse(branchLoaction);
-    let courseLocation;
-    if (convertLocationJson) {
-      courseLocation = convertLocationJson.join(" ");
-    }
 
     const userId = localStorage.getItem("loginUserId");
 
@@ -228,9 +224,9 @@ export default function Admin() {
       q: searchBykeyword,
       ...(courseNamefromLocal && { courseName: courseNamefromLocal }),
       ...(eligibleStatusFromLocal && {
-        eligibleStatus: eligibleStatusFromLocal === "true" ? true : false,
+        eligibleStatus: eligibleStatusFromLocal === "true" ? 1 : 0,
       }),
-      ...(courseLocation && { courseLocation: courseLocation }),
+      ...(convertLocationJson && { courseLocation: convertLocationJson }),
       ...(courseStatusfromLocal && { courseStatus: courseStatusfromLocal }),
       ...(courseJoiningStartDate === "undefined" ||
       courseJoiningStartDate === ""
