@@ -197,3 +197,27 @@ p {
   .ant-checkbox-inner {
   background-color: #0056b3 !important;
 }
+
+/* antd layout styles */
+.ant-menu-light .ant-menu-item-selected {
+  background-color: rgb(255 255 255 / 52%) !important;
+  color: #fff !important;
+}
+.ant-menu-light .ant-menu-item {
+  color: #fff !important;
+  background-color: transparent;
+}
+.ant-menu-light
+  .ant-menu-item:not(.ant-menu-item-selected):not(
+    .ant-menu-submenu-selected
+  ):hover {
+  color: gray !important;
+  background-color: transparent;
+}
+.ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+  border-color: #0056b3 !important;
+  background-color: #0056b3 !important;
+}
+.ant-radio-wrapper:hover .ant-radio-inner {
+  border-color: #0056b3 !important;
+}

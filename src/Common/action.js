@@ -267,3 +267,23 @@ export const updateEligibleCandidate = async (payload) => {
     throw error;
   }
 };
+
+//questions api's
+
+export const getSections = async (payload) => {
+  try {
+    const response = await api.get("/api/getsection", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCourses = async (payload) => {
+  try {
+    const response = await api.get("/api/getcourses", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

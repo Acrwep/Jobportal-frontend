@@ -190,6 +190,7 @@ export default function CandidateRegister() {
   const [noticePeriodError, setNoticePeriodError] = useState();
   const [ctc, setCtc] = useState("");
   const [ctcError, setCtcError] = useState("");
+  const [showCtcfield, setShowCtcfield] = useState(true);
   const [ectc, setEctc] = useState("");
   const [ectcError, setEctcError] = useState("");
   const [jobTitles, setJobTitles] = useState([]);
@@ -283,6 +284,8 @@ export default function CandidateRegister() {
 
   const handleCountry = (value) => {
     setCountry(value);
+    setState("");
+    setCity("");
     const selectedCountry = countryOptions.find((f) => f.name === value);
     console.log("selected country", value, selectedCountry);
     setCountryCode(selectedCountry.isoCode);
@@ -294,6 +297,7 @@ export default function CandidateRegister() {
 
   const handleState = (value) => {
     setState(value);
+    setCity("");
     const selectedState = stateOptions.find((f) => f.name === value);
     console.log("selected state", value, selectedState);
     setCityOptions(City.getCitiesOfState(countryCode, selectedState.isoCode));
@@ -588,7 +592,7 @@ export default function CandidateRegister() {
     setProfileInfoValidationTrigger(true);
     const genderValidate = selectValidator(gender);
     const noticePeriodValidate = selectValidator(noticePeriod);
-    const currentCtcValidate = addressValidator(ctc);
+    let currentCtcValidate = addressValidator(ctc);
     const expectedCtcValidate = addressValidator(ectc);
     const jobtitlesValidate = selectValidator(jobTitles);
     const joblocationsValidate = selectValidator(jobLocations);
@@ -597,13 +601,18 @@ export default function CandidateRegister() {
 
     setGenderError(genderValidate);
     setNoticePeriodError(noticePeriodValidate);
-    setCtcError(currentCtcValidate);
     setEctcError(expectedCtcValidate);
     setJobTitlesError(jobtitlesValidate);
     setJobLocationsError(joblocationsValidate);
     setSummaryError(summaryValidate);
     setLinkedinUrlError(linkedinUrlValidate);
 
+    if (showCtcfield === true) {
+      setCtcError(currentCtcValidate);
+    } else {
+      currentCtcValidate = "";
+      setCtcError("");
+    }
     let checkLanguagesErrors = [];
     if (languages.length >= 1) {
       const validateLanguages = languages.map((item) => {
@@ -741,9 +750,15 @@ export default function CandidateRegister() {
       setLoading(false);
       const Error = error?.response?.data?.details;
 
-      if (Error.includes("for key 'mobile'")) {
+      if (
+        Error.includes("for key 'mobile'") ||
+        Error.includes("for key 'candidates.mobile'")
+      ) {
         CommonToaster("Mobile number already exists");
-      } else if (Error.includes("for key 'email'")) {
+      } else if (
+        Error.includes("for key 'email'") ||
+        Error.includes("for key 'candidates.email'")
+      ) {
         CommonToaster("Email already exists");
       } else {
         CommonToaster(error?.response?.data?.message || "Error while register");
@@ -923,9 +938,14 @@ export default function CandidateRegister() {
             {pageSection === 1 ? (
               //contact info
               <div className="candidate_contactsection">
-                <p className="registration_sectionheadings">
-                  Contact information
-                </p>
+                <div className="candidate_sessionheadingContainer">
+                  <p className="registration_sectionheadings">
+                    Contact information
+                  </p>
+                  <p className="candidate_sessionnumbers">
+                    {pageSection + " " + "/" + " " + "7"}
+                  </p>
+                </div>
                 <Row gutter={24} className="registration_fieldrowdiv">
                   <Col
                     xs={24}
@@ -937,7 +957,7 @@ export default function CandidateRegister() {
                     className="registration_fieldcolumndiv"
                   >
                     <CommonInputField
-                      label="First name"
+                      label="First Name"
                       mandatory={true}
                       value={firstName}
                       onChange={(e) => {
@@ -951,7 +971,7 @@ export default function CandidateRegister() {
                   </Col>
                   <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                     <CommonInputField
-                      label="Last name"
+                      label="Last Name"
                       mandatory={true}
                       value={lastName}
                       onChange={(e) => {
@@ -1075,14 +1095,12 @@ export default function CandidateRegister() {
             ) : pageSection === 2 ? (
               //experience
               <div>
-                <p
-                  className="registration_sectionheadings"
-                  onClick={() => {
-                    console.log(experienceYear, experienceMonth);
-                  }}
-                >
-                  Experience
-                </p>
+                <div className="candidate_sessionheadingContainer">
+                  <p className="registration_sectionheadings">Experience</p>
+                  <p className="candidate_sessionnumbers">
+                    {pageSection + " " + "/" + " " + "7"}
+                  </p>
+                </div>
                 <Row
                   gutter={24}
                   className="registration_fieldrowdiv"
@@ -1098,23 +1116,26 @@ export default function CandidateRegister() {
                     className="registration_fieldcolumndiv"
                   >
                     <CommonSelectField
-                      label="Total years of experience"
+                      label="Total Years Of Experience"
                       options={experienceYearsOptions}
                       mandatory={true}
                       value={experienceYear}
                       onChange={(value) => {
                         setExperienceYear(value);
                         console.log("expppp", value, experienceMonth);
-                        if (value === null || experienceMonth === null) {
+                        if (value === null && experienceMonth === null) {
                           setShowCompanyfields(false);
+                          setShowCtcfield(false);
                         } else if (
                           (value === 0 || value === "0 years") &&
                           (experienceMonth === 0 ||
                             experienceMonth === "0 months")
                         ) {
                           setShowCompanyfields(false);
+                          setShowCtcfield(false);
                         } else {
                           setShowCompanyfields(true);
+                          setShowCtcfield(true);
                         }
                         if (expValidationTrigger) {
                           setExperienceYearError(selectValidator(value));
@@ -1125,21 +1146,24 @@ export default function CandidateRegister() {
                   </Col>
                   <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                     <CommonSelectField
-                      label="Total months of experience"
+                      label="Total Months Of Experience"
                       options={experienceMonthsOptions}
                       mandatory={true}
                       value={experienceMonth}
                       onChange={(value) => {
                         setExperienceMonth(value);
-                        if (value === null || experienceYear === null) {
+                        if (value === null && experienceYear === null) {
                           setShowCompanyfields(false);
+                          setShowCtcfield(false);
                         } else if (
                           (value === 0 || value === "0 months") &&
                           (experienceYear === 0 || experienceYear === "0 years")
                         ) {
                           setShowCompanyfields(false);
+                          setShowCtcfield(false);
                         } else {
                           setShowCompanyfields(true);
+                          setShowCtcfield(true);
                         }
                         if (expValidationTrigger) {
                           setExperienceMonthError(selectValidator(value));
@@ -1251,7 +1275,12 @@ export default function CandidateRegister() {
               </div>
             ) : pageSection === 3 ? (
               <div id="registration_skillssection">
-                <p className="registration_sectionheadings">Skills</p>
+                <div className="candidate_sessionheadingContainer">
+                  <p className="registration_sectionheadings">Skills</p>
+                  <p className="candidate_sessionnumbers">
+                    {pageSection + " " + "/" + " " + "7"}
+                  </p>
+                </div>
                 <p className="registration_skillsdescription">
                   List your skills to showcase your expertise!
                 </p>
@@ -1272,7 +1301,12 @@ export default function CandidateRegister() {
               </div>
             ) : pageSection === 4 ? (
               <div id="registration_educationsection">
-                <p className="registration_sectionheadings">Education</p>
+                <div className="candidate_sessionheadingContainer">
+                  <p className="registration_sectionheadings">Education</p>
+                  <p className="candidate_sessionnumbers">
+                    {pageSection + " " + "/" + " " + "7"}
+                  </p>
+                </div>
                 <Row gutter={24} className="registration_fieldrowdiv">
                   <Col
                     xs={24}
@@ -1284,7 +1318,7 @@ export default function CandidateRegister() {
                     className="registration_fieldcolumndiv"
                   >
                     <CommonInputField
-                      label="Highest qualification"
+                      label="Highest Qualification"
                       mandatory={true}
                       value={qualification}
                       onChange={(e) => {
@@ -1325,7 +1359,7 @@ export default function CandidateRegister() {
                     className="registration_fieldcolumndiv"
                   >
                     <CommonInputField
-                      label="Graduate year"
+                      label="Graduate Year"
                       mandatory={true}
                       type="number"
                       value={graduateYear}
@@ -1342,7 +1376,7 @@ export default function CandidateRegister() {
                   </Col>
                   <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                     <CommonSelectField
-                      label="Type of education"
+                      label="Type Of Education"
                       options={typeofEducationOptions}
                       mandatory={true}
                       value={typeofEducation}
@@ -1359,7 +1393,12 @@ export default function CandidateRegister() {
               </div>
             ) : pageSection === 5 ? (
               <div className="registration_certsection">
-                <p className="registration_sectionheadings">Course Status</p>
+                <div className="candidate_sessionheadingContainer">
+                  <p className="registration_sectionheadings">Course Status</p>
+                  <p className="candidate_sessionnumbers">
+                    {pageSection + " " + "/" + " " + "7"}
+                  </p>
+                </div>
                 <Row gutter={24} className="registration_fieldrowdiv">
                   <Col
                     xs={24}
@@ -1371,7 +1410,7 @@ export default function CandidateRegister() {
                     className="registration_fieldcolumndiv"
                   >
                     <CommonSelectField
-                      label="Course name"
+                      label="Course Name"
                       mandatory={true}
                       value={courseName}
                       options={courseNameOptions}
@@ -1387,7 +1426,7 @@ export default function CandidateRegister() {
                   <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                     <CommonSelectField
                       options={courseLocationOptions}
-                      label="Branch location"
+                      label="Branch Location"
                       mandatory={true}
                       allowClear={true}
                       onChange={(value) => {
@@ -1413,7 +1452,7 @@ export default function CandidateRegister() {
                     className="registration_fieldcolumndiv"
                   >
                     <CommonDatePicker
-                      label="Course joining date"
+                      label="Course Joining Date"
                       mandatory={true}
                       value={courseJoiningDate}
                       onChange={(value) => {
@@ -1427,7 +1466,7 @@ export default function CandidateRegister() {
                   </Col>
                   <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                     <CommonSelectField
-                      label="Course status"
+                      label="Course Status"
                       mandatory={true}
                       options={courseStatusOptions}
                       value={courseStatus}
@@ -1453,7 +1492,7 @@ export default function CandidateRegister() {
                     className="registration_fieldcolumndiv"
                   >
                     <CommonSelectField
-                      label="Mockup interview percentage"
+                      label="Mockup Interview Percentage"
                       mandatory={false}
                       options={mockUpPercentageOptions}
                       value={mockupPrecentage}
@@ -1479,9 +1518,14 @@ export default function CandidateRegister() {
               </div>
             ) : pageSection === 6 ? (
               <div className="registration_personalinfosection">
-                <p className="registration_sectionheadings">
-                  Almost there. Profile information
-                </p>
+                <div className="candidate_sessionheadingContainer">
+                  <p className="registration_sectionheadings">
+                    Almost there. Profile information
+                  </p>
+                  <p className="candidate_sessionnumbers">
+                    {pageSection + " " + "/" + " " + "7"}
+                  </p>
+                </div>
                 <Row gutter={24} className="registration_fieldrowdiv">
                   <Col
                     xs={24}
@@ -1508,7 +1552,7 @@ export default function CandidateRegister() {
                   </Col>
                   <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                     <CommonSelectField
-                      label="Notice period"
+                      label="Notice Period"
                       mandatory={true}
                       options={noticePeriodOptions}
                       value={noticePeriod}
@@ -1522,9 +1566,163 @@ export default function CandidateRegister() {
                       error={noticePeriodError}
                     />
                   </Col>
+
+                  {showCtcfield ? (
+                    <Col
+                      xs={24}
+                      sm={24}
+                      md={24}
+                      lg={12}
+                      xl={12}
+                      xxl={12}
+                      className="registration_fieldcolumndiv"
+                      style={{ marginTop: "22px" }}
+                    >
+                      <CommonInputField
+                        label="Current CTC"
+                        mandatory={true}
+                        type="number"
+                        value={ctc}
+                        onChange={(e) => {
+                          setCtc(e.target.value);
+                          if (profileInfoValidationTrigger) {
+                            setCtcError(selectValidator(e.target.value));
+                          }
+                        }}
+                        error={ctcError}
+                      />
+                    </Col>
+                  ) : (
+                    ""
+                  )}
+                  <Col
+                    xs={24}
+                    sm={24}
+                    md={24}
+                    lg={12}
+                    xl={12}
+                    xxl={12}
+                    style={{ marginTop: "22px" }}
+                  >
+                    <CommonInputField
+                      label="Expected CTC"
+                      mandatory={true}
+                      type="number"
+                      value={ectc}
+                      onChange={(e) => {
+                        setEctc(e.target.value);
+                        if (profileInfoValidationTrigger) {
+                          setEctcError(addressValidator(e.target.value));
+                        }
+                      }}
+                      error={ectcError}
+                    />
+                  </Col>
+
+                  <Col
+                    xs={24}
+                    sm={24}
+                    md={24}
+                    lg={12}
+                    xl={12}
+                    xxl={12}
+                    className="registration_fieldcolumndiv"
+                    style={{ marginTop: "22px" }}
+                  >
+                    <CommonMultiSelect
+                      label="Preferred Job Titles"
+                      mandatory={true}
+                      value={jobTitles}
+                      onChange={(value) => {
+                        setJobTitles(value);
+                        console.log("job titles", value);
+                        if (profileInfoValidationTrigger) {
+                          setJobTitlesError(selectValidator(value));
+                        }
+                      }}
+                      error={jobTitlesError}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={24}
+                    md={24}
+                    lg={12}
+                    xl={12}
+                    xxl={12}
+                    style={{ marginTop: "22px" }}
+                  >
+                    <CommonMultiSelect
+                      label="Preferred Job Locations"
+                      mandatory={true}
+                      value={jobLocations}
+                      onChange={(value) => {
+                        setJobLocations(value);
+                        console.log("job titles", value);
+                        if (profileInfoValidationTrigger) {
+                          setJobLocationsError(selectValidator(value));
+                        }
+                      }}
+                      error={jobLocationsError}
+                    />
+                  </Col>
+
+                  <Col
+                    xs={24}
+                    sm={24}
+                    md={24}
+                    lg={12}
+                    xl={12}
+                    xxl={12}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginTop: "22px",
+                    }}
+                  >
+                    <div className="registration_uploadprofileContainer">
+                      <p>Upload Profile Picture</p>
+                      <Upload
+                        beforeUpload={(file) => {
+                          console.log(file);
+                          return false; // Prevent auto-upload
+                        }}
+                        multiple={false}
+                        onChange={handleProfileAttachment}
+                        maxCount={1}
+                        fileList={profilePictureArray}
+                      >
+                        <Button className="registration_profilechoosebutton">
+                          Browse
+                        </Button>
+                      </Upload>
+                    </div>
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={24}
+                    md={24}
+                    lg={12}
+                    xl={12}
+                    xxl={12}
+                    style={{ marginTop: "22px" }}
+                  >
+                    <CommonInputField
+                      label="Linkedin Profile Link"
+                      mandatory={true}
+                      value={linkedinUrl}
+                      onChange={(e) => {
+                        setLinkedinUrl(e.target.value);
+                        if (profileInfoValidationTrigger) {
+                          setLinkedinUrlError(addressValidator(e.target.value));
+                        }
+                      }}
+                      error={linkedinUrlError}
+                    />
+                  </Col>
                 </Row>
 
-                <Row gutter={24} className="registration_fieldrowdiv">
+                {/* <Row gutter={24} className="registration_fieldrowdiv">
                   <Col
                     xs={24}
                     sm={24}
@@ -1563,9 +1761,9 @@ export default function CandidateRegister() {
                       error={ectcError}
                     />
                   </Col>
-                </Row>
+                </Row> */}
 
-                <Row gutter={24} className="registration_fieldrowdiv">
+                {/* <Row gutter={24} className="registration_fieldrowdiv">
                   <Col
                     xs={24}
                     sm={24}
@@ -1604,9 +1802,9 @@ export default function CandidateRegister() {
                       error={jobLocationsError}
                     />
                   </Col>
-                </Row>
+                </Row> */}
 
-                <Row className="registration_fieldrowdiv" gutter={24}>
+                {/* <Row className="registration_fieldrowdiv" gutter={24}>
                   <Col
                     xs={24}
                     sm={24}
@@ -1648,12 +1846,13 @@ export default function CandidateRegister() {
                       error={linkedinUrlError}
                     />
                   </Col>
-                </Row>
+                </Row> */}
+
                 <Row className="registration_fieldrowdiv">
                   <Col span={24} className="registration_fieldcolumndiv">
                     <div style={{ display: "flex" }}>
                       <label className="registration_summarytextarealabel">
-                        Profile summary
+                        Profile Summary
                       </label>
                       <p className="registration_summarytextareaasterisk">*</p>
                     </div>
@@ -1674,7 +1873,7 @@ export default function CandidateRegister() {
                     />
                     {summaryError && (
                       <p className="registration_summaryerrortext">
-                        {"Profile summary" + " " + summaryError}
+                        {"Profile Summary" + " " + summaryError}
                       </p>
                     )}
                   </Col>
@@ -1744,9 +1943,14 @@ export default function CandidateRegister() {
               </div>
             ) : pageSection === 7 ? (
               <div className="registration_personalinfosection">
-                <p className="registration_sectionheadings">
-                  Upload Your Resume
-                </p>
+                <div className="candidate_sessionheadingContainer">
+                  <p className="registration_sectionheadings">
+                    Upload Your Resume{" "}
+                  </p>
+                  <p className="candidate_sessionnumbers">
+                    {pageSection + " " + "/" + " " + "7"}
+                  </p>
+                </div>
                 <div style={{ marginTop: "24px" }}>
                   <Dragger
                     className="registration_draganddropcontainer"

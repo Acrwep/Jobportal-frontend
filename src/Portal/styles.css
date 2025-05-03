@@ -1,0 +1,77 @@
+.poratl_mainContainer {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  background-color: #fff;
+  padding: 0px 80px;
+  flex-direction: column;
+  /* background-color: #71aceb1e; */
+  background: linear-gradient(to right, #efe2fa, #dae8f7, #ffffff);
+  /* background: linear-gradient(#0056b3, #00c742); */
+}
+.poratl_cardsContainer {
+  display: flex;
+  gap: 22px;
+}
+.portal_blurBackground {
+  position: absolute;
+  top: 93%;
+  left: 78%;
+  width: 716px;
+  height: 672px;
+  background: radial-gradient(
+    circle at center,
+    #0359b5 2px,
+    #c87eff,
+    transparent
+  );
+  transform: translate(-60%, -63%);
+  filter: blur(70px);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.portal_cards {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 19px;
+  width: 100%;
+  padding: 40px 6px 40px 20px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s ease-in;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    rgba(39, 37, 76, 0.85) 0%,
+    rgba(63, 99, 255, 0.7) 100%
+  );
+}
+.portal_cards:hover {
+  transform: scale(1.03);
+}
+.portal_cardInnerContainer {
+  display: flex;
+  gap: 16px;
+}
+.portal_cardheading {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 12px !important;
+  /* color: #fff; */
+}
+.portal_cardnames {
+  /* color: rgba(0, 0, 0, 0.836); */
+  color: #fff;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 31px;
+}
+.portal_cardimage {
+  width: 60px;
+}
+.portal_carddescription {
+  color: #e6e6e6;
+  margin-top: 20px !important;
+  font-size: 12px;
+  line-height: 19px;
+}

@@ -1,6 +1,6 @@
 import "./App.css";
 import { BrowserRouter } from "react-router-dom";
-import Layout from "./Layout/Layout";
+import MainSideMenu from "./Layout/Layout";
 import { Provider } from "react-redux";
 import { store } from "./Redux/store";
 
@@ -17,7 +17,7 @@ function App() {
     <Provider store={store}>
       <div className="App">
         <BrowserRouter>
-          <Layout />
+          <MainSideMenu />
         </BrowserRouter>
       </div>
     </Provider>

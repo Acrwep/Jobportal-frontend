@@ -124,10 +124,19 @@
     padding: 24px;
   }
 }
+.candidate_sessionheadingContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .registration_sectionheadings {
   color: rgb(45, 45, 45) !important;
   font-weight: 700;
   font-size: 1.75rem;
+}
+.candidate_sessionnumbers {
+  color: #0056b3;
+  font-size: 15px;
 }
 .registration_fieldrowdiv {
   margin-top: 22px;

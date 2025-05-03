@@ -1,12 +1,214 @@
-.registration_mainContainer {
-  /* display: flex; */
-  /* justify-content: center; */
+.register_mainContainer {
   width: 100%;
+  height: 100vh;
   background-color: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  position: relative;
+  background-color: #71aceb1e;
 }
-.registration_headerContainer {
-  border-bottom: 1px solid #e4e2e0;
-  padding: 12px 32px;
-  color: #2d2d2d;
+@media (min-width: 320px) and (max-width: 1023px) {
+  .register_mainContainer {
+    height: 100%;
+  }
+}
+.register_largecard {
+  width: 70%;
+  /* height: 80%; */
+  background-color: #ffffff;
+  border-radius: 19px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  padding: 40px;
+}
+@media (min-width: 320px) and (max-width: 1023px) {
+  .register_largecard {
+    width: 80%;
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}
+/* #0056b3 */
+/* rgb(29, 80, 248) */
+/* rgb(15, 70, 248), */
+/* rgb(38 78 207) */
+/* 5597df  */
+/* c26fff */
+.register_blurBackground {
+  position: absolute;
+  top: 50%;
+  left: 30%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(
+    circle at center,
+    rgba(63, 99, 255, 0.7) 10%,
+    rgb(49 46 105 / 85%),
+    transparent
+  );
+  transform: translate(-60%, -50%);
+  filter: blur(100px);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+@media (min-width: 320px) and (max-width: 599px) {
+  .register_blurBackground {
+    transform: translate(-60%, -90%);
+  }
+}
+@media (min-width: 600px) and (max-width: 991px) {
+  .register_blurBackground {
+    transform: translate(-40%, -90%);
+  }
+}
+.register_leftContainer {
+  padding: 40px;
+  z-index: 1;
+  position: relative;
+}
+.register_heading {
+  font-size: 35px;
+  font-weight: 700;
+  /* color: #111827; */
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.register_points h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.register_points p {
   font-size: 14px;
+  color: #e6e6e6;
+  line-height: 1.5;
+}
+
+.register_rightContainer {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 30px 40px;
+  z-index: 1;
+  position: relative;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.register_createaccount_heading {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px !important;
+}
+.register_smalltext {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 24px;
+  line-height: 22px;
+}
+@media (min-width: 365px) and (max-width: 386px) {
+  .register_smalltext {
+    font-size: 13px;
+  }
+}
+.register_smalltext a {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+.register_inputlabel {
+  font-weight: 500;
+  margin-bottom: 4px !important;
+}
+.register_input {
+  height: 40px;
+  background-color: transparent;
+  background-image: none;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #a3a3a3;
+  border-radius: 16px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 16px;
+  /* margin-top: 22px; */
+}
+.register_input:hover {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+}
+.register_input:focus-within {
+  border-color: #0057b3b9 !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px rgba(149, 157, 165, 0.2);
+}
+.register_errorinput {
+  height: 40px;
+  background-color: transparent;
+  background-image: none;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ff4d4f;
+  border-radius: 16px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 16px;
+  /* margin-top: 22px; */
+}
+.register_errorinput:hover {
+  border-color: #ff4d4f !important;
+  background-color: transparent;
+}
+.register_errorinput:focus-within {
+  border-color: #ff4d4f !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #ff4d50;
+}
+.register_errorlabels_hide {
+  position: absolute;
+  color: #ff4d4f;
+  transform: translate(-40px, 3px);
+  transition: all 0.3s ease-in-out;
+  opacity: 0;
+}
+.register_errorlabels_visible {
+  position: absolute;
+  font-size: 13px;
+  color: #ff4d4f;
+  transform: translate(8px, 3px);
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+}
+.register_checkboxContainer {
+  display: flex;
+  margin-top: 22px;
+  gap: 12px;
+}
+@media (min-width: 320px) and (max-width: 1023px) {
+  .register_checkboxContainer {
+    display: block;
+  }
+}
+.register_submitbutton {
+  width: 100%;
+  background-color: #0056b3;
+  border: none;
+  height: 43px;
+  margin-top: 20px;
+  border-radius: 30px;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.register_submitbutton:hover {
+  opacity: 0.7;
+}
+.register_submitbutton:active {
+  transform: translateY(2px);
+}
+.register_errorcheckbox .ant-checkbox .ant-checkbox-inner {
+  border: 1px solid #ff4d4f !important;
 }

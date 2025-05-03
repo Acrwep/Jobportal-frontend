@@ -22,7 +22,29 @@
 .commonInputfield:focus-within {
   border-color: #0056b3 !important;
   background-color: transparent;
-  box-shadow: 0 0 0 2px #0057b349;
+  box-shadow: 0 0 0 2px #0057b31c;
+}
+
+.portalInputfield {
+  height: 35px;
+  background-color: transparent;
+  background-image: none;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #a3a3a3;
+  border-radius: 6px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 16px;
+}
+.portalInputfield:hover {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+}
+.portalInputfield:focus-within {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #0057b31c;
 }
 /* common select field styles */
 .commonSelectfield {
@@ -31,6 +53,23 @@
   transition: all 0.2s;
   width: 100%;
   font-size: 16px;
+}
+.portalSelectfield {
+  height: 35px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 16px;
+}
+.portalSelectfield:hover .ant-select-selector {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #0057b31c;
+}
+.portalSelectfield:focus-within .ant-select-selector {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #0057b31c;
 }
 .ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
   border-color: #a3a3a3 !important;
@@ -51,6 +90,11 @@
   font-weight: 600 !important;
   margin-bottom: 6px !important;
 }
+.portalfield_label {
+  font-weight: 500 !important;
+  margin-bottom: 6px !important;
+  font-size: 14px;
+}
 .commonfield_asterisk {
   color: rgba(255, 0, 0, 0.863);
   margin-left: 3px !important;
@@ -61,6 +105,19 @@
 }
 .commonInputfield_error {
   height: 37px;
+  background-color: transparent;
+  background-image: none;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #d9d9d9;
+  border-radius: 6px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 16px;
+  background-color: transparent !important;
+}
+.portalInputfield_error {
+  height: 35px;
   background-color: transparent;
   background-image: none;
   border-width: 1px;
@@ -94,7 +151,8 @@
 }
 .commonSelectfield:hover .ant-select-selector {
   border-color: #0056b3 !important;
-  box-shadow: 0 0 0 2px #25a17e17 !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #0057b31c;
 }
 /* common multiselect field styles */
 .commonMultiselectfield .ant-select-selector {
