@@ -21,11 +21,12 @@ import { RiMenuUnfold2Fill, RiMenuUnfoldFill } from "react-icons/ri";
 import SideMenu from "./SideMenu";
 import QuestionUpload from "../QuestionUpload/QuestionUpload";
 import "./styles.css";
-import { Button, Layout, Menu, theme } from "antd";
+import { Button, Layout, Avatar, theme, Divider } from "antd";
 import OnlineTest from "../Interview/OnlineTest";
 import { TbGridDots } from "react-icons/tb";
 import Placement from "../images/hiring-black.png";
 import Interview from "../images/interview-black.png";
+import { MdOutlineLogout } from "react-icons/md";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
@@ -35,11 +36,24 @@ const MainSideMenu = () => {
   const [showSideBar, setShowSideBar] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [headerMenu, setHeaderMenu] = useState(false);
+  const [logoutMenu, setLogoutMenu] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
     const handleStorageUpdate = () => {
       console.log("path", location.pathname);
       const accessToken = localStorage.getItem("Accesstoken");
+      const loginDetails = localStorage.getItem("loginDetails");
+      const loginDetailsJson = JSON.parse(loginDetails);
+      if (loginDetailsJson) {
+        setUserName(loginDetailsJson.name);
+        setUserEmail(loginDetailsJson.email);
+      } else {
+        setUserName("");
+        setUserEmail("");
+      }
+
       if (accessToken) {
         setShowSideBar(true);
         if (location.pathname === "/") {
@@ -48,11 +62,11 @@ const MainSideMenu = () => {
           setShowSideBar(true);
         }
 
-        // if (location.pathname === "/question-upload") {
-        //   navigate("/question-upload");
-        //   setShowPages(false);
-        //   setShowSideBar(true);
-        // }
+        if (location.pathname === "/search") {
+          navigate("/search");
+          setShowPages(true);
+          setShowSideBar(false);
+        }
       } else {
         if (location.pathname === "/register") {
           navigate("/register");
@@ -174,17 +188,49 @@ const MainSideMenu = () => {
                 }}
               />
 
-              <button
-                onClick={() => setHeaderMenu(!headerMenu)}
-                className="portallayout_headermenubutton"
+              <div
+                style={{ display: "flex", gap: "16px", alignItems: "center" }}
               >
-                <TbGridDots size={20} />
-              </button>
+                <button
+                  onClick={() => {
+                    setHeaderMenu(!headerMenu);
+                    setLogoutMenu(false);
+                  }}
+                  className="portallayout_headermenubutton"
+                >
+                  <TbGridDots size={20} />
+                </button>
+
+                <button
+                  className="portallayout_headeravatarbutton"
+                  onClick={() => {
+                    setLogoutMenu(!logoutMenu);
+                    setHeaderMenu(false);
+                  }}
+                >
+                  <Avatar
+                    size={35}
+                    className="admin_headeravatar"
+                    style={{ marginTop: "6px" }}
+                  >
+                    {userName ? userName.charAt(0).toUpperCase() : ""}
+                  </Avatar>
+                </button>
+              </div>
+
+              {/* menu code */}
               <div
                 className="portallayout_menuContainer"
                 style={{ display: headerMenu ? "block" : "none" }}
               >
-                <div className="portallayout_menuInnerContainer">
+                <div
+                  className="portallayout_menuInnerContainer"
+                  onClick={() => {
+                    setShowPages(true);
+                    setShowSideBar(false);
+                    navigate("/search");
+                  }}
+                >
                   <div className="portallayout_menuItemContainer">
                     <img src={Placement} style={{ width: "34px" }} />
                     <p className="portallayout_menuname">Placement</p>
@@ -196,6 +242,55 @@ const MainSideMenu = () => {
                   </div>
                 </div>
               </div>
+
+              {/* logout menu code */}
+              <div
+                className="portallayout_logoutmenuContainer"
+                style={{ display: logoutMenu ? "block" : "none" }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: "22px 22px 0px",
+                  }}
+                >
+                  <Avatar size={42} className="admin_headeravatar">
+                    {userName ? userName.charAt(0).toUpperCase() : ""}
+                  </Avatar>
+                </div>
+                <div
+                  style={{
+                    padding: "0px 22px 0px",
+                  }}
+                >
+                  <p className="portallayout_logoutmenuemail">
+                    {userEmail ? userEmail : ""}
+                    {/* balaji@actetechnologies.com */}
+                  </p>
+                  <p className="portallayout_logoutmenu_username">
+                    {userName ? userName : ""}
+                  </p>
+                </div>
+                <Divider className="portallayout_logoutmenu_divider" />
+
+                <div
+                  className="logoutmenu_buttonContainer"
+                  onClick={() => {
+                    setHeaderMenu(false);
+                    setLogoutMenu(false);
+                    navigate("/login");
+                  }}
+                >
+                  <button className="logoutmenu_button">
+                    <MdOutlineLogout
+                      size={17}
+                      style={{ marginRight: "12px" }}
+                    />
+                    Logout
+                  </button>
+                </div>
+              </div>
             </Header>
             <Content
               style={{
@@ -205,7 +300,10 @@ const MainSideMenu = () => {
                 // background: colorBgContainer,
                 // borderRadius: borderRadiusLG,
               }}
-              onClick={() => setHeaderMenu(false)}
+              onClick={() => {
+                setHeaderMenu(false);
+                setLogoutMenu(false);
+              }}
             >
               <Routes>
                 <Route element={<QuestionUpload />} path="/question-upload" />

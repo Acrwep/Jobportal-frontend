@@ -3,13 +3,21 @@ import "./styles.css";
 import CommonMuiTable from "../Common/CommonMuiTable";
 import { Button } from "@mui/material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import { Col, Drawer, Row } from "antd";
+import { Col, Drawer, Row, Spin } from "antd";
 import CommonInputField from "../Common/CommonInputField";
 import PortalInputField from "../Common/PortalInputField";
 import { MdFileUpload } from "react-icons/md";
-import { getCourses, getSections } from "../Common/action";
+import {
+  createOptionsForQuestion,
+  createQuestion,
+  getCourses,
+  getQuestions,
+  getSections,
+} from "../Common/action";
 import PortalSelectField from "../Common/PortalSelectField";
 import { addressValidator, selectValidator } from "../Common/Validation";
+import { CommonToaster } from "../Common/CommonToaster";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export default function QuestionUpload() {
   const [open, setOpen] = useState(false);
@@ -33,6 +41,7 @@ export default function QuestionUpload() {
   const [courseIdError, setCourseIdError] = useState(null);
   const [disableCourse, setDisableCourse] = useState(false);
   const [validationTrigger, setValidationTrigger] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   const columns = [
     { key: "question", label: "Question", width: 280 },
@@ -124,7 +133,7 @@ export default function QuestionUpload() {
   };
 
   //form submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setValidationTrigger(true);
     const questionvalidate = addressValidator(question);
@@ -178,10 +187,73 @@ export default function QuestionUpload() {
     )
       return;
 
-    alert("success");
+    setButtonLoading(true);
+    const payload = {
+      question: question,
+      correct_answer: correctAnswer,
+      section_id: sectionId,
+      course_id: courseId,
+    };
+
+    try {
+      const response = await createQuestion(payload);
+      console.log("question upload response", response);
+
+      setTimeout(() => {
+        getQuestionsData();
+      }, 300);
+    } catch (error) {
+      setButtonLoading(false);
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
+    }
+  };
+
+  const getQuestionsData = async () => {
+    try {
+      const response = await getQuestions();
+      console.log("questions", response);
+      const questionsData = response?.data?.data || [];
+      setTimeout(() => {
+        createOptions(questionsData[0].id);
+      }, 300);
+    } catch (error) {
+      setButtonLoading(false);
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
+    }
+  };
+
+  const createOptions = async (questionId) => {
+    let optionsData = [];
+    optionsData.push(optionOne, optionTwo, optionThree, optionFour);
+    console.log(optionsData);
+
+    const payload = {
+      question_id: questionId,
+      options: optionsData,
+    };
+
+    try {
+      const response = await createOptionsForQuestion(payload);
+      console.log("options upload response", response);
+      CommonToaster("Question uploaded");
+    } catch (error) {
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
+    } finally {
+      formReset();
+    }
   };
 
   const formReset = () => {
+    setButtonLoading(false);
     setOpen(false);
     setValidationTrigger(false);
     setQuestion("");
@@ -362,14 +434,36 @@ export default function QuestionUpload() {
               alignItems: "center",
             }}
           >
-            <button
-              variant="contained"
-              className="questionupload_submitbutton"
-              onClick={handleSubmit}
-            >
-              Submit
-            </button>
+            {buttonLoading ? (
+              <button
+                className="questionupload_disablesubmitbutton"
+                onClick={(e) => e.preventDefault()}
+              >
+                <>
+                  <Spin
+                    size="small"
+                    indicator={
+                      <LoadingOutlined
+                        style={{ color: "#ffffff", marginRight: "6px" }}
+                        spin
+                      />
+                    }
+                  />{" "}
+                  Loading...
+                </>
+              </button>
+            ) : (
+              <button
+                className="questionupload_submitbutton"
+                onClick={handleSubmit}
+                type="submit"
+              >
+                Sign In
+              </button>
+            )}
           </div>
+
+          {/* <button onClick={createOptions}>Check</button> */}
         </form>
       </Drawer>
     </div>

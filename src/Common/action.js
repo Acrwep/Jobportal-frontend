@@ -287,3 +287,29 @@ export const getCourses = async (payload) => {
     throw error;
   }
 };
+
+export const createQuestion = async (payload) => {
+  try {
+    const response = await api.post("/api/insertQuestions", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getQuestions = async () => {
+  try {
+    const response = await api.get("/api/getquestions");
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const createOptionsForQuestion = async (payload) => {
+  try {
+    const response = await api.post("/api/insertoption", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

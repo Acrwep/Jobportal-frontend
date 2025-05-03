@@ -45,8 +45,7 @@
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   font-size: 14px;
   height: 36px;
-  width: max-content;
-  padding: 0px 40px;
+  width: 130px;
   font-weight: 600;
   border-radius: 9px;
   margin-top: 34px;
@@ -61,6 +60,22 @@
 .questionupload_submitbutton:active {
   transform: scale(0.9);
   box-shadow: 3px 2px 22px 1px #027cff73;
+}
+.questionupload_disablesubmitbutton {
+  color: #fff;
+  background-color: #0056b3;
+  /* box-shadow: 0 2px 0 rgba(88, 5, 255, 0.06); */
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  font-size: 14px;
+  height: 36px;
+  width: 130px;
+  font-weight: 500;
+  border-radius: 9px;
+  margin-top: 34px;
+  outline: 0 !important;
+  cursor: default;
+  border: none;
+  opacity: 0.7;
 }
 .questionupload_coursefieldlabel_active {
   font-weight: 600 !important;

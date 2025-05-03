@@ -61,6 +61,7 @@ export default function LmsLogin() {
         navigate("/question-upload");
       }, 1000);
     } catch (error) {
+      console.log("login error", error);
       setLoading(false);
       CommonToaster(error?.response?.data?.message || "Internal server error.");
     }
