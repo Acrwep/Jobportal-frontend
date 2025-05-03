@@ -1,22 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Input, Checkbox } from "antd";
+import { Row, Col, Input, Spin } from "antd";
+import { useNavigate } from "react-router-dom";
 import "./styles.css";
 import {
   addressValidator,
   emailValidator,
   nameValidator,
 } from "../Common/Validation";
+import { CommonToaster } from "../Common/CommonToaster";
+import { adminLogin } from "../Common/action";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export default function LmsLogin() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [validationTrigger, setValidationTrigger] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setValidationTrigger(true);
+    setLoading(true);
 
     const emailValidate = emailValidator(email);
     const passwordValidate = addressValidator(password);
@@ -24,9 +35,35 @@ export default function LmsLogin() {
     setEmailError(emailValidate);
     setPasswordError(passwordValidate);
 
-    if (emailValidate || passwordValidate) return;
+    if (emailValidate || passwordValidate) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    const payload = {
+      email: email,
+      password: password,
+    };
 
-    alert("success");
+    try {
+      const response = await adminLogin(payload);
+      console.log(response);
+      const loginDetails = response?.data?.details;
+      localStorage.setItem("Accesstoken", loginDetails.token);
+      localStorage.setItem("loginUserId", loginDetails.id);
+      localStorage.setItem("loginUserRole", loginDetails.role);
+      localStorage.setItem("loginDetails", JSON.stringify(loginDetails));
+      const event = new Event("localStorageUpdated");
+      window.dispatchEvent(event);
+
+      setTimeout(() => {
+        setLoading(false);
+        navigate("/question-upload");
+      }, 1000);
+    } catch (error) {
+      setLoading(false);
+      CommonToaster(error?.response?.data?.message || "Internal server error.");
+    }
   };
 
   return (
@@ -97,6 +134,8 @@ export default function LmsLogin() {
                         setEmailError(emailValidator(e.target.value));
                       }
                     }}
+                    type="email"
+                    name="email"
                     value={email}
                     status={emailError != "" ? "error" : ""}
                   />
@@ -137,13 +176,34 @@ export default function LmsLogin() {
                     {"Password" + " " + passwordError}
                   </p>
                 </div>
-                <button
-                  className="register_submitbutton"
-                  onClick={handleSubmit}
-                  type="submit"
-                >
-                  Sign In
-                </button>
+
+                {loading ? (
+                  <button
+                    className="register_disablesubmitbutton"
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    <>
+                      <Spin
+                        size="default"
+                        indicator={
+                          <LoadingOutlined
+                            style={{ color: "#ffffff", marginRight: "6px" }}
+                            spin
+                          />
+                        }
+                      />{" "}
+                      Loading...
+                    </>
+                  </button>
+                ) : (
+                  <button
+                    className="register_submitbutton"
+                    onClick={handleSubmit}
+                    type="submit"
+                  >
+                    Sign In
+                  </button>
+                )}
               </form>
             </div>
           </Col>

@@ -18,114 +18,15 @@ import AdminSearch from "../Admin/AdminSearch";
 import LmsLogin from "../Login/LmsLogin";
 import Portal from "../Portal/Portal";
 import { RiMenuUnfold2Fill, RiMenuUnfoldFill } from "react-icons/ri";
-
-import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SideMenu from "./SideMenu";
 import QuestionUpload from "../QuestionUpload/QuestionUpload";
 import "./styles.css";
-
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import OnlineTest from "../Interview/OnlineTest";
+import { TbGridDots } from "react-icons/tb";
+import Placement from "../images/hiring-black.png";
+import Interview from "../images/interview-black.png";
 const { Header, Sider, Content } = Layout;
-
-const drawerWidth = 210;
-
-// const openedMixin = (theme) => ({
-//   width: drawerWidth,
-//   transition: theme.transitions.create("width", {
-//     easing: theme.transitions.easing.sharp,
-//     duration: theme.transitions.duration.enteringScreen,
-//   }),
-//   overflowX: "hidden",
-// });
-
-// const closedMixin = (theme) => ({
-//   transition: theme.transitions.create("width", {
-//     easing: theme.transitions.easing.sharp,
-//     duration: theme.transitions.duration.leavingScreen,
-//   }),
-//   overflowX: "hidden",
-//   width: `calc(${theme.spacing(7)} + 1px)`,
-//   [theme.breakpoints.up("sm")]: {
-//     width: `calc(${theme.spacing(8)} + 1px)`,
-//   },
-// });
-
-// const DrawerHeader = styled("div")(({ theme }) => ({
-//   display: "flex",
-//   alignItems: "center",
-//   justifyContent: "flex-end",
-//   padding: theme.spacing(0, 1),
-//   // necessary for content to be below app bar
-//   ...theme.mixins.toolbar,
-// }));
-
-// const AppBar = styled(MuiAppBar, {
-//   shouldForwardProp: (prop) => prop !== "open",
-// })(({ theme }) => ({
-//   zIndex: theme.zIndex.drawer + 1,
-//   transition: theme.transitions.create(["width", "margin"], {
-//     easing: theme.transitions.easing.sharp,
-//     duration: theme.transitions.duration.leavingScreen,
-//   }),
-//   variants: [
-//     {
-//       props: ({ open }) => open,
-//       style: {
-//         marginLeft: drawerWidth,
-//         width: `calc(100% - ${drawerWidth}px)`,
-//         transition: theme.transitions.create(["width", "margin"], {
-//           easing: theme.transitions.easing.sharp,
-//           duration: theme.transitions.duration.enteringScreen,
-//         }),
-//       },
-//     },
-//   ],
-// }));
-
-// const Drawer = styled(MuiDrawer, {
-//   shouldForwardProp: (prop) => prop !== "open",
-// })(({ theme }) => ({
-//   width: drawerWidth,
-//   flexShrink: 0,
-//   whiteSpace: "nowrap",
-//   boxSizing: "border-box",
-//   variants: [
-//     {
-//       props: ({ open }) => open,
-//       style: {
-//         ...openedMixin(theme),
-//         "& .MuiDrawer-paper": openedMixin(theme),
-//       },
-//     },
-//     {
-//       props: ({ open }) => !open,
-//       style: {
-//         ...closedMixin(theme),
-//         "& .MuiDrawer-paper": closedMixin(theme),
-//       },
-//     },
-//   ],
-// }));
 
 const MainSideMenu = () => {
   const navigate = useNavigate();
@@ -133,35 +34,25 @@ const MainSideMenu = () => {
   const [showPages, setShowPages] = useState(false);
   const [showSideBar, setShowSideBar] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-
-  // const theme = useTheme();
-  const [open, setOpen] = useState(true);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const [headerMenu, setHeaderMenu] = useState(false);
 
   useEffect(() => {
     const handleStorageUpdate = () => {
       console.log("path", location.pathname);
       const accessToken = localStorage.getItem("Accesstoken");
       if (accessToken) {
-        setShowPages(true);
+        setShowSideBar(true);
         if (location.pathname === "/") {
-          navigate("/search");
-          setShowPages(true);
-          setShowSideBar(false);
-        }
-
-        if (location.pathname === "/question-upload") {
           navigate("/question-upload");
           setShowPages(false);
           setShowSideBar(true);
         }
+
+        // if (location.pathname === "/question-upload") {
+        //   navigate("/question-upload");
+        //   setShowPages(false);
+        //   setShowSideBar(true);
+        // }
       } else {
         if (location.pathname === "/register") {
           navigate("/register");
@@ -169,16 +60,9 @@ const MainSideMenu = () => {
         } else if (location.pathname === "/lmsregister") {
           navigate("/lmsregister");
           setShowPages(false);
-        } else if (location.pathname === "/lmslogin") {
-          navigate("/lmslogin");
-          setShowPages(false);
         } else if (location.pathname === "/portal") {
           navigate("/portal");
           setShowPages(false);
-        } else if (location.pathname === "/question-upload") {
-          navigate("/question-upload");
-          setShowPages(false);
-          setShowSideBar(true);
         } else if (location.pathname === "/online-test") {
           navigate("/online-test");
           setShowPages(false);
@@ -224,7 +108,7 @@ const MainSideMenu = () => {
     <div>
       {location.pathname === "/login" ? (
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LmsLogin />} />
         </Routes>
       ) : location.pathname === "/register" ? (
         <Routes>
@@ -233,10 +117,6 @@ const MainSideMenu = () => {
       ) : location.pathname === "/lmsregister" ? (
         <Routes>
           <Route path="/lmsregister" element={<Register />} />
-        </Routes>
-      ) : location.pathname === "/lmslogin" ? (
-        <Routes>
-          <Route path="/lmslogin" element={<LmsLogin />} />
         </Routes>
       ) : location.pathname === "/portal" ? (
         <Routes>
@@ -274,10 +154,10 @@ const MainSideMenu = () => {
           <Layout style={{ height: "100vh", backgroundColor: "#fff" }}>
             <Header
               style={{
-                padding: 0,
                 background: colorBgContainer,
-                boxShadow: "0 7px 29px 0 #64646f33",
+                boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
               }}
+              className="portallayout_headerContainer"
             >
               <Button
                 type="text"
@@ -291,10 +171,31 @@ const MainSideMenu = () => {
                 onClick={() => setCollapsed(!collapsed)}
                 style={{
                   fontSize: "16px",
-                  width: 64,
-                  height: 64,
                 }}
               />
+
+              <button
+                onClick={() => setHeaderMenu(!headerMenu)}
+                className="portallayout_headermenubutton"
+              >
+                <TbGridDots size={20} />
+              </button>
+              <div
+                className="portallayout_menuContainer"
+                style={{ display: headerMenu ? "block" : "none" }}
+              >
+                <div className="portallayout_menuInnerContainer">
+                  <div className="portallayout_menuItemContainer">
+                    <img src={Placement} style={{ width: "34px" }} />
+                    <p className="portallayout_menuname">Placement</p>
+                  </div>
+
+                  <div className="portallayout_menuItemContainer">
+                    <img src={Interview} className="portallayout_menuImage" />
+                    <p className="portallayout_menunametwo">Interview</p>
+                  </div>
+                </div>
+              </div>
             </Header>
             <Content
               style={{
@@ -304,6 +205,7 @@ const MainSideMenu = () => {
                 // background: colorBgContainer,
                 // borderRadius: borderRadiusLG,
               }}
+              onClick={() => setHeaderMenu(false)}
             >
               <Routes>
                 <Route element={<QuestionUpload />} path="/question-upload" />

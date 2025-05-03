@@ -7,8 +7,9 @@ import {
   TableHead,
   TableRow,
   Paper,
-  tableCellClasses,
+  TablePagination,
   Box,
+  tableCellClasses,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -21,8 +22,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontFamily: '"Lexend", serif',
     borderRight: "1px solid #e0e0e0",
     paddingTop: 4,
-    paddingBottom: 4, // reduce vertical padding
-    height: 48, // optional fixed height
+    paddingBottom: 4,
+    height: 48,
     position: "sticky",
     top: 0,
     zIndex: 1,
@@ -33,19 +34,36 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontFamily: '"Lexend", serif',
     borderRight: "1px solid #e0e0e0",
     paddingTop: 4,
-    paddingBottom: 4, // reduce vertical padding
-    height: 46, // optional fixed height
+    paddingBottom: 4,
+    height: 46,
   },
 }));
 
 // Styled TableRow
 const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#fafafa",
+    // backgroundColor: "#fafafa",
   },
 }));
 
 const CommonMuiTable = ({ columns = [], rows = [], tableWidth }) => {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const paginatedRows = rows.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
   return (
     <Box
       sx={{
@@ -58,16 +76,16 @@ const CommonMuiTable = ({ columns = [], rows = [], tableWidth }) => {
         component={Paper}
         sx={{
           maxHeight: 400,
-          overflowX: "auto", // horizontal scroll
+          overflowX: "auto",
           width: "100%",
-          borderRadius: "6px", // to make it look nicer
+          borderRadius: "6px",
         }}
       >
         <Table
           stickyHeader
           aria-label="sticky table"
           sx={{
-            minWidth: tableWidth, // Ensure there's enough width for horizontal scrolling
+            minWidth: tableWidth,
           }}
         >
           <TableHead>
@@ -76,7 +94,10 @@ const CommonMuiTable = ({ columns = [], rows = [], tableWidth }) => {
                 <StyledTableCell
                   key={idx}
                   align={col.align || "start"}
-                  sx={{ minWidth: col.width || "150px", whiteSpace: "nowrap" }}
+                  sx={{
+                    minWidth: col.width || "150px",
+                    whiteSpace: "nowrap",
+                  }}
                 >
                   {col.label}
                 </StyledTableCell>
@@ -84,7 +105,7 @@ const CommonMuiTable = ({ columns = [], rows = [], tableWidth }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, rowIdx) => (
+            {paginatedRows.map((row, rowIdx) => (
               <StyledTableRow key={rowIdx}>
                 {columns.map((col, colIdx) => (
                   <StyledTableCell key={colIdx} align={col.align || "start"}>
@@ -96,6 +117,16 @@ const CommonMuiTable = ({ columns = [], rows = [], tableWidth }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <TablePagination
+        rowsPerPageOptions={[10, 20, 50, 100]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </Box>
   );
 };

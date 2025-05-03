@@ -11,3 +11,65 @@
   padding: 24px;
   margin-bottom: 12px;
 }
+.portallayout_headerContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 2px 19px;
+  align-items: center;
+  position: relative;
+}
+.portallayout_headermenubutton {
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  border-radius: 50%;
+  padding: 8px 10px;
+  margin-top: 6px;
+}
+.portallayout_headermenubutton:hover {
+  color: black !important;
+  background-color: #e1e1e1;
+}
+.portallayout_headermenubutton:focus-visible {
+  outline: 0 !important;
+}
+.portallayout_menuContainer {
+  background-color: #fff;
+  position: absolute;
+  top: 104%;
+  right: 16px;
+  z-index: 99;
+  border-radius: 9px;
+  padding: 9px 22px;
+  border: 1px solid #d9d5d5;
+}
+.portallayout_menuInnerContainer {
+  display: flex;
+  gap: 19px;
+}
+.portallayout_menuItemContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.portallayout_menuItemContainer:hover {
+  background-color: #eaf1f9;
+}
+.portallayout_menuImage {
+  width: 32px;
+}
+
+.portallayout_menuname {
+  margin-top: 4px !important;
+  font-size: 13px;
+  line-height: 20px !important;
+}
+.portallayout_menunametwo {
+  margin-top: 6px !important;
+  font-size: 13px;
+  line-height: 20px !important;
+}

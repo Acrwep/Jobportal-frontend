@@ -212,3 +212,15 @@
 .register_errorcheckbox .ant-checkbox .ant-checkbox-inner {
   border: 1px solid #ff4d4f !important;
 }
+.register_disablesubmitbutton {
+  width: 100%;
+  background-color: #0056b3;
+  border: none;
+  height: 43px;
+  margin-top: 20px;
+  border-radius: 30px;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: default;
+  opacity: 0.7;
+}
