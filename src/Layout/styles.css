@@ -118,6 +118,7 @@
   cursor: pointer;
   display: flex;
   justify-content: center;
+  line-height: 16px !important;
 }
 .logoutmenu_buttonContainer:hover {
   background-color: #eaf1f9;

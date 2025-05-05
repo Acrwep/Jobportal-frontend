@@ -10,6 +10,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { CommonToaster } from "../Common/CommonToaster";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { storePortalMenuStatus, storeLogoutMenuStatus } from "../Redux/slice";
 import Header from "../Header/Header";
 import CommonMultiSelect from "../Common/CommonMultiSelect";
 
@@ -155,7 +156,13 @@ export default function AdminSearch() {
       </div> */}
       <Header />
 
-      <div className="adminsearch_mainContainer">
+      <div
+        className="adminsearch_mainContainer"
+        onClick={() => {
+          dispatch(storePortalMenuStatus(false));
+          dispatch(storeLogoutMenuStatus(false));
+        }}
+      >
         <p className="adminsearch_heading">Search</p>
         <p className="adminsearch_label">Keywords</p>
         <div style={{ position: "relative" }}>

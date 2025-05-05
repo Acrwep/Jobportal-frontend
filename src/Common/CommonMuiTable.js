@@ -46,7 +46,7 @@ const StyledTableRow = styled(TableRow)(() => ({
   },
 }));
 
-const CommonMuiTable = ({ columns = [], rows = [], tableWidth }) => {
+const CommonMuiTable = ({ columns = [], data = [], tableWidth }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -59,7 +59,7 @@ const CommonMuiTable = ({ columns = [], rows = [], tableWidth }) => {
     setPage(0);
   };
 
-  const paginatedRows = rows.slice(
+  const paginatedRows = data.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
@@ -121,7 +121,7 @@ const CommonMuiTable = ({ columns = [], rows = [], tableWidth }) => {
       <TablePagination
         rowsPerPageOptions={[10, 20, 50, 100]}
         component="div"
-        count={rows.length}
+        count={data.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

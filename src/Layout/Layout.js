@@ -27,76 +27,86 @@ import { TbGridDots } from "react-icons/tb";
 import Placement from "../images/hiring-black.png";
 import Interview from "../images/interview-black.png";
 import { MdOutlineLogout } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { storeLogoutMenuStatus, storePortalMenuStatus } from "../Redux/slice";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const portalMenu = useSelector((state) => state.portalmenu);
+  const logoutMenu = useSelector((state) => state.logoutmenu);
+
   const [showPages, setShowPages] = useState(false);
   const [showSideBar, setShowSideBar] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const [headerMenu, setHeaderMenu] = useState(false);
-  const [logoutMenu, setLogoutMenu] = useState(false);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
-    const handleStorageUpdate = () => {
-      console.log("path", location.pathname);
-      const accessToken = localStorage.getItem("Accesstoken");
-      const loginDetails = localStorage.getItem("loginDetails");
-      const loginDetailsJson = JSON.parse(loginDetails);
-      if (loginDetailsJson) {
-        setUserName(loginDetailsJson.name);
-        setUserEmail(loginDetailsJson.email);
-      } else {
-        setUserName("");
-        setUserEmail("");
-      }
+    // const handleStorageUpdate = () => {
+    console.log("path", location.pathname);
+    const accessToken = localStorage.getItem("Accesstoken");
+    const loginDetails = localStorage.getItem("loginDetails");
+    const loginDetailsJson = JSON.parse(loginDetails);
+    if (loginDetailsJson) {
+      setUserName(loginDetailsJson.name);
+      setUserEmail(loginDetailsJson.email);
+    } else {
+      setUserName("");
+      setUserEmail("");
+    }
 
-      if (accessToken) {
+    if (accessToken) {
+      setShowSideBar(true);
+      if (location.pathname === "/") {
+        navigate("/question-upload");
+        setShowPages(false);
         setShowSideBar(true);
-        if (location.pathname === "/") {
-          navigate("/question-upload");
-          setShowPages(false);
-          setShowSideBar(true);
-        }
-
-        if (location.pathname === "/search") {
-          navigate("/search");
-          setShowPages(true);
-          setShowSideBar(false);
-        }
-      } else {
-        if (location.pathname === "/register") {
-          navigate("/register");
-          setShowPages(false);
-        } else if (location.pathname === "/lmsregister") {
-          navigate("/lmsregister");
-          setShowPages(false);
-        } else if (location.pathname === "/portal") {
-          navigate("/portal");
-          setShowPages(false);
-        } else if (location.pathname === "/online-test") {
-          navigate("/online-test");
-          setShowPages(false);
-          setShowSideBar(false);
-        } else {
-          navigate("/login");
-          setShowPages(false);
-        }
       }
-    };
 
-    window.addEventListener("localStorageUpdated", handleStorageUpdate);
+      if (location.pathname === "/search") {
+        navigate("/search");
+        setShowPages(true);
+        setShowSideBar(false);
+      }
 
-    // Initial load
-    handleStorageUpdate();
+      if (location.pathname === "/question-upload") {
+        navigate("/question-upload");
+        setShowPages(false);
+        setShowSideBar(true);
+      }
+    } else {
+      if (location.pathname === "/register") {
+        navigate("/register");
+        setShowPages(false);
+      } else if (location.pathname === "/lmsregister") {
+        navigate("/lmsregister");
+        setShowPages(false);
+      } else if (location.pathname === "/portal") {
+        navigate("/portal");
+        setShowPages(false);
+      } else if (location.pathname === "/online-test") {
+        navigate("/online-test");
+        setShowPages(false);
+        setShowSideBar(false);
+      } else {
+        navigate("/login");
+        setShowPages(false);
+      }
+    }
+    // };
 
-    return () => {
-      window.removeEventListener("localStorageUpdated", handleStorageUpdate);
-    };
-  }, []);
+    // window.addEventListener("localStorageUpdated", handleStorageUpdate);
+
+    // // Initial load
+    // handleStorageUpdate();
+
+    // return () => {
+    //   window.removeEventListener("localStorageUpdated", handleStorageUpdate);
+    // };
+  }, [location.pathname]);
 
   useEffect(() => {
     //handle navigate to login page when token expire
@@ -117,6 +127,24 @@ const MainSideMenu = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  const handlePortalMenu = () => {
+    console.log(portalMenu);
+    dispatch(storePortalMenuStatus(!portalMenu));
+    dispatch(storeLogoutMenuStatus(false));
+  };
+
+  const handleLogoutMenu = () => {
+    dispatch(storePortalMenuStatus(false));
+    dispatch(storeLogoutMenuStatus(!logoutMenu));
+  };
+
+  const handleLogout = () => {
+    dispatch(storePortalMenuStatus(false));
+    dispatch(storeLogoutMenuStatus(false));
+    localStorage.clear();
+    navigate("/login");
+  };
 
   return (
     <div>
@@ -192,10 +220,7 @@ const MainSideMenu = () => {
                 style={{ display: "flex", gap: "16px", alignItems: "center" }}
               >
                 <button
-                  onClick={() => {
-                    setHeaderMenu(!headerMenu);
-                    setLogoutMenu(false);
-                  }}
+                  onClick={handlePortalMenu}
                   className="portallayout_headermenubutton"
                 >
                   <TbGridDots size={20} />
@@ -203,10 +228,7 @@ const MainSideMenu = () => {
 
                 <button
                   className="portallayout_headeravatarbutton"
-                  onClick={() => {
-                    setLogoutMenu(!logoutMenu);
-                    setHeaderMenu(false);
-                  }}
+                  onClick={handleLogoutMenu}
                 >
                   <Avatar
                     size={35}
@@ -221,22 +243,32 @@ const MainSideMenu = () => {
               {/* menu code */}
               <div
                 className="portallayout_menuContainer"
-                style={{ display: headerMenu ? "block" : "none" }}
+                style={{ display: portalMenu ? "block" : "none" }}
               >
-                <div
-                  className="portallayout_menuInnerContainer"
-                  onClick={() => {
-                    setShowPages(true);
-                    setShowSideBar(false);
-                    navigate("/search");
-                  }}
-                >
-                  <div className="portallayout_menuItemContainer">
+                <div className="portallayout_menuInnerContainer">
+                  <div
+                    className="portallayout_menuItemContainer"
+                    onClick={() => {
+                      setShowPages(true);
+                      dispatch(storePortalMenuStatus(false));
+                      dispatch(storeLogoutMenuStatus(false));
+                      navigate("/search");
+                    }}
+                  >
                     <img src={Placement} style={{ width: "34px" }} />
                     <p className="portallayout_menuname">Placement</p>
                   </div>
 
-                  <div className="portallayout_menuItemContainer">
+                  <div
+                    className="portallayout_menuItemContainer"
+                    onClick={() => {
+                      setShowPages(false);
+                      setShowSideBar(true);
+                      dispatch(storePortalMenuStatus(false));
+                      dispatch(storeLogoutMenuStatus(false));
+                      navigate("/question-upload");
+                    }}
+                  >
                     <img src={Interview} className="portallayout_menuImage" />
                     <p className="portallayout_menunametwo">Interview</p>
                   </div>
@@ -276,11 +308,7 @@ const MainSideMenu = () => {
 
                 <div
                   className="logoutmenu_buttonContainer"
-                  onClick={() => {
-                    setHeaderMenu(false);
-                    setLogoutMenu(false);
-                    navigate("/login");
-                  }}
+                  onClick={handleLogout}
                 >
                   <button className="logoutmenu_button">
                     <MdOutlineLogout
@@ -301,8 +329,8 @@ const MainSideMenu = () => {
                 // borderRadius: borderRadiusLG,
               }}
               onClick={() => {
-                setHeaderMenu(false);
-                setLogoutMenu(false);
+                dispatch(storePortalMenuStatus(false));
+                dispatch(storeLogoutMenuStatus(false));
               }}
             >
               <Routes>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import { MdQuestionAnswer } from "react-icons/md";
 import { Menu } from "antd";
 
 export default function SideMenu() {
@@ -9,12 +9,12 @@ export default function SideMenu() {
   const sidemenuList = [
     {
       title: "Questions",
-      icon: <QuestionAnswerIcon size={17} />,
+      icon: <MdQuestionAnswer size={17} />,
       path: "question-upload",
     },
     {
       title: "Videos",
-      icon: <QuestionAnswerIcon size={17} />,
+      icon: <MdQuestionAnswer size={17} />,
       path: "Videos",
     },
   ];

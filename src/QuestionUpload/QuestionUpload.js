@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./styles.css";
-import CommonMuiTable from "../Common/CommonMuiTable";
-import { Button } from "@mui/material";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { Col, Drawer, Row, Spin } from "antd";
 import CommonInputField from "../Common/CommonInputField";
 import PortalInputField from "../Common/PortalInputField";
@@ -13,15 +10,21 @@ import {
   getCourses,
   getQuestions,
   getSections,
+  updateQuestion,
 } from "../Common/action";
 import PortalSelectField from "../Common/PortalSelectField";
 import { addressValidator, selectValidator } from "../Common/Validation";
 import { CommonToaster } from "../Common/CommonToaster";
 import { LoadingOutlined } from "@ant-design/icons";
+import { AiTwotoneEdit } from "react-icons/ai";
+import CommonTable from "../Common/CommonTable";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 export default function QuestionUpload() {
   const [open, setOpen] = useState(false);
+  const [questionsData, setQuestionsData] = useState([]);
   const [question, setQuestion] = useState("");
+  const [questionId, setQuestionId] = useState(null);
   const [questionError, setQuestionError] = useState("");
   const [optionOne, setOptionOne] = useState("");
   const [optionOneError, setOptionOneError] = useState("");
@@ -42,32 +45,57 @@ export default function QuestionUpload() {
   const [disableCourse, setDisableCourse] = useState(false);
   const [validationTrigger, setValidationTrigger] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [tableLoading, setTableLoading] = useState(true);
 
   const columns = [
-    { key: "question", label: "Question", width: 280 },
-    { key: "option1", label: "Option 1", width: 190 },
-    { key: "option2", label: "Option 2", width: 190 },
-    { key: "option3", label: "Option 3", width: 190 },
-    { key: "correctAnswer", label: "Correct Answer", width: 190 },
-    { key: "category", label: "Category", width: 120 },
-  ];
-
-  const rows = [
+    { title: "Question", key: "question", dataIndex: "question", width: 280 },
+    { title: "Option A", key: "option_a", dataIndex: "option_a", width: 190 },
+    { title: "Option B", key: "option_b", dataIndex: "option_b", width: 190 },
+    { title: "Option C", key: "option_c", dataIndex: "option_c", width: 190 },
+    { title: "Option C", key: "option_d", dataIndex: "option_d", width: 190 },
     {
-      question: "What is React",
-      option1: "A Backend Framework",
-      option2: "A Database Management System",
-      option3: "A JavaScript Library",
-      correctAnswer: "A JavaScript Library",
-      category: "Set 1",
+      title: "Correct Answer",
+      key: "correct_answer",
+      dataIndex: "correct_answer",
+      width: 190,
     },
     {
-      question: "What is React",
-      option1: "A Backend Framework",
-      option2: "A Database Management System",
-      option3: "A JavaScript Library",
-      correctAnswer: "A JavaScript Library",
-      category: "Set 2",
+      title: "Section",
+      key: "section_name",
+      dataIndex: "section_name",
+      width: 180,
+    },
+    {
+      title: "Course",
+      key: "course_name",
+      dataIndex: "course_name",
+      width: 200,
+    },
+    {
+      title: "Action",
+      key: "action",
+      dataIndex: "action",
+      width: 120,
+      fixed: "right",
+      render: (item, record) => {
+        return (
+          <div className="questionupload_table_actionContainer">
+            <div>
+              <AiTwotoneEdit
+                size={20}
+                style={{ cursor: "pointer" }}
+                onClick={() => handleEdit(record)}
+              />
+            </div>
+            <RiDeleteBinLine
+              size={20}
+              color="#d32215"
+              style={{ cursor: "pointer" }}
+            />
+          </div>
+        );
+      },
     },
   ];
 
@@ -107,7 +135,28 @@ export default function QuestionUpload() {
       setCourseData([]);
       console.log("course error", error);
     } finally {
-      setTimeout(() => {}, 300);
+      setTimeout(() => {
+        getQuestionsData();
+      }, 300);
+    }
+  };
+
+  const getQuestionsData = async () => {
+    setTableLoading(true);
+    try {
+      const response = await getQuestions();
+      console.log("questions", response);
+      const questionsdata = response?.data?.data || [];
+      setQuestionsData(questionsdata);
+    } catch (error) {
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
+    } finally {
+      setTimeout(() => {
+        setTableLoading(false);
+      }, 300);
     }
   };
 
@@ -129,6 +178,23 @@ export default function QuestionUpload() {
       } else {
         setCorrectAnswerError("");
       }
+    }
+  };
+
+  const handleEdit = (record) => {
+    setOpen(true);
+    setEdit(true);
+    setQuestionId(record.question_id);
+    setQuestion(record.question);
+    setOptionOne(record.option_a);
+    setOptionTwo(record.option_b);
+    setOptionThree(record.option_c);
+    setOptionFour(record.option_d);
+    setCorrectAnswer(record.correct_answer);
+    setSectionId(record.section_id);
+    setCourseId(record.course_id);
+    if (record.section_id) {
+      setDisableCourse(true);
     }
   };
 
@@ -189,42 +255,50 @@ export default function QuestionUpload() {
 
     setButtonLoading(true);
     const payload = {
+      ...(edit && { id: questionId }),
       question: question,
+      option_a: optionOne,
+      option_b: optionTwo,
+      option_c: optionThree,
+      option_d: optionFour,
       correct_answer: correctAnswer,
       section_id: sectionId,
       course_id: courseId,
     };
 
-    try {
-      const response = await createQuestion(payload);
-      console.log("question upload response", response);
+    if (edit) {
+      try {
+        await updateQuestion(payload);
+        CommonToaster("Question updated");
+        setTableLoading(true);
+        setTimeout(() => {
+          getQuestionsData();
+          formReset();
+        }, 300);
+      } catch (error) {
+        setButtonLoading(false);
+        CommonToaster(
+          error?.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
+      }
+    } else {
+      try {
+        await createQuestion(payload);
+        CommonToaster("Question created");
+        setTableLoading(true);
 
-      setTimeout(() => {
-        getQuestionsData();
-      }, 300);
-    } catch (error) {
-      setButtonLoading(false);
-      CommonToaster(
-        error?.response?.data?.message ||
-          "Something went wrong. Try again later"
-      );
-    }
-  };
-
-  const getQuestionsData = async () => {
-    try {
-      const response = await getQuestions();
-      console.log("questions", response);
-      const questionsData = response?.data?.data || [];
-      setTimeout(() => {
-        createOptions(questionsData[0].id);
-      }, 300);
-    } catch (error) {
-      setButtonLoading(false);
-      CommonToaster(
-        error?.response?.data?.message ||
-          "Something went wrong. Try again later"
-      );
+        setTimeout(() => {
+          getQuestionsData();
+          formReset();
+        }, 300);
+      } catch (error) {
+        setButtonLoading(false);
+        CommonToaster(
+          error?.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
+      }
     }
   };
 
@@ -255,8 +329,10 @@ export default function QuestionUpload() {
   const formReset = () => {
     setButtonLoading(false);
     setOpen(false);
+    setEdit(false);
     setValidationTrigger(false);
     setQuestion("");
+    setQuestionId(null);
     setQuestionError("");
     setOptionOne("");
     setOptionOneError("");
@@ -285,14 +361,23 @@ export default function QuestionUpload() {
         </button>
       </div>
       <div style={{ marginTop: "22px" }}>
-        <CommonMuiTable tableWidth={1400} columns={columns} rows={rows} />
+        <CommonTable
+          scroll={{ x: 1200 }}
+          columns={columns}
+          dataSource={questionsData}
+          dataPerPage={10}
+          loading={tableLoading}
+          checkBox="false"
+          size="small"
+          className="questionupload_table"
+        />
       </div>
 
       <Drawer
         open={open}
         onClose={formReset}
         width="45%"
-        title="Create Question"
+        title={edit ? "Update Question" : "Create Question"}
         closable
       >
         <form>
@@ -458,7 +543,7 @@ export default function QuestionUpload() {
                 onClick={handleSubmit}
                 type="submit"
               >
-                Sign In
+                Submit
               </button>
             )}
           </div>
