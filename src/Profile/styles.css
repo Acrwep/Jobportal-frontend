@@ -93,6 +93,7 @@
 }
 .jobprefcard_locationheading {
   color: gray;
+  font-weight: 500;
 }
 .jobprefcard_locationtext {
   color: #333;
@@ -103,6 +104,7 @@
   color: gray;
   margin-top: 12px !important;
   margin-right: 24px !important;
+  font-weight: 500;
 }
 .languagecard_statustext {
   color: gray;

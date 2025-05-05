@@ -12,9 +12,9 @@ body {
     monospace;
 } */
 * {
-  /* font-family: "Outfit", sans-serif; */
+  /* font-family: "Lexend", serif; */
   /* font-family: "Noto Sans", serif; */
-  font-family: "Lexend", serif;
+  font-family: "Montserrat", sans-serif;
 }
 p {
   margin: 0 !important;
@@ -58,14 +58,14 @@ p {
   ):not(.ant-pagination-size-changer):hover
   .ant-select-selector {
   border-color: #0056b3 !important;
-  box-shadow: 0 0 0 2px #0057b349 !important;
+  box-shadow: 0 0 0 2px #0057b31c !important;
 }
 .ant-select-focused.ant-select:not(.ant-select-disabled):not(
     .ant-select-customize-input
   ):not(.ant-pagination-size-changer)
   .ant-select-selector {
   border-color: #0056b3 !important;
-  box-shadow: 0 0 0 2px #0057b349 !important;
+  box-shadow: 0 0 0 2px #0057b31c !important;
 }
 .ant-table-thead .ant-table-cell {
   background-color: #0056b3 !important;
@@ -115,11 +115,11 @@ p {
 }
 .ant-picker-outlined:focus {
   border-color: #0056b3 !important;
-  box-shadow: 0 0 0 2px #25a17e1e !important;
+  box-shadow: 0 0 0 2px #0057b31c !important;
 }
 .ant-picker-outlined:focus-within {
   border-color: #0056b3 !important;
-  box-shadow: 0 0 0 2px #25a17e1e !important;
+  box-shadow: 0 0 0 2px #0057b31c !important;
 }
 .ant-picker-outlined.ant-picker-status-error:not(
     .ant-picker-disabled

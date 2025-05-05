@@ -37,6 +37,8 @@ import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import CommonMultiSelect from "../Common/CommonMultiSelect";
 import { addressValidator } from "../Common/Validation";
+import { useDispatch } from "react-redux";
+import { storePortalMenuStatus, storeLogoutMenuStatus } from "../Redux/slice";
 
 export default function Admin() {
   pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -50,6 +52,7 @@ export default function Admin() {
     limit: 40,
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [totalProfileCount, setTotalProfileCount] = useState(0);
   const [selectAllValue, setSelectAllValue] = useState(false);
 
@@ -850,7 +853,13 @@ export default function Admin() {
   return (
     <div className="admin_mainContainer" id="admin_mainContainer">
       <Header />
-      <Row className="admin_layoutrowContainer">
+      <Row
+        className="admin_layoutrowContainer"
+        onClick={() => {
+          dispatch(storePortalMenuStatus(false));
+          dispatch(storeLogoutMenuStatus(false));
+        }}
+      >
         <Col span={6}>
           <div
             className="admin_filtersmainContainer"
@@ -2122,7 +2131,7 @@ export default function Admin() {
       >
         <div style={{ marginTop: "6px" }}>
           <p
-            style={{ fontWeight: 500, fontSize: "16px" }}
+            style={{ fontWeight: 500, fontSize: "14px" }}
             onClick={() => console.log(eligibleCandidateStatus)}
           >
             {eligibleCandidateStatus === true

@@ -33,7 +33,9 @@ export default function CommonDoubleDatePicker({ onChange, value, label }) {
     <div className="commonInputfield_container">
       <div style={{ display: "flex" }}>
         {label && (
-          <label style={{ marginBottom: "4px", fontSize: "12px" }}>
+          <label
+            style={{ marginBottom: "4px", fontSize: "12px", fontWeight: 600 }}
+          >
             {label}
           </label>
         )}

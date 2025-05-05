@@ -206,6 +206,7 @@
 .admin_candidate_lefttext {
   font-size: 14px;
   color: #87878a;
+  font-weight: 500;
 }
 .admin_candidate_locationtext {
   font-size: 14px;
@@ -234,7 +235,7 @@
   border: 1px solid rgba(128, 128, 128, 0.322);
   background-color: transparent;
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 4px 12px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -299,7 +300,7 @@
   justify-content: center;
   align-items: center;
   border: none;
-  padding: 8px 16px;
+  padding: 6px 16px;
   border-radius: 6px;
   cursor: pointer;
 }
@@ -372,7 +373,7 @@
   justify-content: center;
   align-items: center;
   border: none;
-  padding: 8px 16px;
+  padding: 6px 16px;
   border-radius: 6px;
   cursor: pointer;
 }
@@ -472,7 +473,7 @@
   gap: 24px;
 }
 .adminsearch_filterselectlabel {
-  font-weight: 400;
+  font-weight: 600;
   font-size: 12px;
   margin-bottom: 4px !important;
 }
@@ -499,7 +500,7 @@
   border-radius: 6px;
   color: #ffffff;
   border-color: #0056b3 !important;
-  padding: 19px 0px;
+  padding: 17px 0px;
   font-size: 16px;
 }
 .adminsearch_button:hover {
@@ -520,7 +521,7 @@
   border-radius: 6px;
   color: #ffffff;
   border-color: #0056b3 !important;
-  padding: 19px 0px;
+  padding: 17px 0px;
   font-size: 15px;
   opacity: 0.7;
 }

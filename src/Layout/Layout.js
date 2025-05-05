@@ -72,6 +72,36 @@ const MainSideMenu = () => {
         setShowSideBar(false);
       }
 
+      if (location.pathname === "/profiles") {
+        navigate("/profiles");
+        setShowPages(true);
+        setShowSideBar(false);
+      }
+
+      if (location.pathname === "/profiledetails") {
+        navigate("/profiledetails");
+        setShowPages(true);
+        setShowSideBar(false);
+      }
+
+      if (location.pathname === "/favorites") {
+        navigate("/favorites");
+        setShowPages(true);
+        setShowSideBar(false);
+      }
+
+      if (location.pathname === "/foldermanagement") {
+        navigate("/foldermanagement");
+        setShowPages(true);
+        setShowSideBar(false);
+      }
+
+      if (location.pathname === "/folderprofiles") {
+        navigate("/folderprofiles");
+        setShowPages(true);
+        setShowSideBar(false);
+      }
+
       if (location.pathname === "/question-upload") {
         navigate("/question-upload");
         setShowPages(false);
