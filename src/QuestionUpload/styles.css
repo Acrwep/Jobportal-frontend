@@ -12,6 +12,14 @@
   justify-content: space-between;
   align-items: center;
 }
+.questionupload_filterContainer {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.questionupload_filterselectfield {
+  height: 32px !important;
+}
 .questionupload_button {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   background-color: #0056b3 !important;
@@ -100,4 +108,41 @@
 .questionupload_table_actionContainer {
   display: flex;
   gap: 26px;
+}
+.questionupload_deletemodalContainer {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.questionupload_deletemodal_iconContainer {
+  border-radius: 50%;
+  padding: 11px;
+  background-color: #fde2e2;
+}
+.question_deletemodal_confirmdeletetext {
+  font-weight: 600;
+  margin-top: 12px !important;
+  font-size: 16px;
+}
+.question_deletemodal_text {
+  color: gray;
+  margin-top: 6px !important;
+}
+.question_deletemodal_footerContainer {
+  display: flex;
+  margin-top: 22px;
+  gap: 24px;
+}
+.question_deletemodal_cancelbutton:hover {
+  color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
+.question_deletemodal_deletebutton {
+  color: #d14343 !important;
+  border-color: #d14343 !important;
+}
+.question_deletemodal_deletebutton:hover {
+  opacity: 0.8;
 }

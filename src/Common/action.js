@@ -306,14 +306,26 @@ export const updateQuestion = async (payload) => {
   }
 };
 
-export const getQuestions = async () => {
+export const getQuestions = async (payload) => {
   try {
-    const response = await api.get("/api/getquestions");
+    const response = await api.get("/api/getquestions", {
+      params: payload,
+    });
     return response;
   } catch (error) {
     throw error;
   }
 };
+
+export const deleteQuestion = async (questionId) => {
+  try {
+    const response = await api.delete(`/api/deleteQuestions?id=${questionId}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createOptionsForQuestion = async (payload) => {
   try {
     const response = await api.post("/api/insertoption", payload);

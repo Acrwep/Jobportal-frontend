@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./styles.css";
-import { Col, Drawer, Row, Spin } from "antd";
+import { Button, Col, Drawer, Modal, Row, Spin } from "antd";
 import CommonInputField from "../Common/CommonInputField";
 import PortalInputField from "../Common/PortalInputField";
 import { MdFileUpload } from "react-icons/md";
 import {
   createOptionsForQuestion,
   createQuestion,
+  deleteQuestion,
   getCourses,
   getQuestions,
   getSections,
@@ -19,6 +20,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { AiTwotoneEdit } from "react-icons/ai";
 import CommonTable from "../Common/CommonTable";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { MdDelete } from "react-icons/md";
 
 export default function QuestionUpload() {
   const [open, setOpen] = useState(false);
@@ -38,15 +40,18 @@ export default function QuestionUpload() {
   const [correctAnswerError, setCorrectAnswerError] = useState("");
   const [sectionData, setSectionData] = useState([]);
   const [sectionId, setSectionId] = useState(null);
+  const [sectionFilterId, setSectionFilterId] = useState(null);
   const [sectionIdError, setSectionIdError] = useState(null);
   const [courseData, setCourseData] = useState([]);
   const [courseId, setCourseId] = useState(null);
+  const [courseFilterId, setCourseFilterId] = useState(null);
   const [courseIdError, setCourseIdError] = useState(null);
   const [disableCourse, setDisableCourse] = useState(false);
   const [validationTrigger, setValidationTrigger] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   const columns = [
     { title: "Question", key: "question", dataIndex: "question", width: 280 },
@@ -92,6 +97,10 @@ export default function QuestionUpload() {
               size={20}
               color="#d32215"
               style={{ cursor: "pointer" }}
+              onClick={() => {
+                setDeleteModal(true);
+                setQuestionId(record.question_id);
+              }}
             />
           </div>
         );
@@ -136,15 +145,19 @@ export default function QuestionUpload() {
       console.log("course error", error);
     } finally {
       setTimeout(() => {
-        getQuestionsData();
+        getQuestionsData(null, null);
       }, 300);
     }
   };
 
-  const getQuestionsData = async () => {
+  const getQuestionsData = async (sectionid, courseid) => {
     setTableLoading(true);
+    const payload = {
+      section_id: sectionid === undefined ? null : sectionid,
+      course_id: courseid === undefined ? null : courseid,
+    };
     try {
-      const response = await getQuestions();
+      const response = await getQuestions(payload);
       console.log("questions", response);
       const questionsdata = response?.data?.data || [];
       setQuestionsData(questionsdata);
@@ -181,6 +194,21 @@ export default function QuestionUpload() {
     }
   };
 
+  const handleSectionFilter = (value) => {
+    console.log("session", value);
+    const sec = value === undefined ? null : value;
+    setSectionFilterId(sec);
+    getQuestionsData(sec, courseFilterId);
+  };
+
+  const handleCourseFilter = (value) => {
+    console.log("course", value);
+    const cour = value === undefined ? null : value;
+    setCourseFilterId(cour);
+    getQuestionsData(sectionFilterId, cour);
+  };
+
+  //handle edit
   const handleEdit = (record) => {
     setOpen(true);
     setEdit(true);
@@ -302,33 +330,31 @@ export default function QuestionUpload() {
     }
   };
 
-  const createOptions = async (questionId) => {
-    let optionsData = [];
-    optionsData.push(optionOne, optionTwo, optionThree, optionFour);
-    console.log(optionsData);
-
-    const payload = {
-      question_id: questionId,
-      options: optionsData,
-    };
-
+  //handle delete
+  const handleDelete = async () => {
     try {
-      const response = await createOptionsForQuestion(payload);
-      console.log("options upload response", response);
-      CommonToaster("Question uploaded");
+      const response = await deleteQuestion(questionId);
+      console.log("question delete response", response);
+
+      CommonToaster("Question deleted");
+      setDeleteModal(false);
+      setTableLoading(true);
+      setQuestionId(null);
+      setTimeout(() => {
+        getQuestionsData();
+      }, 300);
     } catch (error) {
       CommonToaster(
         error?.response?.data?.message ||
           "Something went wrong. Try again later"
       );
-    } finally {
-      formReset();
     }
   };
 
   const formReset = () => {
     setButtonLoading(false);
     setOpen(false);
+    setDeleteModal(false);
     setEdit(false);
     setValidationTrigger(false);
     setQuestion("");
@@ -360,6 +386,29 @@ export default function QuestionUpload() {
           Upload
         </button>
       </div>
+
+      <Row style={{ marginTop: "22px" }}>
+        <Col xs={24} sm={24} md={24} lg={12}>
+          <div className="questionupload_filterContainer">
+            <PortalSelectField
+              options={sectionData}
+              style={{ width: "35%" }}
+              placeholder="Section"
+              selectClassName="questionupload_filterselectfield"
+              allowClear={true}
+              onChange={handleSectionFilter}
+            />
+            <PortalSelectField
+              options={courseData}
+              style={{ width: "35%" }}
+              placeholder="Course"
+              selectClassName="questionupload_filterselectfield"
+              allowClear={true}
+              onChange={handleCourseFilter}
+            />
+          </div>
+        </Col>
+      </Row>
       <div style={{ marginTop: "22px" }}>
         <CommonTable
           scroll={{ x: 1200 }}
@@ -551,6 +600,48 @@ export default function QuestionUpload() {
           {/* <button onClick={createOptions}>Check</button> */}
         </form>
       </Drawer>
+
+      <Modal
+        open={deleteModal}
+        onCancel={() => {
+          setDeleteModal(false);
+          setQuestionId(null);
+        }}
+        footer={false}
+        width={420}
+      >
+        <div className="questionupload_deletemodalContainer">
+          <div className="questionupload_deletemodal_iconContainer">
+            <MdDelete size={20} color="#db2728" />
+          </div>
+
+          <p className="question_deletemodal_confirmdeletetext">
+            Confirm Delete
+          </p>
+
+          <p className="question_deletemodal_text">
+            Are you sure want to delete the question?
+          </p>
+
+          <div className="question_deletemodal_footerContainer">
+            <Button
+              className="question_deletemodal_cancelbutton"
+              onClick={() => {
+                setDeleteModal(false);
+                setQuestionId(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="question_deletemodal_deletebutton"
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
