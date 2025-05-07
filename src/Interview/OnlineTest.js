@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./styles.css";
-import { Button, Col, Row } from "antd";
+import { Button, Col, Row, Spin } from "antd";
 import Actelogo from "../images/acte-logo.png";
 import { Input, Radio } from "antd";
 import { MdKeyboardBackspace } from "react-icons/md";
 import { getQuestions, insertAnswers } from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export default function OnlineTest() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function OnlineTest() {
   const [userId, setUserId] = useState(null);
   const [courseId, setCourseId] = useState(null);
   const [started, setStarted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(2 * 60); // 30 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(1 * 60); // 30 minutes in seconds
   const [warningCount, setWarningCount] = useState(0);
   const [sectionAQuetions, setSectionAQuetions] = useState([]);
   const [sectionBQuetions, setSectionBQuetions] = useState([]);
@@ -38,27 +39,27 @@ export default function OnlineTest() {
     setStarted(true); // start quiz
   };
 
-  // useEffect(() => {
-  //   const handleVisibilityChange = () => {
-  //     if (document.visibilityState === "hidden") {
-  //       setWarningCount((prev) => {
-  //         const updated = prev + 1;
-  //         if (updated >= 3) {
-  //           alert("You switched tabs too many times. Quiz ended.");
-  //           // setShowResult(true);
-  //         } else {
-  //           alert(`Warning ${updated}: Don't switch tabs during the quiz!`);
-  //         }
-  //         return updated;
-  //       });
-  //     }
-  //   };
-
-  //   document.addEventListener("visibilitychange", handleVisibilityChange);
-  //   return () => {
-  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
-  //   };
-  // }, []);
+  useEffect(() => {
+    // handleFullscreenStart();
+    // const handleVisibilityChange = () => {
+    //   if (document.visibilityState === "hidden") {
+    //     setWarningCount((prev) => {
+    //       const updated = prev + 1;
+    //       if (updated >= 3) {
+    //         alert("You switched tabs too many times. Quiz ended.");
+    //         // setShowResult(true);
+    //       } else {
+    //         alert(`Warning ${updated}: Don't switch tabs during the quiz!`);
+    //       }
+    //       return updated;
+    //     });
+    //   }
+    // };
+    // document.addEventListener("visibilitychange", handleVisibilityChange);
+    // return () => {
+    //   document.removeEventListener("visibilitychange", handleVisibilityChange);
+    // };
+  }, []);
 
   // Timer logic
   useEffect(() => {
@@ -72,7 +73,10 @@ export default function OnlineTest() {
     if (course_id === null || user_id === null) {
       navigate("/test-invite");
     }
-    if (!started || timeLeft <= 0) return;
+    if (!started || timeLeft <= 0) {
+      console.log("Time overrr");
+      return;
+    }
 
     const interval = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
@@ -378,14 +382,18 @@ export default function OnlineTest() {
                         </div>
 
                         <div className="onlinetest_skipbuttonContainer">
-                          <Button
-                            className="onlinetest_backbutton"
-                            onClick={() =>
-                              handleSectionBNext(index, selectedOption)
-                            }
-                          >
-                            Skip
-                          </Button>
+                          {index === lastindex ? (
+                            ""
+                          ) : (
+                            <Button
+                              className="onlinetest_backbutton"
+                              onClick={() =>
+                                handleSectionBNext(index, selectedOption)
+                              }
+                            >
+                              Skip
+                            </Button>
+                          )}
                         </div>
                       </Col>
                       <Col span={12} style={{ position: "relative" }}>
@@ -454,12 +462,36 @@ export default function OnlineTest() {
                             </Button>
                           )}
                           {index === lastindex ? (
-                            <button
-                              className="onlinetest_nxtbutton"
-                              onClick={handleSubmitAnswers}
-                            >
-                              {lastindex === index ? "Submit" : "Next Question"}
-                            </button>
+                            <>
+                              {buttonLoading ? (
+                                <button className="onlinetest_disablenxtbutton">
+                                  <>
+                                    <Spin
+                                      size="small"
+                                      indicator={
+                                        <LoadingOutlined
+                                          style={{
+                                            color: "#ffffff",
+                                            marginRight: "6px",
+                                          }}
+                                          spin
+                                        />
+                                      }
+                                    />{" "}
+                                    Loading...
+                                  </>
+                                </button>
+                              ) : (
+                                <button
+                                  className="onlinetest_nxtbutton"
+                                  onClick={handleSubmitAnswers}
+                                >
+                                  {lastindex === index
+                                    ? "Submit"
+                                    : "Next Question"}
+                                </button>
+                              )}
+                            </>
                           ) : (
                             <button
                               className="onlinetest_nxtbutton"

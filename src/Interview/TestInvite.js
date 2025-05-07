@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Col, Row, Spin } from "antd";
 import Actelogo from "../images/acte-logo.png";
 import CommonInputField from "../Common/CommonInputField";
-import CommonSelectField from "../Common/CommonSelectField";
 import { getAllUsers, getCourses } from "../Common/action";
 import {
   addressValidator,
@@ -91,8 +90,8 @@ export default function TestInvite() {
               </div>
 
               <div>
-                <p className="testinvite_detailstext">Online Aptitude Test</p>
-                <p className="testinvite_detailstext">90 Minutes</p>
+                <p className="testinvite_detailstext">Online Assessment</p>
+                <p className="testinvite_detailstext">45 Minutes</p>
                 <p className="testinvite_detailstext">
                   {moment(today).format("DD MMMM YYYY")}
                 </p>

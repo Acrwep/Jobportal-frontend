@@ -30,6 +30,8 @@ import { MdOutlineLogout } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { storeLogoutMenuStatus, storePortalMenuStatus } from "../Redux/slice";
 import TestInvite from "../Interview/TestInvite";
+import TestExpired from "../Interview/TestExpired";
+import Result from "../Interview/Result";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
@@ -132,6 +134,14 @@ const MainSideMenu = () => {
         navigate("/test-invite");
         setShowPages(false);
         setShowSideBar(false);
+      } else if (location.pathname === "/token-unavailable") {
+        navigate("/token-unavailable");
+        setShowPages(false);
+        setShowSideBar(false);
+      } else if (location.pathname === "/result") {
+        navigate("/result");
+        setShowPages(false);
+        setShowSideBar(false);
       } else {
         navigate("/login");
         setShowPages(false);
@@ -212,6 +222,14 @@ const MainSideMenu = () => {
       ) : location.pathname === "/test-invite" ? (
         <Routes>
           <Route path="/test-invite" element={<TestInvite />} />
+        </Routes>
+      ) : location.pathname === "/token-unavailable" ? (
+        <Routes>
+          <Route path="/token-unavailable" element={<TestExpired />} />
+        </Routes>
+      ) : location.pathname === "/result" ? (
+        <Routes>
+          <Route path="/result" element={<Result />} />
         </Routes>
       ) : showPages === true ? (
         <Routes>
