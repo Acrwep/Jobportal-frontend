@@ -48,11 +48,14 @@
 }
 /* common select field styles */
 .commonSelectfield {
-  height: 37px;
+  height: 36px;
   border-radius: 6px;
   transition: all 0.2s;
   width: 100%;
   font-size: 16px;
+}
+.commonSelectfield_error {
+  height: 36px !important;
 }
 .portalSelectfield {
   height: 35px;

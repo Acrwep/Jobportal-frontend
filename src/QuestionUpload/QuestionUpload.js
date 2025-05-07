@@ -300,7 +300,7 @@ export default function QuestionUpload() {
         CommonToaster("Question updated");
         setTableLoading(true);
         setTimeout(() => {
-          getQuestionsData();
+          getQuestionsData(sectionFilterId, courseFilterId);
           formReset();
         }, 300);
       } catch (error) {
@@ -317,7 +317,7 @@ export default function QuestionUpload() {
         setTableLoading(true);
 
         setTimeout(() => {
-          getQuestionsData();
+          getQuestionsData(sectionFilterId, courseFilterId);
           formReset();
         }, 300);
       } catch (error) {
@@ -341,7 +341,7 @@ export default function QuestionUpload() {
       setTableLoading(true);
       setQuestionId(null);
       setTimeout(() => {
-        getQuestionsData();
+        getQuestionsData(sectionFilterId, courseFilterId);
       }, 300);
     } catch (error) {
       CommonToaster(

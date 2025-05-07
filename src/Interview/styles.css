@@ -38,6 +38,7 @@
   padding: 10px 14px;
   border-radius: 9px;
   margin-bottom: 20px;
+  width: 100%;
 }
 .onlinetest_nxtbuttonContainer {
   display: flex;
@@ -79,4 +80,96 @@
 .onlinetest_skipbuttonContainer {
   position: absolute;
   bottom: 0px;
+}
+/* test invite styles */
+.testinvite_mainContainer {
+  padding: 40px;
+}
+.testinvite_logo {
+  width: 220px;
+}
+.testinvite_sessionheading {
+  font-weight: 600;
+  font-size: 15px;
+}
+.testinvite_detailsContainer {
+  display: flex;
+  margin-top: 20px;
+  gap: 24px;
+}
+.testinvite_detailsheadings {
+  font-weight: 500;
+  margin-bottom: 19px !important;
+}
+.testinvite_detailstext {
+  margin-bottom: 19px !important;
+}
+.testinvite_sectionoverview_heading {
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 20px !important;
+}
+.testinvite_sectiontableheading {
+  font-weight: 500;
+}
+.testinvite_sectiontabledatas {
+  margin-top: 16px !important;
+  margin-bottom: 16px !important;
+  text-align: center;
+}
+.testinvite_formmainContainer {
+  padding: 0px 19px;
+  width: 65%;
+}
+.testinvite_formheading {
+  font-weight: 600;
+  font-size: 18px;
+}
+.testinvite_formContainer {
+  margin-top: 22px;
+}
+.testinvite_formbuttonContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+.testinvite_formbutton {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #0056b3 !important;
+  border-radius: 9px !important;
+  outline: 0 !important;
+  border: none;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 112px;
+  height: 35px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 30px;
+}
+.testinvite_formbutton:hover {
+  opacity: 0.8;
+}
+.testinvite_formbutton:active {
+  transform: scale(0.9);
+  box-shadow: 3px 2px 22px 1px #027cff73;
+}
+
+.testinvite_formbuttondisable {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #0056b3 !important;
+  border-radius: 9px !important;
+  outline: 0 !important;
+  border: none;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 35px;
+  cursor: default;
+  font-weight: 600;
+  margin-top: 30px;
+  opacity: 0.7;
 }

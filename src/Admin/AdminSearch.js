@@ -5,7 +5,7 @@ import { IoMdSearch } from "react-icons/io";
 import "./styles.css";
 import CommonSelectField from "../Common/CommonSelectField";
 import CommonDoubleDatePicker from "../Common/CommonDoubleDatePicker";
-import { searchByKeyword } from "../Common/action";
+import { getCourses, searchByKeyword } from "../Common/action";
 import { LoadingOutlined } from "@ant-design/icons";
 import { CommonToaster } from "../Common/CommonToaster";
 import { useDispatch } from "react-redux";
@@ -18,17 +18,8 @@ export default function AdminSearch() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [keyword, setKeyword] = useState([]);
-  const courseNameOptions = [
-    { id: "Fullstack Development", name: "Fullstack Development" },
-    { id: "Software Testing", name: "Software Testing" },
-    { id: "Data Science", name: "Data Science" },
-    { id: "Data Analytics", name: "Data Analytics" },
-    { id: "Cloud Computing", name: "Cloud Computing" },
-    { id: "UI/UX", name: "UI/UX" },
-    { id: "Digital Marketing", name: "Digital Marketing" },
-  ];
-
-  const [courseName, setCourseName] = useState("");
+  const [courseNameOptions, setCourseNameOptions] = useState([]);
+  const [courseId, setCourseId] = useState(null);
 
   const courseLocationOptions = [
     { id: "Online", name: "Online" },
@@ -56,7 +47,23 @@ export default function AdminSearch() {
 
   useEffect(() => {
     localStorage.removeItem("searchKeyword");
+    getCourseData();
   }, []);
+
+  const getCourseData = async () => {
+    try {
+      const response = await getCourses();
+      console.log("course response", response);
+      if (response?.data?.data) {
+        setCourseNameOptions(response?.data?.data);
+      } else {
+        setCourseNameOptions([]);
+      }
+    } catch (error) {
+      setCourseNameOptions([]);
+      console.log("course error", error);
+    }
+  };
 
   const handleDateChange = (dates, dateStrings) => {
     setCourseJoiningDate(dateStrings);
@@ -73,7 +80,7 @@ export default function AdminSearch() {
       "loca",
       courseLocation,
       "name",
-      courseName,
+      courseId,
       "status",
       courseStatus,
       "eli",
@@ -85,7 +92,7 @@ export default function AdminSearch() {
     if (
       keyword.length <= 0 &&
       courseLocation.length <= 0 &&
-      (courseName === "" || courseName === undefined) &&
+      (courseId === null || courseId === undefined) &&
       (courseStatus === "" || courseStatus === undefined) &&
       (eligibleStatus === null || eligibleStatus === undefined) &&
       (courseJoiningDate[0] === undefined || courseJoiningDate[0] === "") &&
@@ -96,7 +103,7 @@ export default function AdminSearch() {
     }
     localStorage.setItem("searchKeyword", JSON.stringify(keyword));
     localStorage.setItem("courseLocation", JSON.stringify(courseLocation));
-    localStorage.setItem("courseName", courseName);
+    localStorage.setItem("courseId", courseId);
     localStorage.setItem("courseStatus", courseStatus);
     if (eligibleStatus === null) {
       localStorage.removeItem("eligibleStatus");
@@ -115,7 +122,7 @@ export default function AdminSearch() {
     setLoading(true);
     const payload = {
       q: splitBySpace,
-      ...(courseName && { courseName: courseName }),
+      ...(courseId && { course_id: courseId }),
       ...(courseLocation.length >= 1 && { courseLocation: courseLocation }),
       ...(courseStatus && { courseStatus: courseStatus }),
       ...(courseJoiningDate.length >= 1 &&
@@ -225,7 +232,7 @@ export default function AdminSearch() {
               labelClassName="adminsearch_filterselectlabel"
               selectClassName="adminsearch_filterselectinput"
               onChange={(value) => {
-                setCourseName(value);
+                setCourseId(value);
               }}
             />
             <CommonSelectField

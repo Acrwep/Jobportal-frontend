@@ -29,6 +29,7 @@ import Interview from "../images/interview-black.png";
 import { MdOutlineLogout } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { storeLogoutMenuStatus, storePortalMenuStatus } from "../Redux/slice";
+import TestInvite from "../Interview/TestInvite";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
@@ -107,6 +108,12 @@ const MainSideMenu = () => {
         setShowPages(false);
         setShowSideBar(true);
       }
+
+      if (location.pathname === "/test-invite") {
+        navigate("/test-invite");
+        setShowPages(false);
+        setShowSideBar(false);
+      }
     } else {
       if (location.pathname === "/register") {
         navigate("/register");
@@ -119,6 +126,10 @@ const MainSideMenu = () => {
         setShowPages(false);
       } else if (location.pathname === "/online-test") {
         navigate("/online-test");
+        setShowPages(false);
+        setShowSideBar(false);
+      } else if (location.pathname === "/test-invite") {
+        navigate("/test-invite");
         setShowPages(false);
         setShowSideBar(false);
       } else {
@@ -197,6 +208,10 @@ const MainSideMenu = () => {
       ) : location.pathname === "/online-test" ? (
         <Routes>
           <Route path="/online-test" element={<OnlineTest />} />
+        </Routes>
+      ) : location.pathname === "/test-invite" ? (
+        <Routes>
+          <Route path="/test-invite" element={<TestInvite />} />
         </Routes>
       ) : showPages === true ? (
         <Routes>

@@ -23,7 +23,7 @@ import { CommonToaster } from "../Common/CommonToaster";
 import axios from "axios";
 import { CloudUploadOutlined } from "@ant-design/icons";
 import { Country, State, City } from "country-state-city";
-import { candidateRegistration } from "../Common/action";
+import { candidateRegistration, getCourses } from "../Common/action";
 import moment from "moment";
 
 export default function CandidateRegister() {
@@ -146,17 +146,9 @@ export default function CandidateRegister() {
   const [typeofEducation, setTypeofEducation] = useState(null);
   const [typeofEducationError, setTypeofEducationError] = useState();
   //course status usestates
-  const courseNameOptions = [
-    { id: "Fullstack Development", name: "Fullstack Development" },
-    { id: "Software Testing", name: "Software Testing" },
-    { id: "Data Science", name: "Data Science" },
-    { id: "Data Analytics", name: "Data Analytics" },
-    { id: "Cloud Computing", name: "Cloud Computing" },
-    { id: "UI/UX", name: "UI/UX" },
-    { id: "Digital Marketing", name: "Digital Marketing" },
-  ];
-  const [courseName, setCourseName] = useState("");
-  const [courseNameError, setCourseNameError] = useState("");
+  const [courseNameOptions, setCourseNameOptions] = useState([]);
+  const [courseId, setCourseId] = useState(null);
+  const [courseIdError, setCourseIdError] = useState(null);
   const courseLocationOptions = [
     { id: "Online", name: "Online" },
     { id: "Anna nagar", name: "Anna nagar" },
@@ -254,7 +246,23 @@ export default function CandidateRegister() {
   useEffect(() => {
     const countries = Country.getAllCountries();
     setCountryOptions(countries);
+    getCourseData();
   }, []);
+
+  const getCourseData = async () => {
+    try {
+      const response = await getCourses();
+      console.log("course response", response);
+      if (response?.data?.data) {
+        setCourseNameOptions(response?.data?.data);
+      } else {
+        setCourseNameOptions([]);
+      }
+    } catch (error) {
+      setCourseNameOptions([]);
+      console.log("course error", error);
+    }
+  };
 
   //onchnage functions
   const handleEmail = async (e) => {
@@ -566,18 +574,18 @@ export default function CandidateRegister() {
 
   const handleCourseSubmit = () => {
     setCourseValidationTrigger(true);
-    const courseNameValidate = selectValidator(courseName);
+    const courseIdValidate = selectValidator(courseId);
     const courseLocationValidate = selectValidator(courseLocation);
     const courseJoiningValidate = selectValidator(courseJoiningDate);
     const courseStatusValidate = selectValidator(courseStatus);
 
-    setCourseNameError(courseNameValidate);
+    setCourseIdError(courseIdValidate);
     setCourseLocationError(courseLocationValidate);
     setCourseJoiningDateError(courseJoiningValidate);
     setCourseStatusError(courseStatusValidate);
 
     if (
-      courseNameValidate ||
+      courseIdValidate ||
       courseLocationValidate ||
       courseJoiningValidate ||
       courseStatusValidate
@@ -724,7 +732,7 @@ export default function CandidateRegister() {
       profileSummary: summary,
       languages: languages,
       resume: resume,
-      courseName: courseName,
+      course_id: courseId,
       courseLocation: courseLocation,
       courseStatus: courseStatus === 1 ? "Inprogress" : "Completed",
       mockupPercentage:
@@ -818,8 +826,8 @@ export default function CandidateRegister() {
     setGraduateYearError("");
     setTypeofEducation(null);
     setTypeofEducationError("");
-    setCourseName("");
-    setCourseNameError("");
+    setCourseId("");
+    setCourseIdError("");
     setCourseLocation("");
     setCourseLocationError("");
     setCourseJoiningDate(null);
@@ -886,7 +894,9 @@ export default function CandidateRegister() {
             className="registration_leftcardColdiv"
           >
             <div className="registration_leftcardContainer">
-              <img src={cardImage} className="registration_cardimage" />
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <img src={cardImage} className="registration_cardimage" />
+              </div>
               <p className="registration_cardheading">
                 On registering, you can
               </p>
@@ -1412,15 +1422,15 @@ export default function CandidateRegister() {
                     <CommonSelectField
                       label="Course Name"
                       mandatory={true}
-                      value={courseName}
+                      value={courseId}
                       options={courseNameOptions}
                       onChange={(value) => {
-                        setCourseName(value);
+                        setCourseId(value);
                         if (courseValidationTrigger) {
-                          setCourseNameError(selectValidator(value));
+                          setCourseIdError(selectValidator(value));
                         }
                       }}
-                      error={courseNameError}
+                      error={courseIdError}
                     />
                   </Col>
                   <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>

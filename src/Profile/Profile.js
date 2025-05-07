@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Row, Col, Divider } from "antd";
 import { IoCallOutline } from "react-icons/io5";
 import { MdOutlineMailOutline } from "react-icons/md";
@@ -20,6 +20,7 @@ export default function Profile() {
     import.meta.url
   ).toString();
 
+  const navigate = useNavigate();
   const location = useLocation();
   const [candidateData, setCandidateData] = useState([]);
   const [numPages, setNumPages] = useState(null);
@@ -31,12 +32,17 @@ export default function Profile() {
   }, []);
 
   const getCandidateData = async () => {
-    try {
-      const response = await getCandidateById(location?.state?.candidateId);
-      console.log("candidate response", response);
-      setCandidateData(response?.data?.data);
-    } catch (error) {
-      console.log(error);
+    const candidateId = location?.state?.candidateId || null;
+    if (candidateId) {
+      try {
+        const response = await getCandidateById(candidateId);
+        console.log("candidate response", response);
+        setCandidateData(response?.data?.data);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      navigate("/profiles");
     }
   };
 
@@ -210,9 +216,9 @@ export default function Profile() {
                   <div className="profile_contactinfoCard">
                     <p className="contactinfocard_heading">Course Details</p>
                     <div className="jobprefcard_contentdiv">
-                      <p className="jobprefcard_locationheading">Course name</p>
+                      <p className="jobprefcard_locationheading">Course Name</p>
                       <p className="jobprefcard_locationtext">
-                        {item.courseName}
+                        {item.course_name}
                       </p>
                     </div>
                     <div className="jobprefcard_contentdiv">
@@ -226,7 +232,7 @@ export default function Profile() {
 
                     <div className="jobprefcard_contentdiv">
                       <p className="jobprefcard_locationheading">
-                        Course status
+                        Course Status
                       </p>
                       <p className="jobprefcard_locationtext">
                         {item.courseStatus}
@@ -235,7 +241,7 @@ export default function Profile() {
 
                     <div className="jobprefcard_contentdiv">
                       <p className="jobprefcard_locationheading">
-                        Mockup interview percentage
+                        Mockup Interview Percentage
                       </p>
                       <p className="jobprefcard_locationtext">
                         {item.mockupPercentage}
@@ -244,7 +250,7 @@ export default function Profile() {
 
                     <div className="jobprefcard_contentdiv">
                       <p className="jobprefcard_locationheading">
-                        Course joing date
+                        Course Joing Date
                       </p>
                       <p className="jobprefcard_locationtext">
                         {moment(item.courseJoiningDate).format("DD/MM/YYYY")}
@@ -253,7 +259,7 @@ export default function Profile() {
 
                     <div className="jobprefcard_contentdiv">
                       <p className="jobprefcard_locationheading">
-                        Eligible status
+                        Eligible Status
                       </p>
                       <p className="jobprefcard_locationtext">
                         {item.eligibleCandidates === 0
@@ -343,7 +349,6 @@ export default function Profile() {
                           item.companyEnddate === null
                             ? "Fresher"
                             : item.companyStartdate != null &&
-                              item.companyStartdate === "0000-00-00 00:00:00" &&
                               item.companyEnddate === null
                             ? moment(item.companyStartdate).format("MMM YYYY") +
                               " " +

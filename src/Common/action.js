@@ -103,24 +103,6 @@ export const adminLogin = async (loginPayload) => {
   }
 };
 
-export const createStudent = async (studentPayload) => {
-  try {
-    const response = await api.post("/api/createStudent", studentPayload);
-    return response;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getStudents = async () => {
-  try {
-    const response = await api.get("/api/getStudents");
-    return response;
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const candidateRegistration = async (payload) => {
   try {
     const response = await api.post("/api/registration", payload);
@@ -268,6 +250,17 @@ export const updateEligibleCandidate = async (payload) => {
   }
 };
 
+export const getAllUsers = async (payload) => {
+  try {
+    const response = await api.get("/api/getUsers", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 //questions api's
 
 export const getSections = async (payload) => {
@@ -329,6 +322,16 @@ export const deleteQuestion = async (questionId) => {
 export const createOptionsForQuestion = async (payload) => {
   try {
     const response = await api.post("/api/insertoption", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// answer api
+export const insertAnswers = async (payload) => {
+  try {
+    const response = await api.post("/api/insertAnswers", payload);
     return response;
   } catch (error) {
     throw error;

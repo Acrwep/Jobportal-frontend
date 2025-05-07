@@ -208,7 +208,7 @@ export default function Admin() {
   ) => {
     const keyword = localStorage.getItem("searchKeyword");
     const branchLoaction = localStorage.getItem("courseLocation");
-    const courseNamefromLocal = localStorage.getItem("courseName");
+    const courseIdfromLocal = localStorage.getItem("courseId");
     const courseStatusfromLocal = localStorage.getItem("courseStatus");
     const eligibleStatusFromLocal = localStorage.getItem("eligibleStatus");
     const courseJoiningStartDate = localStorage.getItem(
@@ -225,7 +225,7 @@ export default function Admin() {
 
     const payload = {
       q: searchBykeyword,
-      ...(courseNamefromLocal && { courseName: courseNamefromLocal }),
+      ...(courseIdfromLocal && { course_id: parseInt(courseIdfromLocal) }),
       ...(eligibleStatusFromLocal && {
         eligibleStatus: eligibleStatusFromLocal === "true" ? 1 : 0,
       }),
