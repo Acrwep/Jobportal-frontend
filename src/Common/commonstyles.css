@@ -132,6 +132,15 @@
   font-size: 16px;
   background-color: transparent !important;
 }
+.portalInputfield_error:hover {
+  border-color: #ff4d4f !important;
+  background-color: transparent;
+}
+.portalInputfield_error:focus-within {
+  border-color: #ff4d4f !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #ff4d501c !important;
+}
 .commoninput_errormessagediv {
   position: absolute;
   left: 0%;

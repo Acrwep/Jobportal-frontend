@@ -49,7 +49,6 @@
 .questionupload_submitbutton {
   color: #fff;
   background-color: #0056b3;
-  /* box-shadow: 0 2px 0 rgba(88, 5, 255, 0.06); */
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   font-size: 14px;
   height: 36px;
@@ -105,9 +104,22 @@
   .ant-select-selector {
   margin-top: 0px !important;
 }
+.questionupload_table .ant-checkbox-checked .ant-checkbox-inner {
+  border-color: #d7d7d7 !important;
+}
+.questionupload_table .ant-checkbox-wrapper:hover .ant-checkbox-inner {
+  border: 1px solid #d7d7d7 !important;
+}
 .questionupload_table_actionContainer {
   display: flex;
   gap: 26px;
+}
+.questionupload_actionicons {
+  cursor: pointer;
+}
+.questionupload_actionicons:hover {
+  transform: scale(1.1);
+  transition: all 0.3s ease-in-out;
 }
 .questionupload_deletemodalContainer {
   margin-top: 25px;
@@ -129,6 +141,7 @@
 .question_deletemodal_text {
   color: gray;
   margin-top: 6px !important;
+  line-height: 24px !important;
 }
 .question_deletemodal_footerContainer {
   display: flex;

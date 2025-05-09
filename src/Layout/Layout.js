@@ -32,6 +32,8 @@ import { storeLogoutMenuStatus, storePortalMenuStatus } from "../Redux/slice";
 import TestInvite from "../Interview/TestInvite";
 import TestExpired from "../Interview/TestExpired";
 import Result from "../Interview/Result";
+import Users from "../Users/Users";
+import Candidates from "../Users/Candidates";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
@@ -53,12 +55,10 @@ const MainSideMenu = () => {
     const accessToken = localStorage.getItem("Accesstoken");
     const loginDetails = localStorage.getItem("loginDetails");
     const loginDetailsJson = JSON.parse(loginDetails);
+
     if (loginDetailsJson) {
       setUserName(loginDetailsJson.name);
       setUserEmail(loginDetailsJson.email);
-    } else {
-      setUserName("");
-      setUserEmail("");
     }
 
     if (accessToken) {
@@ -111,8 +111,18 @@ const MainSideMenu = () => {
         setShowSideBar(true);
       }
 
-      if (location.pathname === "/test-invite") {
-        navigate("/test-invite");
+      if (location.pathname === "/users") {
+        navigate("/users");
+        setShowPages(false);
+        setShowSideBar(true);
+      }
+      if (location.pathname === "/candidates") {
+        navigate("/candidates");
+        setShowPages(false);
+        setShowSideBar(true);
+      }
+      if (location.pathname.includes("/test-invite")) {
+        // navigate("/test-invite");
         setShowPages(false);
         setShowSideBar(false);
       }
@@ -130,8 +140,8 @@ const MainSideMenu = () => {
         navigate("/online-test");
         setShowPages(false);
         setShowSideBar(false);
-      } else if (location.pathname === "/test-invite") {
-        navigate("/test-invite");
+      } else if (location.pathname.includes("/test-invite")) {
+        // navigate("/test-invite");
         setShowPages(false);
         setShowSideBar(false);
       } else if (location.pathname === "/token-unavailable") {
@@ -219,9 +229,9 @@ const MainSideMenu = () => {
         <Routes>
           <Route path="/online-test" element={<OnlineTest />} />
         </Routes>
-      ) : location.pathname === "/test-invite" ? (
+      ) : location.pathname.includes("/test-invite") ? (
         <Routes>
-          <Route path="/test-invite" element={<TestInvite />} />
+          <Route path="/test-invite/:token" element={<TestInvite />} />
         </Routes>
       ) : location.pathname === "/token-unavailable" ? (
         <Routes>
@@ -398,6 +408,8 @@ const MainSideMenu = () => {
             >
               <Routes>
                 <Route element={<QuestionUpload />} path="/question-upload" />
+                <Route element={<Users />} path="/users" />
+                <Route element={<Candidates />} path="/candidates" />
               </Routes>
             </Content>
           </Layout>

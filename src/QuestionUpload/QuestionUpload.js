@@ -89,14 +89,14 @@ export default function QuestionUpload() {
             <div>
               <AiTwotoneEdit
                 size={20}
-                style={{ cursor: "pointer" }}
                 onClick={() => handleEdit(record)}
+                className="questionupload_actionicons"
               />
             </div>
             <RiDeleteBinLine
               size={20}
               color="#d32215"
-              style={{ cursor: "pointer" }}
+              className="questionupload_actionicons"
               onClick={() => {
                 setDeleteModal(true);
                 setQuestionId(record.question_id);
@@ -381,10 +381,6 @@ export default function QuestionUpload() {
     <div>
       <div className="portal_headinContainer">
         <p className="portal_mainheadings">Questions</p>
-        <button className="questionupload_button" onClick={() => setOpen(true)}>
-          <MdFileUpload size={19} style={{ marginRight: "4px" }} />
-          Upload
-        </button>
       </div>
 
       <Row style={{ marginTop: "22px" }}>
@@ -393,7 +389,7 @@ export default function QuestionUpload() {
             <PortalSelectField
               options={sectionData}
               style={{ width: "35%" }}
-              placeholder="Section"
+              placeholder="Select Section"
               selectClassName="questionupload_filterselectfield"
               allowClear={true}
               onChange={handleSectionFilter}
@@ -401,12 +397,31 @@ export default function QuestionUpload() {
             <PortalSelectField
               options={courseData}
               style={{ width: "35%" }}
-              placeholder="Course"
+              placeholder="Select Course"
               selectClassName="questionupload_filterselectfield"
               allowClear={true}
               onChange={handleCourseFilter}
             />
           </div>
+        </Col>
+        <Col
+          xs={24}
+          sm={24}
+          md={24}
+          lg={12}
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <button
+            className="questionupload_button"
+            onClick={() => setOpen(true)}
+          >
+            <MdFileUpload size={19} style={{ marginRight: "4px" }} />
+            Upload
+          </button>
         </Col>
       </Row>
       <div style={{ marginTop: "22px" }}>

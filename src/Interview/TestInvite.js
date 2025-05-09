@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Col, Row, Spin } from "antd";
 import Actelogo from "../images/acte-logo.png";
 import CommonInputField from "../Common/CommonInputField";
@@ -12,9 +12,11 @@ import {
 import { LoadingOutlined } from "@ant-design/icons";
 import { CommonToaster } from "../Common/CommonToaster";
 import moment from "moment";
+import { jwtDecode } from "jwt-decode";
 
 export default function TestInvite() {
   const navigate = useNavigate();
+  const { token } = useParams();
   const [fullName, setFullName] = useState("");
   const [fullNameError, setFullNameError] = useState("");
   const [email, setEmail] = useState("");
@@ -23,11 +25,38 @@ export default function TestInvite() {
   const [buttonLoading, setButtonLoading] = useState(false);
   const today = new Date();
 
+  useEffect(() => {
+    if (isTokenExpired(token)) {
+      console.log("Token is expired");
+      navigate("/token-unavailable");
+    } else {
+      localStorage.setItem("Accesstoken", token);
+      console.log("Token is valid");
+    }
+  }, []);
+
+  const isTokenExpired = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      if (!decoded.exp) return true;
+
+      const currentTime = Date.now() / 1000; // in seconds
+      return decoded.exp < currentTime;
+    } catch (error) {
+      console.error("Invalid token:", error);
+      return true; // treat invalid tokens as expired
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setValidationTrigger(true);
     const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     console.log(isMobile);
+    if (isMobile) {
+      CommonToaster("Please use laptop or desktop");
+      return;
+    }
     const fullnameValidate = addressValidator(fullName);
     const emailValidate = emailValidator(email);
     // const courseValidate = selectValidator(courseId);
@@ -91,7 +120,7 @@ export default function TestInvite() {
 
               <div>
                 <p className="testinvite_detailstext">Online Assessment</p>
-                <p className="testinvite_detailstext">45 Minutes</p>
+                <p className="testinvite_detailstext">30 Minutes</p>
                 <p className="testinvite_detailstext">
                   {moment(today).format("DD MMMM YYYY")}
                 </p>

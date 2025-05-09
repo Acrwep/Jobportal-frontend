@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { MdQuestionAnswer } from "react-icons/md";
 import { Menu } from "antd";
+import { MdQuestionAnswer } from "react-icons/md";
+import { FaUsers } from "react-icons/fa";
+import { PiStudentFill } from "react-icons/pi";
 
 export default function SideMenu() {
   const [selectedKey, setSelectedKey] = useState("");
@@ -13,9 +15,14 @@ export default function SideMenu() {
       path: "question-upload",
     },
     {
-      title: "Videos",
-      icon: <MdQuestionAnswer size={17} />,
-      path: "Videos",
+      title: "Users",
+      icon: <FaUsers size={17} />,
+      path: "users",
+    },
+    {
+      title: "Candidates",
+      icon: <PiStudentFill size={17} />,
+      path: "candidates",
     },
   ];
 

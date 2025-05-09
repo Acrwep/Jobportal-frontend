@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./styles.css";
-import { Button, Col, Row, Spin } from "antd";
+import { Button, Col, Row, Spin, Modal } from "antd";
 import Actelogo from "../images/acte-logo.png";
 import { Input, Radio } from "antd";
 import { MdKeyboardBackspace } from "react-icons/md";
 import { getQuestions, insertAnswers } from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
 import { LoadingOutlined } from "@ant-design/icons";
+import { IoIosWarning } from "react-icons/io";
 
 export default function OnlineTest() {
   const navigate = useNavigate();
@@ -15,14 +16,16 @@ export default function OnlineTest() {
   const [userId, setUserId] = useState(null);
   const [courseId, setCourseId] = useState(null);
   const [started, setStarted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(1 * 60); // 30 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes in seconds
   const [warningCount, setWarningCount] = useState(0);
+  const [timerAlert, setTimerAlert] = useState(false);
   const [sectionAQuetions, setSectionAQuetions] = useState([]);
   const [sectionBQuetions, setSectionBQuetions] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [sectionALastIndex, setSectionALastIndex] = useState(null);
   const [visibleSectionA, setVisibleSectionA] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [warningModal, setWarningModal] = useState(false);
 
   const handleFullscreenStart = () => {
     const el = document.documentElement;
@@ -40,30 +43,50 @@ export default function OnlineTest() {
   };
 
   useEffect(() => {
-    // handleFullscreenStart();
-    // const handleVisibilityChange = () => {
-    //   if (document.visibilityState === "hidden") {
-    //     setWarningCount((prev) => {
-    //       const updated = prev + 1;
-    //       if (updated >= 3) {
-    //         alert("You switched tabs too many times. Quiz ended.");
-    //         // setShowResult(true);
-    //       } else {
-    //         alert(`Warning ${updated}: Don't switch tabs during the quiz!`);
-    //       }
-    //       return updated;
-    //     });
-    //   }
-    // };
-    // document.addEventListener("visibilitychange", handleVisibilityChange);
-    // return () => {
-    //   document.removeEventListener("visibilitychange", handleVisibilityChange);
-    // };
+    const handlePopState = () => {
+      navigate(1); // Push user forward again if they try to go back
+    };
+
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [navigate]);
+
+  useEffect(() => {
+    handleFullscreenStart();
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        setWarningCount((prev) => {
+          const updated = prev + 1;
+          if (updated >= 3) {
+            console.log(
+              location?.state?.userId,
+              location?.state?.courseId,
+              "eeeeeeeeeeeee"
+            );
+            handleSubmitAnswers(
+              location?.state?.userId || null,
+              location?.state?.courseId || null
+            );
+          } else {
+            // alert();
+            setWarningModal(true);
+          }
+          return updated;
+        });
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   // Timer logic
   useEffect(() => {
-    console.log(location.state, "locationnnn");
     const user_id = location?.state?.userId || null;
     setUserId(user_id);
 
@@ -73,8 +96,20 @@ export default function OnlineTest() {
     if (course_id === null || user_id === null) {
       navigate("/test-invite");
     }
-    if (!started || timeLeft <= 0) {
+
+    const minutesLeft = Math.floor((timeLeft % 3600) / 60);
+    if (minutesLeft <= 1) {
+      setTimerAlert(true);
+    } else {
+      setTimerAlert(false);
+    }
+
+    if (timeLeft <= 0) {
       console.log("Time overrr");
+      handleSubmitAnswers(
+        location?.state?.userId || null,
+        location?.state?.courseId || null
+      );
       return;
     }
 
@@ -96,6 +131,11 @@ export default function OnlineTest() {
     getSectionAQuestionsData();
   }, []);
 
+  const getRandomItems = (array, count = 10) => {
+    const shuffled = [...array].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  };
+
   const getSectionAQuestionsData = async () => {
     const payload = {
       section_id: 1,
@@ -104,7 +144,8 @@ export default function OnlineTest() {
       const response = await getQuestions(payload);
       console.log("questions", response);
       const questionsdata = response?.data?.data || [];
-      setSectionAQuetions(questionsdata);
+      const randomTen = getRandomItems(questionsdata, 10);
+      setSectionAQuetions(randomTen);
     } catch (error) {
       CommonToaster(
         error?.response?.data?.message ||
@@ -112,7 +153,6 @@ export default function OnlineTest() {
       );
     } finally {
       setTimeout(() => {
-        // setTableLoading(false);
         getSectionBQuestionsData();
       }, 300);
     }
@@ -121,22 +161,19 @@ export default function OnlineTest() {
   const getSectionBQuestionsData = async () => {
     const payload = {
       section_id: 2,
-      course_id: 1,
+      course_id: courseId,
     };
     try {
       const response = await getQuestions(payload);
       console.log("questions", response);
       const questionsdata = response?.data?.data || [];
-      setSectionBQuetions(questionsdata);
+      const randomTen = getRandomItems(questionsdata, 10);
+      setSectionBQuetions(randomTen);
     } catch (error) {
       CommonToaster(
         error?.response?.data?.message ||
           "Something went wrong. Try again later"
       );
-    } finally {
-      setTimeout(() => {
-        // setTableLoading(false);
-      }, 300);
     }
   };
 
@@ -171,7 +208,7 @@ export default function OnlineTest() {
     setQuestionIndex(index + 1);
   };
 
-  const handleSubmitAnswers = async () => {
+  const handleSubmitAnswers = async (userid, courseid) => {
     setButtonLoading(true);
     let mergeSections = [];
 
@@ -192,8 +229,15 @@ export default function OnlineTest() {
     });
 
     const payload = {
-      user_id: userId,
-      course_id: courseId,
+      user_id:
+        userid && (typeof userid === "string" || typeof userid === "number")
+          ? userid
+          : userId,
+      course_id:
+        courseid &&
+        (typeof courseid === "string" || typeof courseid === "number")
+          ? courseid
+          : courseId,
       answers: answers,
     };
     console.log("final payload", payload);
@@ -201,6 +245,18 @@ export default function OnlineTest() {
     try {
       const response = await insertAnswers(payload);
       console.log("answer submit response", response);
+      const result = response?.data?.result || null;
+      CommonToaster("Your assessment has been submitted");
+
+      setTimeout(() => {
+        navigate("/result", {
+          state: {
+            totalQuestions: result.total_questions,
+            percentage: result.percentage,
+            totalMark: result.total_marks_obtained,
+          },
+        });
+      }, 1000);
     } catch (error) {
       CommonToaster(
         error?.response?.data?.message ||
@@ -217,11 +273,7 @@ export default function OnlineTest() {
     <div className="onlinetest_mainContainer">
       <Row style={{ alignItems: "center" }}>
         <Col span={8}>
-          <img
-            src={Actelogo}
-            className="onlinetest_logo"
-            onClick={handleFullscreenStart}
-          />
+          <img src={Actelogo} className="onlinetest_logo" />
         </Col>
         <Col
           span={8}
@@ -249,7 +301,10 @@ export default function OnlineTest() {
             alignItems: "center",
           }}
         >
-          <p className="onlinetest_timer" onClick={handleSubmitAnswers}>
+          <p
+            className="onlinetest_timer"
+            style={{ color: timerAlert ? "red" : "" }}
+          >
             <span style={{ color: "#000000" }}>Time Left:</span>{" "}
             {formatTime(timeLeft)}
           </p>
@@ -514,6 +569,41 @@ export default function OnlineTest() {
           </>
         )}
       </Row>
+
+      <Modal
+        open={warningModal}
+        closable={false}
+        footer={false}
+        width={440}
+        centered
+      >
+        <div className="onlinetest_warningmodalContainer">
+          <div className="onlinetest_warningmodal_iconContainer">
+            <IoIosWarning size={20} color="#faad14" />
+          </div>
+
+          <p className="question_deletemodal_confirmdeletetext">Warning</p>
+
+          <p
+            className="question_deletemodal_text"
+            style={{ textAlign: "center" }}
+          >
+            Don't switch tabs during the assessment. Repeated actions may result
+            in disqualification.
+          </p>
+
+          <div className="question_deletemodal_footerContainer">
+            <Button
+              className="onlinetest_warningmodal_okbutton"
+              onClick={() => {
+                setWarningModal(false);
+              }}
+            >
+              Continue Test
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

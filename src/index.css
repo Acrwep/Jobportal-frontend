@@ -102,6 +102,17 @@ p {
 .ant-picker-header-view button:hover {
   color: #0056b3 !important;
 }
+.ant-btn-variant-solid {
+  background: #0056b3 !important;
+}
+.ant-input-outlined:hover {
+  border-color: #0056b3 !important;
+}
+.ant-input-outlined:focus-within {
+  border-color: #0056b3 !important;
+  background-color: transparent !important;
+  box-shadow: 0 0 0 2px #0057b31c !important;
+}
 /* antd datepicker styles */
 .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner {
   background: #0056b3 !important;
@@ -223,5 +234,5 @@ p {
 
 /* antd select placeholder styles */
 .ant-select .ant-select-selection-placeholder {
-  color: rgb(0 0 0 / 42%) !important;
+  color: rgb(0 0 0 / 32%) !important;
 }

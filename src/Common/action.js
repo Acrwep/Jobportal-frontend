@@ -125,7 +125,7 @@ export const searchByKeyword = async (payload) => {
 
 export const getCandidates = async (payload) => {
   try {
-    const response = await api.get("/api/getCandidates", {
+    const response = await api.get("/api/getAllCandidates", {
       params: payload,
     });
     return response;
@@ -261,6 +261,26 @@ export const getAllUsers = async (payload) => {
   }
 };
 
+export const createAdmin = async (payload) => {
+  try {
+    const response = await api.post("/api/insertAdmin", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// get role api
+export const getRoles = async (payload) => {
+  try {
+    const response = await api.get("/api/getRoles", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 //questions api's
 
 export const getSections = async (payload) => {
@@ -332,6 +352,16 @@ export const createOptionsForQuestion = async (payload) => {
 export const insertAnswers = async (payload) => {
   try {
     const response = await api.post("/api/insertAnswers", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//send inter request api
+export const sendInterviewRequest = async (payload) => {
+  try {
+    const response = await api.post("/api/sendEmail", payload);
     return response;
   } catch (error) {
     throw error;

@@ -95,6 +95,22 @@
   position: absolute;
   bottom: 0px;
 }
+.onlinetest_warningmodalContainer {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.onlinetest_warningmodal_iconContainer {
+  border-radius: 50%;
+  padding: 11px;
+  background-color: #faad1430;
+}
+.onlinetest_warningmodal_okbutton:hover {
+  color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
 /* test invite styles */
 .testinvite_mainContainer {
   padding: 40px;
@@ -236,7 +252,7 @@
   padding: 90px;
 }
 .result_logo {
-  width: 280px;
+  width: 260px;
 }
 .result_contentContainer {
   display: flex;
