@@ -249,7 +249,12 @@
 }
 /* result styles */
 .result_mainContainer {
-  padding: 90px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: rgb(243, 242, 241);
 }
 .result_logo {
   width: 260px;
@@ -258,6 +263,12 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+  background-color: #fff;
+  border: 1px solid #d4d2d0;
+  border-radius: 0.5rem;
+  width: 400px;
+  padding: 40px 16px;
+  margin: 20px 0px;
 }
 .result_heading {
   color: #181c32;

@@ -19,6 +19,13 @@
   align-items: center;
   position: relative;
 }
+.portallayout_mobilemainsidebar {
+  min-width: 80px !important;
+}
+.portallayout_mainsidebar {
+  min-width: 206px !important;
+  /* padding: 4px !important; */
+}
 .portallayout_headermenubutton {
   border: none;
   cursor: pointer;
@@ -122,4 +129,7 @@
 }
 .logoutmenu_buttonContainer:hover {
   background-color: #eaf1f9;
+}
+.portalsidebar_coursesicon {
+  width: 17px;
 }

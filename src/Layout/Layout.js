@@ -34,6 +34,7 @@ import TestExpired from "../Interview/TestExpired";
 import Result from "../Interview/Result";
 import Users from "../Users/Users";
 import Candidates from "../Users/Candidates";
+import Courses from "../Courses/Courses";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
@@ -118,6 +119,11 @@ const MainSideMenu = () => {
       }
       if (location.pathname === "/candidates") {
         navigate("/candidates");
+        setShowPages(false);
+        setShowSideBar(true);
+      }
+      if (location.pathname === "/courses") {
+        navigate("/courses");
         setShowPages(false);
         setShowSideBar(true);
       }
@@ -259,7 +265,12 @@ const MainSideMenu = () => {
             trigger={null}
             collapsible
             collapsed={collapsed}
-            style={{ backgroundColor: "#073669" }}
+            className={
+              collapsed
+                ? "portallayout_mobilemainsidebar"
+                : "portallayout_mainsidebar"
+            }
+            style={{ backgroundColor: "#073669", minWidth: "240px" }}
           >
             <div className="demo-logo-vertical">
               <p>Logo</p>
@@ -398,6 +409,7 @@ const MainSideMenu = () => {
                 margin: "10px 16px",
                 padding: "8px 12px",
                 minHeight: 280,
+                overflowX: "hidden",
                 // background: colorBgContainer,
                 // borderRadius: borderRadiusLG,
               }}
@@ -410,6 +422,7 @@ const MainSideMenu = () => {
                 <Route element={<QuestionUpload />} path="/question-upload" />
                 <Route element={<Users />} path="/users" />
                 <Route element={<Candidates />} path="/candidates" />
+                <Route element={<Courses />} path="/courses" />
               </Routes>
             </Content>
           </Layout>
