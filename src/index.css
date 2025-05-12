@@ -224,6 +224,9 @@ p {
   color: #fff !important;
   background-color: transparent;
 }
+.ant-layout-content {
+  min-height: auto !important;
+}
 .ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
   border-color: #0056b3 !important;
   background-color: #0056b3 !important;

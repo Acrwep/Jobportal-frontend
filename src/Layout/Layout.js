@@ -270,14 +270,20 @@ const MainSideMenu = () => {
                 ? "portallayout_mobilemainsidebar"
                 : "portallayout_mainsidebar"
             }
-            style={{ backgroundColor: "#073669", minWidth: "240px" }}
           >
             <div className="demo-logo-vertical">
               <p>Logo</p>
             </div>
             <SideMenu />
           </Sider>
-          <Layout style={{ height: "100vh", backgroundColor: "#fff" }}>
+          <Layout
+            style={{
+              height: "100vh",
+              backgroundColor: "#fff",
+              transition: "all 0.2s ease-in-out",
+              marginLeft: collapsed ? 80 : 207,
+            }}
+          >
             <Header
               style={{
                 background: colorBgContainer,
@@ -294,7 +300,9 @@ const MainSideMenu = () => {
                     <RiMenuUnfold2Fill size={20} />
                   )
                 }
-                onClick={() => setCollapsed(!collapsed)}
+                onClick={() => {
+                  setCollapsed(!collapsed);
+                }}
                 style={{
                   fontSize: "16px",
                 }}
@@ -408,8 +416,6 @@ const MainSideMenu = () => {
               style={{
                 margin: "10px 16px",
                 padding: "8px 12px",
-                minHeight: 280,
-                overflowX: "hidden",
                 // background: colorBgContainer,
                 // borderRadius: borderRadiusLG,
               }}

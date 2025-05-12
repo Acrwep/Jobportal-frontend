@@ -21,9 +21,30 @@
 }
 .portallayout_mobilemainsidebar {
   min-width: 80px !important;
+  width: 80px !important;
+  min-width: 80px !important;
+  background-color: #073669;
+  position: fixed;
+  height: 100vh;
+  overflow: auto;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  transition: all 0.2s ease-in-out;
 }
 .portallayout_mainsidebar {
   min-width: 206px !important;
+  max-width: 206px !important;
+  width: 206px !important;
+  background-color: #073669;
+  position: fixed;
+  height: 100vh;
+  overflow: auto;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  transition: all 0.2s ease-in-out;
+  /* height: 100vh; */
   /* padding: 4px !important; */
 }
 .portallayout_headermenubutton {

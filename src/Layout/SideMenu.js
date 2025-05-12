@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Menu } from "antd";
 import { MdQuestionAnswer } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
@@ -17,6 +17,7 @@ import { MdMenuBook } from "react-icons/md";
 const { SubMenu } = Menu;
 
 export default function SideMenu() {
+  const location = useLocation();
   const [selectedKey, setSelectedKey] = useState("");
   const navigate = useNavigate();
 
@@ -113,6 +114,14 @@ export default function SideMenu() {
   useEffect(() => {
     setSelectedKey("question-upload");
   }, []);
+
+  useEffect(() => {
+    console.log("current path", location.pathname, selectedKey);
+    const pathName = location.pathname.split("/")[1];
+    if (pathName === "question-upload") {
+      setSelectedKey("question-upload");
+    }
+  }, [location.pathname]);
 
   const handleMenuClick = (e) => {
     const flatMenuItems = sidemenuList.flatMap((item) =>
