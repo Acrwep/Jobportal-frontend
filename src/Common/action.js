@@ -301,6 +301,15 @@ export const getCourses = async (payload) => {
   }
 };
 
+export const getCoursesLocations = async (payload) => {
+  try {
+    const response = await api.get("/api/getLocations", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createQuestion = async (payload) => {
   try {
     const response = await api.post("/api/insertQuestions", payload);

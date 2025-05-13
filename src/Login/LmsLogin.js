@@ -116,6 +116,7 @@ export default function LmsLogin() {
                     fontWeight: 600,
                     cursor: "pointer",
                   }}
+                  onClick={() => navigate("/lmsregister")}
                 >
                   Sign Up
                 </span>

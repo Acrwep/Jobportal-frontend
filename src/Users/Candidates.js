@@ -37,10 +37,8 @@ export default function Candidates() {
   const [selectedDates, setSelectedDates] = useState([]);
 
   const columns = [
-    { title: "Name", key: "name", dataIndex: "name" },
-    { title: "Email", key: "email", dataIndex: "email", width: 300 },
-    { title: "Mobile", key: "mobile", dataIndex: "mobile", width: 180 },
-    { title: "Gender", key: "gender", dataIndex: "gender", width: 140 },
+    { title: "Name", key: "name", dataIndex: "name", width: 200 },
+    { title: "Email", key: "email", dataIndex: "email", width: 260 },
     {
       title: "Branch",
       key: "course_location",
@@ -51,7 +49,7 @@ export default function Candidates() {
       title: "Course",
       key: "course_name",
       dataIndex: "course_name",
-      width: 240,
+      width: 260,
     },
     {
       title: "Course Joining Date",
@@ -70,7 +68,7 @@ export default function Candidates() {
       title: "Test Attempt",
       key: "attempt_number",
       dataIndex: "attempt_number",
-      width: 150,
+      width: 180,
       render: (text, record) => {
         return (
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -278,7 +276,7 @@ export default function Candidates() {
 
       <div style={{ marginTop: "22px" }}>
         <CommonTable
-          scroll={{ x: 1900 }}
+          scroll={{ x: 1600 }}
           columns={columns}
           dataSource={data}
           dataPerPage={10}

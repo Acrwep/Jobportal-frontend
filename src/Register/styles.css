@@ -99,6 +99,36 @@
   position: relative;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
+.lmsregister_rightContainer {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 30px 40px;
+  z-index: 1;
+  position: relative;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  height: 420px;
+  overflow-y: auto;
+}
+.lmsregister_rightContainer {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+.lmsregister_rightContainer::-webkit-scrollbar {
+  width: 12px;
+}
+
+.lmsregister_rightContainer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.lmsregister_rightContainer::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.appsandurlchart_Containers::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 .register_createaccount_heading {
   font-size: 22px;
   font-weight: 700;
@@ -123,6 +153,48 @@
   font-weight: 500;
   margin-bottom: 4px !important;
 }
+.lmsregister_input {
+  height: 37px;
+  background-color: transparent;
+  background-image: none;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #a3a3a3;
+  border-radius: 16px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 15px;
+  /* margin-top: 22px; */
+}
+.lmsregister_input:hover {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+}
+.lmsregister_input:focus-within {
+  border-color: #0057b3b9 !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px rgba(149, 157, 165, 0.2);
+}
+.lmsregister_input.ant-select-outlined:not(.ant-select-customize-input)
+  .ant-select-selector {
+  border: none !important;
+}
+.lmsregister_input:hover.ant-select-outlined:not(.ant-select-disabled):not(
+    .ant-select-customize-input
+  ):not(.ant-pagination-size-changer):hover
+  .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.lmsregister_input:focus-within.ant-select-focused.ant-select-outlined:not(
+    .ant-select-disabled
+  ):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+  .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+}
+
 .register_input {
   height: 40px;
   background-color: transparent;
@@ -145,6 +217,47 @@
   background-color: transparent;
   box-shadow: 0 0 0 2px rgba(149, 157, 165, 0.2);
 }
+.lmsregister_errorinput {
+  height: 37px;
+  background-color: transparent;
+  background-image: none;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ff4d4f;
+  border-radius: 16px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 15px;
+  /* margin-top: 22px; */
+}
+.lmsregister_errorinput:hover {
+  border-color: #ff4d4f !important;
+  background-color: transparent;
+}
+.lmsregister_errorinput:focus-within {
+  border-color: #ff4d4f !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #ff4d5021 !important;
+}
+.lmsregister_errorinput.ant-select-outlined:not(.ant-select-customize-input)
+  .ant-select-selector {
+  border: none !important;
+}
+.lmsregister_errorinput:hover.ant-select-outlined:not(.ant-select-disabled):not(
+    .ant-select-customize-input
+  ):not(.ant-pagination-size-changer):hover
+  .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.lmsregister_errorinput:focus-within.ant-select-focused.ant-select-outlined:not(
+    .ant-select-disabled
+  ):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+  .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+}
 .register_errorinput {
   height: 40px;
   background-color: transparent;
@@ -165,7 +278,7 @@
 .register_errorinput:focus-within {
   border-color: #ff4d4f !important;
   background-color: transparent;
-  box-shadow: 0 0 0 2px #ff4d50;
+  box-shadow: 0 0 0 2px #ff4d5021 !important;
 }
 .register_errorlabels_hide {
   position: absolute;
