@@ -59,7 +59,7 @@ export default function PortalSelectField({
             ? selectClassName
               ? selectClassName
               : "portalSelectfield"
-            : "commonSelectfield_error"
+            : "portalSelectfield_error"
         }
         style={{ width: "100%" }}
         onChange={onChange}

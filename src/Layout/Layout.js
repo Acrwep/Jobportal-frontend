@@ -35,6 +35,8 @@ import Result from "../Interview/Result";
 import Users from "../Users/Users";
 import Candidates from "../Users/Candidates";
 import Courses from "../Courses/Courses";
+import SidebarLogo from "../images/old-acte-logo.png";
+import { getCourses } from "../Common/action";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
@@ -56,6 +58,7 @@ const MainSideMenu = () => {
     const accessToken = localStorage.getItem("Accesstoken");
     const loginDetails = localStorage.getItem("loginDetails");
     const loginDetailsJson = JSON.parse(loginDetails);
+    const selectedCourseName = localStorage.getItem("selectedCourseName");
 
     if (loginDetailsJson) {
       setUserName(loginDetailsJson.name);
@@ -122,8 +125,8 @@ const MainSideMenu = () => {
         setShowPages(false);
         setShowSideBar(true);
       }
-      if (location.pathname === "/courses") {
-        navigate("/courses");
+      if (location.pathname.includes("/courses")) {
+        navigate(`/courses/${selectedCourseName.replace(/\s+/g, "")}`);
         setShowPages(false);
         setShowSideBar(true);
       }
@@ -272,164 +275,169 @@ const MainSideMenu = () => {
             }
           >
             <div className="demo-logo-vertical">
-              <p>Logo</p>
+              <img src={SidebarLogo} style={{ width: "90px" }} />
             </div>
             <SideMenu />
           </Sider>
           <Layout
             style={{
               height: "100vh",
-              backgroundColor: "#fff",
+              backgroundColor: "#f5f7f9",
               transition: "all 0.2s ease-in-out",
               marginLeft: collapsed ? 80 : 207,
             }}
           >
-            <Header
-              style={{
-                background: colorBgContainer,
-                boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-              }}
-              className="portallayout_headerContainer"
-            >
-              <Button
-                type="text"
-                icon={
-                  collapsed ? (
-                    <RiMenuUnfoldFill size={20} />
-                  ) : (
-                    <RiMenuUnfold2Fill size={20} />
-                  )
-                }
-                onClick={() => {
-                  setCollapsed(!collapsed);
-                }}
-                style={{
-                  fontSize: "16px",
-                }}
-              />
-
-              <div
-                style={{ display: "flex", gap: "16px", alignItems: "center" }}
-              >
-                <button
-                  onClick={handlePortalMenu}
-                  className="portallayout_headermenubutton"
-                >
-                  <TbGridDots size={20} />
-                </button>
-
-                <button
-                  className="portallayout_headeravatarbutton"
-                  onClick={handleLogoutMenu}
-                >
-                  <Avatar
-                    size={35}
-                    className="admin_headeravatar"
-                    style={{ marginTop: "6px" }}
-                  >
-                    {userName ? userName.charAt(0).toUpperCase() : ""}
-                  </Avatar>
-                </button>
-              </div>
-
-              {/* menu code */}
-              <div
-                className="portallayout_menuContainer"
-                style={{ display: portalMenu ? "block" : "none" }}
-              >
-                <div className="portallayout_menuInnerContainer">
-                  <div
-                    className="portallayout_menuItemContainer"
-                    onClick={() => {
-                      setShowPages(true);
-                      dispatch(storePortalMenuStatus(false));
-                      dispatch(storeLogoutMenuStatus(false));
-                      navigate("/search");
-                    }}
-                  >
-                    <img src={Placement} style={{ width: "34px" }} />
-                    <p className="portallayout_menuname">Placement</p>
-                  </div>
-
-                  <div
-                    className="portallayout_menuItemContainer"
-                    onClick={() => {
-                      setShowPages(false);
-                      setShowSideBar(true);
-                      dispatch(storePortalMenuStatus(false));
-                      dispatch(storeLogoutMenuStatus(false));
-                      navigate("/question-upload");
-                    }}
-                  >
-                    <img src={Interview} className="portallayout_menuImage" />
-                    <p className="portallayout_menunametwo">Interview</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* logout menu code */}
-              <div
-                className="portallayout_logoutmenuContainer"
-                style={{ display: logoutMenu ? "block" : "none" }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    padding: "22px 22px 0px",
-                  }}
-                >
-                  <Avatar size={42} className="admin_headeravatar">
-                    {userName ? userName.charAt(0).toUpperCase() : ""}
-                  </Avatar>
-                </div>
-                <div
-                  style={{
-                    padding: "0px 22px 0px",
-                  }}
-                >
-                  <p className="portallayout_logoutmenuemail">
-                    {userEmail ? userEmail : ""}
-                    {/* balaji@actetechnologies.com */}
-                  </p>
-                  <p className="portallayout_logoutmenu_username">
-                    {userName ? userName : ""}
-                  </p>
-                </div>
-                <Divider className="portallayout_logoutmenu_divider" />
-
-                <div
-                  className="logoutmenu_buttonContainer"
-                  onClick={handleLogout}
-                >
-                  <button className="logoutmenu_button">
-                    <MdOutlineLogout
-                      size={17}
-                      style={{ marginRight: "12px" }}
-                    />
-                    Logout
-                  </button>
-                </div>
-              </div>
-            </Header>
             <Content
               style={{
-                margin: "10px 16px",
-                padding: "8px 12px",
-                // background: colorBgContainer,
-                // borderRadius: borderRadiusLG,
-              }}
-              onClick={() => {
-                dispatch(storePortalMenuStatus(false));
-                dispatch(storeLogoutMenuStatus(false));
+                margin: "20px 16px 20px 0px",
+                backgroundColor: "#fff",
+                borderRadius: "24px",
+                border: "1px solid #80808033",
               }}
             >
-              <Routes>
-                <Route element={<QuestionUpload />} path="/question-upload" />
-                <Route element={<Users />} path="/users" />
-                <Route element={<Candidates />} path="/candidates" />
-                <Route element={<Courses />} path="/courses" />
-              </Routes>
+              <>
+                <div className="portallayout_headerContainer">
+                  <Button
+                    type="text"
+                    icon={
+                      collapsed ? (
+                        <RiMenuUnfoldFill size={20} />
+                      ) : (
+                        <RiMenuUnfold2Fill size={20} />
+                      )
+                    }
+                    onClick={() => {
+                      setCollapsed(!collapsed);
+                    }}
+                    style={{
+                      fontSize: "16px",
+                    }}
+                  />
+
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "16px",
+                      alignItems: "center",
+                    }}
+                  >
+                    <button
+                      onClick={handlePortalMenu}
+                      className="portallayout_headermenubutton"
+                    >
+                      <TbGridDots size={20} />
+                    </button>
+
+                    <button
+                      className="portallayout_headeravatarbutton"
+                      onClick={handleLogoutMenu}
+                    >
+                      <Avatar size={34} className="admin_headeravatar">
+                        {userName ? userName.charAt(0).toUpperCase() : ""}
+                      </Avatar>
+                    </button>
+                  </div>
+
+                  <div
+                    className="portallayout_menuContainer"
+                    style={{ display: portalMenu ? "block" : "none" }}
+                  >
+                    <div className="portallayout_menuInnerContainer">
+                      <div
+                        className="portallayout_menuItemContainer"
+                        onClick={() => {
+                          setShowPages(true);
+                          dispatch(storePortalMenuStatus(false));
+                          dispatch(storeLogoutMenuStatus(false));
+                          navigate("/search");
+                        }}
+                      >
+                        <img src={Placement} style={{ width: "34px" }} />
+                        <p className="portallayout_menuname">Placement</p>
+                      </div>
+
+                      <div
+                        className="portallayout_menuItemContainer"
+                        onClick={() => {
+                          setShowPages(false);
+                          setShowSideBar(true);
+                          dispatch(storePortalMenuStatus(false));
+                          dispatch(storeLogoutMenuStatus(false));
+                          navigate("/question-upload");
+                        }}
+                      >
+                        <img
+                          src={Interview}
+                          className="portallayout_menuImage"
+                        />
+                        <p className="portallayout_menunametwo">Interview</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className="portallayout_logoutmenuContainer"
+                    style={{ display: logoutMenu ? "block" : "none" }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        padding: "22px 22px 0px",
+                      }}
+                    >
+                      <Avatar size={42} className="admin_headeravatar">
+                        {userName ? userName.charAt(0).toUpperCase() : ""}
+                      </Avatar>
+                    </div>
+                    <div
+                      style={{
+                        padding: "0px 22px 0px",
+                      }}
+                    >
+                      <p className="portallayout_logoutmenuemail">
+                        {userEmail ? userEmail : ""}
+                      </p>
+                      <p className="portallayout_logoutmenu_username">
+                        {userName ? userName : ""}
+                      </p>
+                    </div>
+                    <Divider className="portallayout_logoutmenu_divider" />
+
+                    <div
+                      className="logoutmenu_buttonContainer"
+                      onClick={handleLogout}
+                    >
+                      <button className="logoutmenu_button">
+                        <MdOutlineLogout
+                          size={17}
+                          style={{ marginRight: "12px" }}
+                        />
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <Divider className="portallayout_header_divider" />
+                <div
+                  style={{ padding: "0px 20px" }}
+                  onClick={() => {
+                    dispatch(storePortalMenuStatus(false));
+                    dispatch(storeLogoutMenuStatus(false));
+                  }}
+                >
+                  <Routes>
+                    <Route
+                      element={<QuestionUpload />}
+                      path="/question-upload"
+                    />
+                    <Route element={<Users />} path="/users" />
+                    <Route element={<Candidates />} path="/candidates" />
+                    <Route element={<Courses />} path="/courses/:courseName" />
+                  </Routes>
+                </div>
+              </>
             </Content>
           </Layout>
         </Layout>

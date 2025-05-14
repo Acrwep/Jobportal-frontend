@@ -20,6 +20,7 @@ const portalMenuStatusSlice = createSlice({
   reducers: {
     storePortalMenuStatus(state, action) {
       state = action.payload;
+      console.log("reduxxxxxxxxxx", state);
       return state;
     },
   },

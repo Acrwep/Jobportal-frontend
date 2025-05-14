@@ -18,7 +18,9 @@ body {
 p {
   margin: 0 !important;
 }
-
+button {
+  font-family: "Montserrat", sans-serif !important;
+}
 /* antd disable input field styles */
 .ant-input-outlined.ant-input-disabled,
 :where(.css-dev-only-do-not-override-1yacf91).ant-input-outlined[disabled] {
@@ -209,24 +211,41 @@ p {
 }
 
 /* antd layout styles */
-.ant-menu-light .ant-menu-item-selected {
-  background-color: rgb(255 255 255 / 52%) !important;
-  color: #fff !important;
-}
 .ant-menu-light .ant-menu-item {
-  color: #fff !important;
+  /* color: #fff !important; */
+  color: #333 !important;
   background-color: transparent;
 }
+.ant-menu-light .ant-menu-item-selected {
+  /* background-color: rgb(255 255 255 / 52%) !important; */
+  background-color: #0056b3 !important;
+  color: #fff !important;
+}
+
 .ant-menu-light
   .ant-menu-item:not(.ant-menu-item-selected):not(
     .ant-menu-submenu-selected
   ):hover {
-  color: #fff !important;
+  font-weight: 500 !important;
   background-color: transparent;
 }
 .ant-layout-content {
   min-height: auto !important;
 }
+.ant-menu-light.ant-menu-root.ant-menu-inline {
+  border-inline-end: none !important;
+}
+.ant-menu-inline .ant-menu-item {
+  height: 38px !important;
+}
+.ant-menu-submenu-title {
+  color: #333 !important;
+}
+
+.ant-menu-light:not(.ant-menu-horizontal) .ant-menu-submenu-title:hover {
+  background-color: transparent !important;
+}
+/* antd radio button styles */
 .ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
   border-color: #0056b3 !important;
   background-color: #0056b3 !important;
@@ -234,13 +253,7 @@ p {
 .ant-radio-wrapper:hover .ant-radio-inner {
   border-color: #0056b3 !important;
 }
-.ant-menu-light:not(.ant-menu-horizontal) .ant-menu-submenu-title:hover {
-  background-color: transparent !important;
-}
 /* antd select placeholder styles */
 .ant-select .ant-select-selection-placeholder {
   color: rgb(0 0 0 / 32%) !important;
-}
-.ant-menu-submenu-title {
-  color: #fff !important;
 }

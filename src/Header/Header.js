@@ -119,6 +119,7 @@ export default function Header() {
             <button
               onClick={handlePortalMenu}
               className="portallayout_headermenubutton"
+              style={{ marginTop: "3px" }}
             >
               <TbGridDots size={20} />
             </button>
@@ -128,7 +129,7 @@ export default function Header() {
               onClick={handleLogoutMenu}
             >
               <Avatar
-                size={35}
+                size={34}
                 className="admin_headeravatar"
                 style={{ marginTop: "6px" }}
               >

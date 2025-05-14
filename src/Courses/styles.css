@@ -1,3 +1,14 @@
+.courses_backbutton_mainContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.courses_backbutton_Container {
+  border-radius: 50%;
+  padding: 10px;
+  background-color: #0057b338;
+  cursor: pointer;
+}
 .courses_trainercard {
   border-radius: 12px;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
@@ -80,4 +91,78 @@
   font-weight: 600;
   margin-top: 12px !important;
   font-size: 14px;
+}
+.courses_maptrainerbutton_container {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.courses_addtopic_button {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  background-color: #0056b3 !important;
+  border-radius: 9px !important;
+  outline: 0 !important;
+  border: none;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 7px 19px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.courses_addtopic_button:hover {
+  opacity: 0.9;
+}
+.courses_addtopic_button:active {
+  transform: scale(0.9);
+  box-shadow: 3px 2px 22px 1px #027cff73;
+}
+.courses_addtopicmodal_footerContainer {
+  display: flex;
+  margin-top: 12px;
+  gap: 24px;
+  justify-content: flex-end;
+}
+.courses_addtopicmodal_submitbutton {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #0056b3 !important;
+  border-radius: 9px !important;
+  outline: 0 !important;
+  border: none;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 33px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.courses_addtopicmodal_submitbutton:hover {
+  color: #fff !important;
+  opacity: 0.8;
+}
+.courses_addtopicmodal_submitbutton:active {
+  transform: scale(0.9);
+  box-shadow: 3px 2px 22px 1px #027cff73;
+}
+.courses_addtopicmodal_disablesubmitbutton {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #0056b3 !important;
+  border-radius: 9px !important;
+  outline: 0 !important;
+  border: none;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 33px;
+  cursor: default;
+  font-weight: 600;
+  opacity: 0.8;
+}
+.courses_addtopicbutton_spin {
+  color: #fff !important;
 }

@@ -57,6 +57,9 @@
 .commonSelectfield_error {
   height: 36px !important;
 }
+.portalSelectfield_error {
+  height: 35px !important;
+}
 .portalSelectfield {
   height: 35px;
   border-radius: 6px;

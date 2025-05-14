@@ -419,7 +419,7 @@ export default function QuestionUpload() {
             className="questionupload_button"
             onClick={() => setOpen(true)}
           >
-            <MdFileUpload size={19} style={{ marginRight: "4px" }} />
+            <MdFileUpload size={19} style={{ marginRight: "5px" }} />
             Upload
           </button>
         </Col>

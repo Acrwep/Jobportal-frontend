@@ -5,6 +5,7 @@ import CommonTable from "../Common/CommonTable";
 import { IoIosSend } from "react-icons/io";
 import { CommonToaster } from "../Common/CommonToaster";
 import {
+  getAllUsers,
   getCandidates,
   getCourses,
   sendInterviewRequest,
@@ -123,8 +124,14 @@ export default function Candidates() {
       to_date: toDate,
     };
     try {
-      const response = await getCandidates(payload);
-      setData(response?.data?.data || []);
+      const response = await getAllUsers(payload);
+      const users = response?.data?.data || [];
+      if (users.length >= 1) {
+        const onlyStudents = users.filter((f) => f.role === "Student");
+        setData(onlyStudents);
+      } else {
+        setData([]);
+      }
     } catch (error) {
       setData([]);
       CommonToaster(

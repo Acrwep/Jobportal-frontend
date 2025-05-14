@@ -174,8 +174,7 @@ export default function Users() {
             className="questionupload_button"
             onClick={() => setOpen(true)}
           >
-            <IoMdAdd size={19} style={{ marginRight: "4px" }} />
-            Add User
+            <IoMdAdd size={19} style={{ marginRight: "6px" }} /> Add User
           </button>
         </Col>
       </Row>

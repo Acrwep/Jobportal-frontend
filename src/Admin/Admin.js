@@ -222,10 +222,19 @@ export default function Admin() {
     const convertLocationJson = JSON.parse(branchLoaction);
 
     const userId = localStorage.getItem("loginUserId");
-
+    console.log(
+      "courseIdfromLocal",
+      courseIdfromLocal,
+      typeof courseIdfromLocal
+    );
     const payload = {
       q: searchBykeyword,
-      ...(courseIdfromLocal && { course_id: parseInt(courseIdfromLocal) }),
+      ...(courseIdfromLocal && {
+        course_id:
+          courseIdfromLocal === "null" || courseIdfromLocal === undefined
+            ? null
+            : parseInt(courseIdfromLocal),
+      }),
       ...(eligibleStatusFromLocal && {
         eligibleStatus: eligibleStatusFromLocal === "true" ? 1 : 0,
       }),

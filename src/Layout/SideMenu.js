@@ -4,15 +4,15 @@ import { Menu } from "antd";
 import { MdQuestionAnswer } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { PiStudentFill } from "react-icons/pi";
-import { SiBookstack } from "react-icons/si";
-import FullstackIcon from "../images/code.png";
-import SoftwareTestingIcon from "../images/software-testing.png";
-import DatascienceIcon from "../images/data-science.png";
-import DataAnalyticsIcon from "../images/data-analytics.png";
-import CloudComputingIcon from "../images/cloud-computing.png";
-import UiUxIcon from "../images/web-design.png";
-import DigitalMarketingIcon from "../images/marketing.png";
 import { MdMenuBook } from "react-icons/md";
+import { FaCode } from "react-icons/fa6";
+import { SlMagnifier } from "react-icons/sl";
+import { GiMaterialsScience } from "react-icons/gi";
+import { BsBarChartLine } from "react-icons/bs";
+import { CiBullhorn } from "react-icons/ci";
+import { BsCloudArrowDown } from "react-icons/bs";
+import { MdScreenshotMonitor } from "react-icons/md";
+import { getCourses } from "../Common/action";
 
 const { SubMenu } = Menu;
 
@@ -21,7 +21,7 @@ export default function SideMenu() {
   const [selectedKey, setSelectedKey] = useState("");
   const navigate = useNavigate();
 
-  const sidemenuList = [
+  const [sidemenuList, setSubmenuList] = useState([
     {
       title: "Questions",
       icon: <MdQuestionAnswer size={17} />,
@@ -37,91 +37,146 @@ export default function SideMenu() {
       icon: <PiStudentFill size={17} />,
       path: "candidates",
     },
-    {
-      title: "Courses",
-      icon: <MdMenuBook size={17} />,
-      submenu: [
-        {
-          title: "FullStack Development",
-          icon: (
-            <img src={FullstackIcon} className="portalsidebar_coursesicon" />
-          ),
-          path: "courses",
-          key: "fullstack",
-        },
-        {
-          title: "Software Testing",
-          icon: (
-            <img
-              src={SoftwareTestingIcon}
-              className="portalsidebar_coursesicon"
-            />
-          ),
-          path: "courses",
-          key: "softwaretesting",
-        },
-        {
-          title: "Data Science",
-          icon: (
-            <img src={DatascienceIcon} className="portalsidebar_coursesicon" />
-          ),
-          path: "courses",
-          key: "datascience",
-        },
-        {
-          title: "Data Analytics",
-          icon: (
-            <img
-              src={DataAnalyticsIcon}
-              className="portalsidebar_coursesicon"
-            />
-          ),
-          path: "courses",
-          key: "dataanalytics",
-        },
-        {
-          title: "Cloud Computing",
-          icon: (
-            <img
-              src={CloudComputingIcon}
-              className="portalsidebar_coursesicon"
-            />
-          ),
-          path: "courses",
-          key: "cloudcomputing",
-        },
-        {
-          title: "UI/UX",
-          icon: <img src={UiUxIcon} className="portalsidebar_coursesicon" />,
-          path: "courses",
-          key: "uiux",
-        },
-        {
-          title: "Digital Marketing",
-          icon: (
-            <img
-              src={DigitalMarketingIcon}
-              className="portalsidebar_coursesicon"
-            />
-          ),
-          path: "courses",
-          key: "digitalmarketing",
-        },
-      ],
-    },
-  ];
-
-  useEffect(() => {
-    setSelectedKey("question-upload");
-  }, []);
+  ]);
 
   useEffect(() => {
     console.log("current path", location.pathname, selectedKey);
     const pathName = location.pathname.split("/")[1];
-    if (pathName === "question-upload") {
+    const selectedCourseId = localStorage.getItem("selectedCourseId");
+
+    if (pathName === "") {
       setSelectedKey("question-upload");
+      return;
     }
+    if (pathName.includes("courses") && selectedCourseId === "1") {
+      setSelectedKey("fullstack");
+      return;
+    } else if (pathName === "courses" && selectedCourseId === "2") {
+      setSelectedKey("softwaretesting");
+      return;
+    } else if (pathName === "courses" && selectedCourseId === "3") {
+      setSelectedKey("datascience");
+      return;
+    } else if (pathName === "courses" && selectedCourseId === "4") {
+      setSelectedKey("dataanalytics");
+      return;
+    } else if (pathName === "courses" && selectedCourseId === "5") {
+      setSelectedKey("cloudcomputing");
+      return;
+    } else if (pathName === "courses" && selectedCourseId === "6") {
+      setSelectedKey("uiux");
+      return;
+    } else if (pathName === "courses" && selectedCourseId === "7") {
+      setSelectedKey("digitalmarketing");
+      return;
+    }
+    setSelectedKey(pathName);
   }, [location.pathname]);
+
+  useEffect(() => {
+    getCourseData();
+  }, []);
+
+  const getCourseData = async () => {
+    try {
+      const response = await getCourses();
+      console.log("sidebar courses", response);
+      const allCourses = response?.data?.data || [];
+
+      if (
+        allCourses.length >= 1 &&
+        !sidemenuList.some((s) => s.title === "Courses")
+      ) {
+        const obj = {
+          title: "Courses",
+          icon: <MdMenuBook size={17} />,
+          submenu: allCourses,
+        };
+        let addcourses = sidemenuList;
+        addcourses.push(obj);
+
+        const altersidebar = addcourses.map((item) => {
+          if (item.title === "Courses") {
+            const updatedSubmenu = item.submenu.map((s) => {
+              if (s.name === "Fullstack Development") {
+                return {
+                  ...s,
+                  title: s.name,
+                  icon: <FaCode size={17} />,
+                  path: "courses",
+                  key: "fullstack",
+                };
+              }
+              if (s.name === "Software Testing") {
+                return {
+                  ...s,
+                  title: s.name,
+                  icon: <SlMagnifier size={17} />,
+                  path: "courses",
+                  key: "softwaretesting",
+                };
+              }
+              if (s.name === "Data Science") {
+                return {
+                  ...s,
+                  title: s.name,
+                  icon: <GiMaterialsScience size={17} />,
+                  path: "courses",
+                  key: "datascience",
+                };
+              }
+              if (s.name === "Data Analytics") {
+                return {
+                  ...s,
+                  title: s.name,
+                  icon: <BsBarChartLine size={17} />,
+                  path: "courses",
+                  key: "dataanalytics",
+                };
+              }
+              if (s.name === "Cloud Computing") {
+                return {
+                  ...s,
+                  title: s.name,
+                  icon: <BsCloudArrowDown size={17} />,
+                  path: "courses",
+                  key: "cloudcomputing",
+                };
+              }
+              if (s.name === "UI-UX") {
+                return {
+                  ...s,
+                  title: s.name,
+                  icon: <MdScreenshotMonitor size={17} />,
+                  path: "courses",
+                  key: "uiux",
+                };
+              }
+              if (s.name === "Digital Marketing") {
+                return {
+                  ...s,
+                  title: s.name,
+                  icon: <CiBullhorn size={19} />,
+                  path: "courses",
+                  key: "digitalmarketing",
+                };
+              }
+              return s;
+            });
+            return {
+              ...item,
+              submenu: updatedSubmenu,
+            };
+          }
+          return item;
+        });
+
+        setSubmenuList(altersidebar);
+      }
+    } catch (error) {
+      console.log("get course error", error);
+    }
+  };
 
   const handleMenuClick = (e) => {
     const flatMenuItems = sidemenuList.flatMap((item) =>
@@ -131,6 +186,13 @@ export default function SideMenu() {
     const selectedItem = flatMenuItems.find(
       (i) => i.key === e.key || i.path === e.key
     );
+    if (selectedItem.id) {
+      localStorage.setItem("selectedCourseName", selectedItem.name);
+      localStorage.setItem("selectedCourseId", selectedItem.id);
+    } else {
+      localStorage.removeItem("selectedCourseName");
+      localStorage.removeItem("selectedCourseId");
+    }
     if (selectedItem) {
       setSelectedKey(e.key);
       navigate(`/${selectedItem.path}`);
@@ -141,12 +203,7 @@ export default function SideMenu() {
     return Object.entries(menuConfig).map(([key, item]) => {
       if (item.submenu) {
         return (
-          <SubMenu
-            key="Courses"
-            icon={item.icon}
-            title={item.title}
-            style={{ marginBottom: "12px" }}
-          >
+          <SubMenu key="Courses" icon={item.icon} title={item.title}>
             {item.submenu.map((subItem) => (
               <Menu.Item
                 key={subItem.key}

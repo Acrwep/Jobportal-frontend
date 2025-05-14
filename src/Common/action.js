@@ -367,10 +367,20 @@ export const insertAnswers = async (payload) => {
   }
 };
 
-//send inter request api
+//send interview request api
 export const sendInterviewRequest = async (payload) => {
   try {
     const response = await api.post("/api/sendEmail", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//topics api's
+export const createTopic = async (payload) => {
+  try {
+    const response = await api.post("/api/insertTopic", payload);
     return response;
   } catch (error) {
     throw error;
