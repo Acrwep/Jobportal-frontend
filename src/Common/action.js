@@ -423,3 +423,24 @@ export const trainerMapping = async (payload) => {
     throw error;
   }
 };
+
+//video upload api
+export const videoAndDocumentUpload = async (payload) => {
+  try {
+    const response = await api.post("/api/uploadContent", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getVideoAndDocuments = async (payload) => {
+  try {
+    const response = await api.get("/api/getVideos", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

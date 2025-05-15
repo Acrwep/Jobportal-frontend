@@ -2,6 +2,8 @@ const nameRegex = /^[a-zA-Z]+(?: [a-zA-Z]+)*$/;
 const addressRegex = /^(?!\s*$).+/;
 const emailRegex = /^[a-zA-Z0-9._-]{2,}@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$/;
 const mobileRegex = /^[0-9]+$/;
+const youtubeLinkRegex =
+  /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|shorts\/)?([a-zA-Z0-9_-]{11})(\S*)?$/;
 
 export const nameValidator = (name) => {
   let error = "";
@@ -59,6 +61,14 @@ export const passwordValidator = (password) => {
 
   if (!password || password.length <= 0) error = "Password is required";
   else if (password.length < 3) error = " Password is not valid";
+
+  return error;
+};
+
+export const youtubeLinkValidator = (link) => {
+  let error = "";
+  if (link.length >= 1 && !youtubeLinkRegex.test(link))
+    error = "  is not valid";
 
   return error;
 };

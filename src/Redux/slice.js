@@ -38,10 +38,22 @@ const logoutMenuStatusSlice = createSlice({
   },
 });
 
+const courseVideosSlice = createSlice({
+  name: "coursevideos",
+  initialState,
+  reducers: {
+    storeCourseVideos(state, action) {
+      state = action.payload;
+      return state;
+    },
+  },
+});
 export const { storeFolderProfiles } = folderProfilesSlice.actions;
 export const { storePortalMenuStatus } = portalMenuStatusSlice.actions;
 export const { storeLogoutMenuStatus } = logoutMenuStatusSlice.actions;
+export const { storeCourseVideos } = courseVideosSlice.actions;
 
 export const folderProfilesReducer = folderProfilesSlice.reducer;
 export const portalMenuStatusReducer = portalMenuStatusSlice.reducer;
 export const logoutMenuStatusReducer = logoutMenuStatusSlice.reducer;
+export const courseVideosReducer = courseVideosSlice.reducer;

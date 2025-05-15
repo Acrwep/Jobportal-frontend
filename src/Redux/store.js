@@ -3,6 +3,7 @@ import {
   folderProfilesReducer,
   portalMenuStatusReducer,
   logoutMenuStatusReducer,
+  courseVideosReducer,
 } from "./slice";
 
 export const store = configureStore({
@@ -11,5 +12,6 @@ export const store = configureStore({
     folderprofiles: folderProfilesReducer,
     portalmenu: portalMenuStatusReducer,
     logoutmenu: logoutMenuStatusReducer,
+    coursevideos: courseVideosReducer,
   },
 });

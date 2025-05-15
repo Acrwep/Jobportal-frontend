@@ -185,7 +185,12 @@ button {
 .ant-upload-wrapper .ant-upload-list .ant-upload-list-item {
   color: #0056b3 !important;
 }
-
+.ant-upload-wrapper
+  .ant-upload-list
+  .ant-upload-list-item-error
+  .ant-upload-list-item-name {
+  color: #0056b3 !important;
+}
 /* antd checkbox styles */
 .ant-checkbox .ant-checkbox-inner {
   background-color: transparent;
@@ -256,4 +261,9 @@ button {
 /* antd select placeholder styles */
 .ant-select .ant-select-selection-placeholder {
   color: rgb(0 0 0 / 32%) !important;
+}
+
+/* antd tabs styles */
+.ant-tabs-tab-btn {
+  outline: none !important;
 }

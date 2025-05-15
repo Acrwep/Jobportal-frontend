@@ -203,3 +203,30 @@
 .sessionmodal_okbutton:active {
   transform: scale(0.9);
 }
+
+/* lottie loader styles */
+.lottieloader_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+.lottie_loader {
+  width: 160px;
+}
+/* nodata found styles */
+.common_nodataContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 40px;
+  font-size: 16px;
+  font-weight: 600;
+  flex-direction: column;
+  gap: 16px;
+  color: #ababab;
+}
+.common_nodataimage {
+  width: 190px;
+}
