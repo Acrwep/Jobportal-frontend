@@ -310,6 +310,15 @@ export const getCoursesLocations = async (payload) => {
   }
 };
 
+export const getParticularCourseTrainers = async (courseId) => {
+  try {
+    const response = await api.get(`/api/getTrainers?course_id=${courseId}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createQuestion = async (payload) => {
   try {
     const response = await api.post("/api/insertQuestions", payload);
@@ -381,6 +390,34 @@ export const sendInterviewRequest = async (payload) => {
 export const createTopic = async (payload) => {
   try {
     const response = await api.post("/api/insertTopic", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateTopic = async (payload) => {
+  try {
+    const response = await api.put("/api/updateTopic", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getTopics = async (courseId) => {
+  try {
+    const response = await api.get(`/api/getTopics?course_id=${courseId}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//map trainers to the course
+export const trainerMapping = async (payload) => {
+  try {
+    const response = await api.post("/api/courseMap", payload);
     return response;
   } catch (error) {
     throw error;
