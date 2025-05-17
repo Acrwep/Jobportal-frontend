@@ -20,7 +20,6 @@ const portalMenuStatusSlice = createSlice({
   reducers: {
     storePortalMenuStatus(state, action) {
       state = action.payload;
-      console.log("reduxxxxxxxxxx", state);
       return state;
     },
   },
@@ -48,12 +47,40 @@ const courseVideosSlice = createSlice({
     },
   },
 });
+
+const courseDocumentsSlice = createSlice({
+  name: "coursedocuments",
+  initialState,
+  reducers: {
+    storeCourseDocuments(state, action) {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
+const trainerId = null;
+const trainerIdSlice = createSlice({
+  name: "trainerid",
+  initialState: trainerId,
+  reducers: {
+    storeTrainerId(state, action) {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
 export const { storeFolderProfiles } = folderProfilesSlice.actions;
 export const { storePortalMenuStatus } = portalMenuStatusSlice.actions;
 export const { storeLogoutMenuStatus } = logoutMenuStatusSlice.actions;
 export const { storeCourseVideos } = courseVideosSlice.actions;
+export const { storeTrainerId } = trainerIdSlice.actions;
+export const { storeCourseDocuments } = courseDocumentsSlice.actions;
 
 export const folderProfilesReducer = folderProfilesSlice.reducer;
 export const portalMenuStatusReducer = portalMenuStatusSlice.reducer;
 export const logoutMenuStatusReducer = logoutMenuStatusSlice.reducer;
 export const courseVideosReducer = courseVideosSlice.reducer;
+export const trainerIdReducer = trainerIdSlice.reducer;
+export const courseDocumentsReducer = courseDocumentsSlice.reducer;

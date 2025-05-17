@@ -1,53 +1,189 @@
-import React from "react";
-import { Col, Row } from "antd";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { Col, Row, Modal, Button } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 import "./styles.css";
 import Loader from "../Common/Loader";
 import CommonNodataFound from "../Common/CommonNodataFound";
+import { RiDeleteBinLine } from "react-icons/ri";
+import { MdDelete } from "react-icons/md";
+import { CommonToaster } from "../Common/CommonToaster";
+import { getVideoAndDocuments, videoDelete } from "../Common/action";
+import { storeCourseVideos } from "../Redux/slice";
 
-export default function CourseVideos({ loading }) {
+export default function CourseVideos({ courseId, topicid, loading }) {
+  const dispatch = useDispatch();
   const courseVideos = useSelector((state) => state.coursevideos);
+  const trainerId = useSelector((state) => state.trainerid);
+  const API_URL = process.env.REACT_APP_API_URL;
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [videoId, setVideoId] = useState(null);
+  const [videoName, setVideoName] = useState("");
+  const [videoLoading, setVideoLoading] = useState(false);
+
+  const getVideosAndDocumentsData = async () => {
+    setVideoLoading(true);
+    console.log(courseId, topicid, trainerId);
+    const payload = {
+      course_id: courseId,
+      topic_id: topicid,
+      trainer_id: trainerId,
+    };
+    try {
+      const response = await getVideoAndDocuments(payload);
+      console.log("videos response", response);
+      const videos = response?.data?.videos || [];
+      if (videos.length >= 1) {
+        dispatch(storeCourseVideos(videos));
+      } else {
+        dispatch(storeCourseVideos([]));
+      }
+    } catch (error) {
+      dispatch(storeCourseVideos([]));
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
+    } finally {
+      setTimeout(() => {
+        setVideoLoading(false);
+      }, 300);
+    }
+  };
+
+  const handleDelete = async () => {
+    const payload = {
+      id: videoId,
+      filename: videoName,
+    };
+    try {
+      await videoDelete(payload);
+      CommonToaster("Video deleted");
+      setDeleteModal(false);
+      getVideosAndDocumentsData();
+    } catch (error) {
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
+    }
+  };
 
   return (
-    <>
-      {loading ? (
+    <div>
+      {loading || videoLoading ? (
         <Loader />
       ) : (
-        <div>
-          <Row gutter={16} style={{ marginBottom: "20px" }}>
-            {courseVideos.length >= 1 ? (
-              <>
-                {courseVideos.map((item, index) => {
-                  let embedLink;
+        <Row gutter={16} style={{ marginBottom: "20px" }}>
+          {courseVideos.length >= 1 ? (
+            <>
+              {courseVideos.map((item, index) => {
+                let embedLink;
+                let isYoutubeLink = false;
+                if (item.file_path) {
                   if (item.file_path.includes("youtube")) {
                     const url = new URL(item.file_path);
                     embedLink = url.searchParams.get("v"); // safely get video ID
+                    isYoutubeLink = true;
+                  } else {
+                    isYoutubeLink = false;
                   }
-                  return (
-                    <React.Fragment key={index}>
-                      <Col xs={24} sm={24} md={24} lg={8}>
-                        <iframe
-                          width="100%"
-                          height="200"
-                          src={`https://www.youtube.com/embed/${embedLink}`}
-                          allowFullScreen
-                          className="courses_iframevideos"
-                        ></iframe>
-                        <p className="courses_videotitle">
-                          Mastering HTML Basics and Beyond | Your Ultimate Guide
-                          to Begin Web Development
-                        </p>
+                }
+                return (
+                  <React.Fragment key={index}>
+                    {item.file_path && (
+                      <Col
+                        xs={24}
+                        sm={24}
+                        md={24}
+                        lg={8}
+                        className="courses_video_col_Container"
+                      >
+                        <div className="courses_videoContainer">
+                          {isYoutubeLink ? (
+                            <iframe
+                              src={`https://www.youtube.com/embed/${embedLink}`}
+                              allowFullScreen
+                              className="courses_iframevideos"
+                            ></iframe>
+                          ) : (
+                            <video
+                              controls
+                              controlsList="nodownload"
+                              className="courses_iframevideos"
+                            >
+                              <source
+                                src={`${API_URL + item.file_path}`}
+                                type="video/mp4"
+                              />
+                            </video>
+                          )}
+                        </div>
+                        <div className="courses_videotitle_container">
+                          <p className="courses_videotitle">{item.title}</p>
+                          <RiDeleteBinLine
+                            size={18}
+                            className="courses_videodelete_icon"
+                            onClick={() => {
+                              setVideoId(item.id);
+                              setVideoName(item.filename);
+                              console.log("eeeeeeeeeeeeeeeeeeeee");
+
+                              setDeleteModal(true);
+                            }}
+                          />
+                        </div>
                       </Col>
-                    </React.Fragment>
-                  );
-                })}
-              </>
-            ) : (
-              <CommonNodataFound title="No videos are available for this topic" />
-            )}
-          </Row>
-        </div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </>
+          ) : (
+            <CommonNodataFound title="No videos are available for this topic" />
+          )}
+        </Row>
       )}
-    </>
+
+      <Modal
+        open={deleteModal}
+        onCancel={() => {
+          setDeleteModal(false);
+        }}
+        footer={false}
+        closable
+        width={420}
+      >
+        <div className="questionupload_deletemodalContainer">
+          <div className="questionupload_deletemodal_iconContainer">
+            <MdDelete size={20} color="#db2728" />
+          </div>
+
+          <p className="question_deletemodal_confirmdeletetext">
+            Confirm Delete
+          </p>
+
+          <p className="question_deletemodal_text">
+            Are you sure want to delete the video?
+          </p>
+
+          <div className="question_deletemodal_footerContainer">
+            <Button
+              className="question_deletemodal_cancelbutton"
+              onClick={() => {
+                setDeleteModal(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="question_deletemodal_deletebutton"
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </div>
   );
 }

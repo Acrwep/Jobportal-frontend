@@ -4,6 +4,8 @@ import {
   portalMenuStatusReducer,
   logoutMenuStatusReducer,
   courseVideosReducer,
+  courseDocumentsReducer,
+  trainerIdReducer,
 } from "./slice";
 
 export const store = configureStore({
@@ -13,5 +15,7 @@ export const store = configureStore({
     portalmenu: portalMenuStatusReducer,
     logoutmenu: logoutMenuStatusReducer,
     coursevideos: courseVideosReducer,
+    coursedocuments: courseDocumentsReducer,
+    trainerid: trainerIdReducer,
   },
 });

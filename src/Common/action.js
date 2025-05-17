@@ -444,3 +444,14 @@ export const getVideoAndDocuments = async (payload) => {
     throw error;
   }
 };
+//video delete api
+export const videoDelete = async (payload) => {
+  try {
+    const response = await api.delete("/api/deleteContent", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -110,10 +110,39 @@
 .courses_iframevideos {
   border-radius: 12px;
 }
+.courses_videoContainer {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  overflow: hidden;
+}
+
+.courses_videoContainer iframe,
+.courses_videoContainer video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.courses_videotitle_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px !important;
+}
 .courses_videotitle {
   font-weight: 600;
-  margin-top: 12px !important;
   font-size: 14px;
+}
+.courses_videodelete_icon {
+  opacity: 0;
+}
+.courses_video_col_Container:hover .courses_videodelete_icon {
+  opacity: 1;
+  cursor: pointer;
 }
 .courses_maptrainerbutton_container {
   display: flex;
@@ -250,4 +279,40 @@
   cursor: default;
   font-weight: 600;
   opacity: 0.8;
+}
+/* document styles */
+.courses_documenttitle {
+  font-weight: 600;
+  font-size: 14px;
+  padding: 0px 0px;
+  margin-bottom: 10px !important;
+}
+.courses_documentcardContainer {
+  position: relative;
+}
+.courses_documentcard {
+  border: 1px solid #d4d2d0;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-radius: 9px;
+  position: relative;
+  cursor: default;
+}
+.courses_documentcardContainer:hover .courses_documentcard {
+  opacity: 0.5;
+}
+.courses_documentcardContainer:hover .courses_documentViewbutton_container {
+  opacity: 1;
+  z-index: 1;
+  right: 40%;
+}
+.courses_documentViewbutton_container {
+  position: absolute;
+  top: 50%;
+  right: 0%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
 }

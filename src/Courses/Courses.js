@@ -14,7 +14,6 @@ import {
   getVideoAndDocuments,
   trainerMapping,
   updateTopic,
-  videoAndDocumentUpload,
 } from "../Common/action";
 import {
   addressValidator,
@@ -28,12 +27,18 @@ import { IoMdAdd } from "react-icons/io";
 import PortalSelectField from "../Common/PortalSelectField";
 import { IoArrowBack } from "react-icons/io5";
 import { AiTwotoneEdit } from "react-icons/ai";
-import { RiVideoAddLine } from "react-icons/ri";
 import { IoCloudUploadOutline } from "react-icons/io5";
+import { HiOutlineDocumentAdd } from "react-icons/hi";
 import Loader from "../Common/Loader";
 import { useDispatch } from "react-redux";
-import { storeCourseVideos } from "../Redux/slice";
+import {
+  storeCourseDocuments,
+  storeCourseVideos,
+  storeTrainerId,
+} from "../Redux/slice";
 import CommonNodataFound from "../Common/CommonNodataFound";
+import axios from "axios";
+import CourseDocuments from "./CourseDocuments";
 const { Dragger } = Upload;
 
 export default function Courses() {
@@ -50,18 +55,28 @@ export default function Courses() {
     { id: 6, name: "Java" },
     { id: 7, name: "Spring Boot" },
   ];
-  const tabItems = [
-    {
-      key: "1",
-      label: "Videos",
-      children: <CourseVideos loading={courseVideoLoader} />,
+
+  const API_URL = process.env.REACT_APP_API_URL;
+
+  const api = axios.create({
+    baseURL: API_URL,
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  api.interceptors.request.use(
+    (config) => {
+      const AccessToken = localStorage.getItem("Accesstoken");
+      console.log("Accesstoken", AccessToken);
+      if (AccessToken) {
+        config.headers.Authorization = `Bearer ${AccessToken}`;
+      }
+      return config;
     },
-    {
-      key: "2",
-      label: "Documents",
-      children: <p>Document content here</p>,
-    },
-  ];
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
   const [courseId, setCourseId] = useState(null);
   const [addTopicModal, setAddTopicModal] = useState(false);
   const [topicEdit, setTopicEdit] = useState(false);
@@ -81,14 +96,49 @@ export default function Courses() {
   const [trainerId, setTrainerId] = useState(null);
   const [courseTrainersList, setCourseTrainersList] = useState([]);
   const [courseTopicsData, setCourseTopicsData] = useState([]);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [videoTitle, setVideoTitle] = useState("");
-  const [videoTitleError, setVideoTitleError] = useState("");
+  const [contentTitle, setContentTitle] = useState("");
+  const [contentTitleError, setContentTitleError] = useState("");
   const [youtubeLink, setYoutubeLink] = useState("");
   const [youtubeLinkError, setYoutubeLinkError] = useState("");
   const [courseVideo, setCourseVideo] = useState(null);
   const [courseVideoArray, setCourseVideoArray] = useState([]);
+  const [pdfFile, setPdfFile] = useState(null);
+  const [pdfArray, setPdfArray] = useState([]);
+  const [contentDrawer, setContentDrawer] = useState(false);
+  const [contentTypeOptions, setContentTypeOptions] = useState([
+    { id: 1, name: "Video" },
+    { id: 2, name: "Document" },
+  ]);
+  const [contentType, setContentType] = useState(null);
+  const [contentTypeError, setContentTypeError] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const tabItems = [
+    {
+      key: "1",
+      label: "Videos",
+      children: (
+        <CourseVideos
+          loading={courseVideoLoader}
+          courseId={courseId}
+          topicid={activeTopicTabId}
+          trainer_id={trainerId}
+        />
+      ),
+    },
+    {
+      key: "2",
+      label: "Documents",
+      children: (
+        <CourseDocuments
+          loading={courseVideoLoader}
+          courseId={courseId}
+          topicid={activeTopicTabId}
+          trainer_id={trainerId}
+        />
+      ),
+    },
+  ];
 
   useEffect(() => {
     setTimeout(() => {
@@ -146,20 +196,28 @@ export default function Courses() {
           "Something went wrong. Try again later"
       );
     } finally {
-      getTopicsData(selectedCourseId);
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
     }
   };
 
-  const getTopicsData = async (courseid) => {
+  const getTopicsData = async (trainerid) => {
+    setCourseVideoLoader(true);
+    const selectedCourseId = localStorage.getItem("selectedCourseId");
+    let topicid = null;
     try {
-      const response = await getTopics(courseid);
+      const response = await getTopics(parseInt(selectedCourseId));
       const coursetopics = response?.data?.topics || [];
       if (coursetopics.length >= 1) {
         const reverseData = coursetopics.reverse();
         console.log("course topics", reverseData);
         setActiveTopicTabId(reverseData[0].id);
+        topicid = reverseData[0].id;
         setCourseTopicsData(reverseData);
       } else {
+        topicid = null;
+        setActiveTopicTabId(null);
         setCourseTopicsData([]);
       }
     } catch (error) {
@@ -170,28 +228,40 @@ export default function Courses() {
       );
     } finally {
       setTimeout(() => {
+        getVideosAndDocumentsData(topicid, trainerid);
         setLoading(false);
       }, 300);
     }
   };
 
-  const getVideosAndDocumentsData = async (topicid) => {
+  const getVideosAndDocumentsData = async (topicid, trainerid) => {
     setCourseVideoLoader(true);
     const payload = {
       course_id: courseId,
       topic_id: topicid,
+      trainer_id: trainerId ? trainerId : trainerid,
     };
     try {
       const response = await getVideoAndDocuments(payload);
       console.log("videos response", response);
       const videos = response?.data?.videos || [];
       if (videos.length >= 1) {
-        dispatch(storeCourseVideos(videos));
+        const filterCourseVideos = videos.filter(
+          (f) => f.content_data === null
+        );
+        const filterCourseDocuments = videos.filter(
+          (f) => f.content_data != null
+        );
+
+        dispatch(storeCourseVideos(filterCourseVideos));
+        dispatch(storeCourseDocuments(filterCourseDocuments));
       } else {
         dispatch(storeCourseVideos([]));
+        dispatch(storeCourseDocuments([]));
       }
     } catch (error) {
       dispatch(storeCourseVideos([]));
+      dispatch(storeCourseDocuments([]));
       CommonToaster(
         error?.response?.data?.message ||
           "Something went wrong. Try again later"
@@ -204,7 +274,7 @@ export default function Courses() {
     }
   };
 
-  //onclick functions
+  //trainer map function
   const handleMapTrainerSubmit = async () => {
     console.log(mapTrainers);
     setFormValidationTrigger(true);
@@ -237,6 +307,13 @@ export default function Courses() {
     }
   };
 
+  //topics related functions
+  const handleTopicTab = (index, Id) => {
+    setCourseTopicIndex(index);
+    setActiveTopicTabId(Id);
+    getVideosAndDocumentsData(Id);
+  };
+
   const handleTopicEdit = (item) => {
     setAddTopicModal(true);
     setTopicEdit(true);
@@ -263,7 +340,7 @@ export default function Courses() {
       try {
         await updateTopic(payload);
         CommonToaster("Topic updated");
-        getTopicsData(courseId);
+        getTopicsData();
         setTimeout(() => {
           formReset();
         }, 300);
@@ -278,7 +355,7 @@ export default function Courses() {
       try {
         await createTopic(payload);
         CommonToaster("Topic created");
-        getTopicsData(courseId);
+        getTopicsData();
         setTimeout(() => {
           formReset();
         }, 300);
@@ -292,24 +369,7 @@ export default function Courses() {
     }
   };
 
-  const formReset = () => {
-    setAddTopicModal(false);
-    setMapModal(false);
-    setTopicEdit(false);
-    setFormValidationTrigger(false);
-    setTopicName("");
-    setTopicNameError("");
-    setMapTrainers([]);
-    setMapTrainersError("");
-    setIsDrawerOpen(false);
-    setVideoTitle("");
-    setVideoTitleError("");
-    setYoutubeLink("");
-    setYoutubeLinkError("");
-    setCourseVideo(null);
-    setButtonLoader(false);
-  };
-
+  //upload files handling
   const handleCourseVideo = ({ file }) => {
     console.log("fileeeeee", file);
     const ValidType = file.type === "video/mp4";
@@ -325,44 +385,90 @@ export default function Courses() {
       setCourseVideoArray([file]);
       CommonToaster("Video uploaded");
     } else {
+      setCourseVideo(null);
+      setCourseVideoArray([]);
       CommonToaster("Only .mp4 files are accepted");
     }
   };
 
-  const handleTopicTab = (index, Id) => {
-    setCourseTopicIndex(index);
-    setActiveTopicTabId(Id);
-    getVideosAndDocumentsData(Id);
+  const handleDocuments = ({ file }) => {
+    console.log("fileeeeee", file);
+    const ValidType = file.type === "application/pdf";
+
+    if (file.status === "uploading" || file.status === "removed") {
+      setPdfFile(null);
+      setPdfArray([]);
+      return;
+    }
+
+    if (ValidType) {
+      CommonToaster("Document uploaded");
+      setPdfArray([file]);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result.split(",")[1];
+        setPdfFile(base64String);
+      };
+    } else {
+      setPdfArray([]);
+      setPdfFile("");
+      CommonToaster("Only .pdf files are accepted");
+    }
+  };
+
+  const videoAndDocumentUpload = async (payload) => {
+    try {
+      const response = await api.post("/api/uploadContent", payload);
+      return response;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const handleVideoSubmit = async () => {
-    const videoTitleValidate = addressValidator(videoTitle);
-    let isFormError = false;
-    if (youtubeLink && courseVideo) {
-      isFormError = true;
-      CommonToaster("Attach only a youtube link or video");
-    }
-    if (youtubeLink === "" && courseVideo === null) {
-      isFormError = true;
-      CommonToaster("Attach youtube link or video");
-    }
-    if (youtubeLink != "" && courseVideo === null) {
-      const linkValidate = youtubeLinkValidator(youtubeLink);
-      setYoutubeLinkError(linkValidate);
+    const contentTitleValidate = addressValidator(contentTitle);
+    const contentTypeValidate = selectValidator(contentType);
 
-      if (linkValidate) {
+    let isFormError = false;
+    if (contentType === 1) {
+      if (youtubeLink && courseVideo) {
         isFormError = true;
-      } else {
+        CommonToaster("Attach only a youtube link or video");
+      }
+      if (youtubeLink === "" && courseVideo === null) {
+        isFormError = true;
+        CommonToaster("Attach youtube link or video");
+      }
+      if (youtubeLink != "" && courseVideo === null) {
+        const linkValidate = youtubeLinkValidator(youtubeLink);
+        setYoutubeLinkError(linkValidate);
+
+        if (linkValidate) {
+          isFormError = true;
+        } else {
+          isFormError = false;
+        }
+      }
+
+      if (youtubeLink === null && courseVideo != null) {
         isFormError = false;
       }
     }
 
-    if (youtubeLink === null && courseVideo != null) {
-      isFormError = false;
+    if (contentType === 2) {
+      if (pdfArray.length <= 0) {
+        isFormError = true;
+        CommonToaster("Please upload document");
+        return;
+      } else {
+        isFormError = false;
+      }
     }
+    setContentTitleError(contentTitleValidate);
+    setContentTypeError(contentTypeValidate);
 
-    setVideoTitleError(videoTitleValidate);
-    if (videoTitleValidate || isFormError) {
+    if (contentTitleValidate || contentTypeValidate || isFormError) {
       const container = document.getElementById(
         "courses_videotitle_fieldContainer"
       );
@@ -370,37 +476,92 @@ export default function Courses() {
       return;
     }
 
-    setButtonLoader(true);
-    const formData = new FormData();
+    if (contentType === 1) {
+      //video upload handling
+      setButtonLoader(true);
+      const formData = new FormData();
 
-    formData.append("course_id", courseId);
-    formData.append("topic_id", activeTopicTabId);
-    formData.append("trainer_id", trainerId);
-    formData.append("title", videoTitle);
-    if (youtubeLink) {
-      formData.append("content_type", "youtube");
-      formData.append("content_url", youtubeLink);
+      formData.append("course_id", courseId);
+      formData.append("topic_id", activeTopicTabId);
+      formData.append("trainer_id", trainerId);
+      formData.append("title", contentTitle);
+      if (youtubeLink) {
+        formData.append("content_type", "youtube");
+        formData.append("content_url", youtubeLink);
+      } else {
+        formData.append("content_type", "video");
+        formData.append("video", courseVideo);
+      }
+      console.log("successs", formData);
+      try {
+        const response = await videoAndDocumentUpload(formData);
+        console.log(response, "reponse");
+        CommonToaster("Video uploaded");
+        setCourseVideoLoader(true);
+        setTimeout(() => {
+          formReset();
+          getVideosAndDocumentsData(activeTopicTabId);
+        }, 300);
+      } catch (error) {
+        setButtonLoader(false);
+        CommonToaster(
+          error?.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
+      }
     } else {
-      formData.append("content_type", "video");
-      formData.append("video", courseVideo);
+      //document upload handling
+      setButtonLoader(true);
+      const formData = new FormData();
+
+      formData.append("course_id", courseId);
+      formData.append("topic_id", activeTopicTabId);
+      formData.append("trainer_id", trainerId);
+      formData.append("title", contentTitle);
+      formData.append("content_type", "document");
+      formData.append("document_content", pdfFile);
+
+      try {
+        const response = await videoAndDocumentUpload(formData);
+        console.log(response, "reponse");
+        CommonToaster("Document uploaded");
+        setCourseVideoLoader(true);
+        setTimeout(() => {
+          formReset();
+          getVideosAndDocumentsData(activeTopicTabId);
+        }, 300);
+      } catch (error) {
+        setButtonLoader(false);
+        CommonToaster(
+          error?.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
+      }
     }
-    console.log("successs", formData);
-    try {
-      const response = await videoAndDocumentUpload(formData);
-      console.log(response, "reponse");
-      CommonToaster("Video uploaded");
-      setCourseVideoLoader(true);
-      setTimeout(() => {
-        formReset();
-        getVideosAndDocumentsData(activeTopicTabId);
-      }, 300);
-    } catch (error) {
-      setButtonLoader(false);
-      CommonToaster(
-        error?.response?.data?.message ||
-          "Something went wrong. Try again later"
-      );
-    }
+  };
+
+  //reset fields function
+  const formReset = () => {
+    setAddTopicModal(false);
+    setMapModal(false);
+    setTopicEdit(false);
+    setFormValidationTrigger(false);
+    setTopicName("");
+    setTopicNameError("");
+    setMapTrainers([]);
+    setMapTrainersError("");
+    setContentDrawer(false);
+    setContentType(null);
+    setContentTypeError("");
+    setContentTitle("");
+    setContentTitleError("");
+    setYoutubeLink("");
+    setYoutubeLinkError("");
+    setCourseVideo(null);
+    setCourseVideoArray([]);
+    setPdfFile(null);
+    setPdfArray([]);
+    setButtonLoader(false);
   };
 
   return (
@@ -414,6 +575,8 @@ export default function Courses() {
                 setShowVideos(false);
                 setTrainerId(null);
                 setCourseTopicIndex(0);
+                setActiveTopicTabId(null);
+                dispatch(storeTrainerId(null));
               }}
             >
               <IoArrowBack color="#0056b3" size={20} />
@@ -455,14 +618,14 @@ export default function Courses() {
 
               <button
                 className="courses_addtopic_button"
-                onClick={() => setIsDrawerOpen(true)}
+                onClick={() => setContentDrawer(true)}
               >
-                <RiVideoAddLine
+                <HiOutlineDocumentAdd
                   size={18}
                   color="#fff"
                   style={{ marginRight: "6px" }}
                 />{" "}
-                Add Video
+                Add Content
               </button>
             </>
           )}
@@ -497,7 +660,8 @@ export default function Courses() {
                               onClick={() => {
                                 setShowVideos(true);
                                 setTrainerId(item.trainer_id);
-                                getVideosAndDocumentsData(activeTopicTabId);
+                                dispatch(storeTrainerId(item.trainer_id));
+                                getTopicsData(item.trainer_id);
                               }}
                             >
                               <div className="courses_trainercard_imagesContainer">
@@ -662,60 +826,106 @@ export default function Courses() {
         </div>
       </Modal>
       <Drawer
-        open={isDrawerOpen}
+        open={contentDrawer}
         onClose={formReset}
         width="36%"
-        title="Add Video"
+        title="Add Content"
         closable
       >
         <div id="courses_videotitle_fieldContainer">
           <PortalInputField
             label="Title"
             mandatory={true}
-            value={videoTitle}
+            value={contentTitle}
             onChange={(e) => {
-              setVideoTitle(e.target.value);
-              setVideoTitleError(addressValidator(e.target.value));
+              setContentTitle(e.target.value);
+              setContentTitleError(addressValidator(e.target.value));
             }}
-            error={videoTitleError}
+            error={contentTitleError}
           />
         </div>
-        <div style={{ marginTop: "22px" }}>
-          <PortalInputField
-            label="Youtube Video Link"
-            value={youtubeLink}
-            onChange={(e) => {
-              setYoutubeLink(e.target.value);
-              setYoutubeLinkError(youtubeLinkValidator(e.target.value));
+
+        <div style={{ marginTop: "22px", marginBottom: "22px" }}>
+          <PortalSelectField
+            label="Content-Type"
+            options={contentTypeOptions}
+            value={contentType}
+            allowClear={true}
+            onChange={(value) => {
+              setContentType(value);
+              setContentTypeError(selectValidator(value));
             }}
-            error={youtubeLinkError}
+            mandatory={true}
+            error={contentTypeError}
           />
         </div>
-        <p className="courses_addvideodrawer_or_text">( Or )</p>
-        <Dragger
-          multiple={false}
-          className="courses_addvideodrawer"
-          beforeUpload={(file) => {
-            console.log(file);
-            return false; // Prevent auto-upload
-          }}
-          maxCount={1}
-          onChange={handleCourseVideo}
-          fileList={courseVideoArray}
-        >
-          <IoCloudUploadOutline
-            size={45}
-            color="#0056b3"
-            style={{ marginBottom: "16px" }}
-          />
-          <p className="ant-upload-text">
-            Click or drag video to this area to upload
-          </p>
-          <p className="ant-upload-hint">
-            Strictly prohibited from uploading company data or other banned
-            files.
-          </p>
-        </Dragger>
+        {contentType === 1 ? (
+          <>
+            <div>
+              <PortalInputField
+                label="Youtube Video Link"
+                value={youtubeLink}
+                onChange={(e) => {
+                  setYoutubeLink(e.target.value);
+                  setYoutubeLinkError(youtubeLinkValidator(e.target.value));
+                }}
+                error={youtubeLinkError}
+              />
+            </div>
+            <p className="courses_addvideodrawer_or_text">( Or )</p>
+            <Dragger
+              multiple={false}
+              className="courses_addvideodrawer"
+              beforeUpload={(file) => {
+                console.log(file);
+                return false; // Prevent auto-upload
+              }}
+              maxCount={1}
+              onChange={handleCourseVideo}
+              fileList={courseVideoArray}
+            >
+              <IoCloudUploadOutline
+                size={45}
+                color="#0056b3"
+                style={{ marginBottom: "16px" }}
+              />
+              <p className="ant-upload-text">
+                Click or drag video to this area to upload
+              </p>
+              <p className="ant-upload-hint">
+                Strictly prohibited from uploading company data or other banned
+                files.
+              </p>
+            </Dragger>
+          </>
+        ) : contentType === 2 ? (
+          <Dragger
+            multiple={false}
+            className="courses_addvideodrawer"
+            beforeUpload={(file) => {
+              console.log(file);
+              return false; // Prevent auto-upload
+            }}
+            maxCount={1}
+            onChange={handleDocuments}
+            fileList={pdfArray}
+          >
+            <IoCloudUploadOutline
+              size={45}
+              color="#0056b3"
+              style={{ marginBottom: "16px" }}
+            />
+            <p className="ant-upload-text">
+              Click or drag files to this area to upload
+            </p>
+            <p className="ant-upload-hint">
+              Strictly prohibited from uploading company data or other banned
+              files.
+            </p>
+          </Dragger>
+        ) : (
+          ""
+        )}
         <div className="courses_addvideo_submitbuttonContainer">
           {buttonLoader ? (
             <button className="courses_addvideo_disablesubmitbutton">
