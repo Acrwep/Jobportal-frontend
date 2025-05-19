@@ -39,6 +39,7 @@ import {
 import CommonNodataFound from "../Common/CommonNodataFound";
 import axios from "axios";
 import CourseDocuments from "./CourseDocuments";
+import { FiUser } from "react-icons/fi";
 const { Dragger } = Upload;
 
 export default function Courses() {
@@ -105,10 +106,10 @@ export default function Courses() {
   const [pdfFile, setPdfFile] = useState(null);
   const [pdfArray, setPdfArray] = useState([]);
   const [contentDrawer, setContentDrawer] = useState(false);
-  const [contentTypeOptions, setContentTypeOptions] = useState([
+  const contentTypeOptions = [
     { id: 1, name: "Video" },
     { id: 2, name: "Document" },
-  ]);
+  ];
   const [contentType, setContentType] = useState(null);
   const [contentTypeError, setContentTypeError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -644,6 +645,7 @@ export default function Courses() {
                 {courseTrainersList.length >= 1 ? (
                   <>
                     {courseTrainersList.map((item, index) => {
+                      const profileBase64String = `data:image/jpeg;base64,${item.profile}`;
                       return (
                         <React.Fragment key={index}>
                           <Col xs={24} sm={24} md={24} lg={8}>
@@ -664,21 +666,37 @@ export default function Courses() {
                                 getTopicsData(item.trainer_id);
                               }}
                             >
-                              <div className="courses_trainercard_imagesContainer">
-                                <img
-                                  src={Trainer}
-                                  className="courses_trainercard_images"
-                                />
-                              </div>
+                              {item.profile ? (
+                                <div className="courses_trainercard_imagesContainer">
+                                  <img
+                                    src={profileBase64String}
+                                    className="courses_trainercard_images"
+                                  />
+                                </div>
+                              ) : (
+                                <div
+                                  className="courses_trainercard_imagesContainer"
+                                  style={{
+                                    border:
+                                      "1px solid rgba(128, 128, 128, 0.61)",
+                                  }}
+                                >
+                                  <FiUser
+                                    size={35}
+                                    className="courses_trainercard_deafultimages"
+                                  />
+                                </div>
+                              )}
                               <div className="courses_trainercard_contentContainer">
                                 <p className="courses_trainercard_name">
                                   {item.trainer_name}
                                 </p>
                                 <p className="courses_trainercard_exp">
-                                  Experience: {item.exp}
+                                  Experience:{" "}
+                                  {item.experience ? item.experience : "-"}
                                 </p>
                                 <p className="courses_trainercard_exp">
-                                  Videos: {item.videos}
+                                  Videos: {item.video_count}
                                 </p>
                               </div>
                             </div>

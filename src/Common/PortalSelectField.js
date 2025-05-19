@@ -40,7 +40,7 @@ export default function PortalSelectField({
   loading,
 }) {
   return (
-    <div style={style} className={className}>
+    <div style={style} className="commonInputfield_container">
       {label ? (
         <div style={{ display: "flex" }}>
           <label

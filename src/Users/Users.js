@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { createAdmin, getAllUsers, getRoles } from "../Common/action";
+import {
+  createAdmin,
+  getAllUsers,
+  getCourses,
+  getRoles,
+} from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
 import CommonTable from "../Common/CommonTable";
-import { Row, Col, Input, Spin, Modal } from "antd";
+import { Row, Col, Input, Spin, Upload, Drawer, Button } from "antd";
 import { IoMdAdd } from "react-icons/io";
 import PortalInputField from "../Common/PortalInputField";
 import {
@@ -27,6 +32,19 @@ export default function Users() {
   const [passwordError, setPasswordError] = useState("");
   const [roleOptions, setRoleOptions] = useState([]);
   const [role, setRole] = useState(null);
+  const [courseOptions, setCourseOptions] = useState([]);
+  const [courseId, setCourseId] = useState(null);
+  const [courseIdError, setCourseIdError] = useState(null);
+  const [experienceOptions, setExperienceOptions] = useState([
+    { id: "1 year", name: "1 year" },
+    { id: "2 year", name: "2 year" },
+    { id: "3 year", name: "3 year" },
+    { id: "3 year", name: "3 year" },
+    { id: "4 year", name: "4 year" },
+    { id: "5+", name: "5+" },
+  ]);
+  const [experience, setExperience] = useState(null);
+  const [experienceError, setExperienceError] = useState("");
   const [roleError, setRoleError] = useState(null);
   const [usersData, setUsersData] = useState([]);
   const [tableLoading, setTableLoading] = useState(true);
@@ -38,6 +56,9 @@ export default function Users() {
     { title: "Email", key: "email", dataIndex: "email" },
     { title: "Role", key: "role", dataIndex: "role" },
   ];
+  const [profilePictureArray, setProfilePictureArray] = useState([]);
+  const [profilePicture, setProfilePicture] = useState("");
+  const [profileName, setProfileName] = useState("");
 
   useEffect(() => {
     getRolesdata();
@@ -48,16 +69,40 @@ export default function Users() {
       const response = await getRoles();
       console.log("role response", response);
       const roles = response?.data?.data || [];
-      setRoleOptions(roles);
+      if (roles.length >= 1) {
+        const filterExceptStudents = roles.filter((f) => f.id != 3);
+        setRoleOptions(filterExceptStudents);
+      } else {
+        setRoleOptions([]);
+      }
     } catch (error) {
+      setRoleOptions([]);
       CommonToaster(
         error?.response?.data?.message ||
           "Something went wrong. Try again later"
       );
     } finally {
       setTimeout(() => {
+        getCourseData();
+      }, 200);
+    }
+  };
+
+  const getCourseData = async () => {
+    try {
+      const response = await getCourses();
+      const allCourses = response?.data?.data || [];
+      if (allCourses.length >= 1) {
+        setCourseOptions(allCourses);
+      } else {
+        setCourseOptions([]);
+      }
+    } catch (error) {
+      setCourseOptions([]);
+    } finally {
+      setTimeout(() => {
         getUsersData();
-      }, 500);
+      }, 300);
     }
   };
 
@@ -88,6 +133,31 @@ export default function Users() {
     }
   };
 
+  const handleProfileAttachment = (event) => {
+    console.log(event.target.files[0]);
+    const file = event.target.files[0];
+    const isValidType =
+      file.type === "image/png" ||
+      file.type === "image/jpeg" ||
+      file.type === "image/jpg";
+
+    if (isValidType) {
+      console.log("fileeeee", file);
+      setProfileName(file?.name || "");
+      CommonToaster("Profile uploaded");
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result.split(",")[1]; // Extract Base64 content
+        setProfilePicture(base64String); // Store in state
+      };
+    } else {
+      CommonToaster("Accept only .png, .jpg and .jpeg");
+      setProfilePicture("");
+      setProfileName("");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setValidationTrigger(true);
@@ -96,13 +166,34 @@ export default function Users() {
     const emailValidate = emailValidator(email);
     const passwordValidate = addressValidator(password);
     const roleValidate = selectValidator(role);
+    let isFormError = false;
 
     setNameError(nameValidate);
     setEmailError(emailValidate);
     setPasswordError(passwordValidate);
     setRoleError(roleValidate);
 
-    if (nameValidate || emailValidate || passwordValidate || roleValidate)
+    if (role === 2) {
+      const experienceValidate = selectValidator(experience);
+      const courseValidate = selectValidator(courseId);
+
+      setExperienceError(experienceValidate);
+      setCourseIdError(courseValidate);
+
+      if (experienceValidate || courseValidate) {
+        isFormError = true;
+      } else {
+        isFormError = false;
+      }
+    }
+
+    if (
+      nameValidate ||
+      emailValidate ||
+      passwordValidate ||
+      roleValidate ||
+      isFormError
+    )
       return;
 
     setButtonLoading(true);
@@ -111,6 +202,11 @@ export default function Users() {
       email: email,
       password: password,
       role_id: role,
+      course_id: courseId,
+      experience: experience,
+      profile: profilePicture,
+      course_join_date: null,
+      location_id: null,
     };
 
     try {
@@ -143,6 +239,13 @@ export default function Users() {
     setRole(null);
     setRoleError("");
     setValidationTrigger(false);
+    setExperience("");
+    setExperienceError("");
+    setProfilePicture("");
+    setProfilePictureArray([]);
+    setProfileName("");
+    setCourseId(null);
+    setCourseIdError("");
   };
 
   return (
@@ -192,16 +295,16 @@ export default function Users() {
         />
       </div>
 
-      <Modal
+      <Drawer
         title="Add User"
         open={open}
         // onOk={handleLogout}
-        onCancel={formReset}
-        width="36%"
+        onClose={formReset}
+        width="35%"
         footer={false}
       >
         <form>
-          <div style={{ marginTop: "22px" }}>
+          <div>
             <PortalInputField
               label="Name"
               value={name}
@@ -227,6 +330,7 @@ export default function Users() {
               error={emailError}
             />
           </div>
+
           <div style={{ marginTop: "22px", position: "relative" }}>
             <p className="userpassword_label">Password</p>
             <Input.Password
@@ -251,6 +355,7 @@ export default function Users() {
               {passwordError ? "Password" + passwordError : ""}
             </p>
           </div>
+
           <div style={{ marginTop: "22px" }}>
             <PortalSelectField
               label="Role"
@@ -265,6 +370,56 @@ export default function Users() {
               error={roleError}
             />
           </div>
+
+          {role === 2 && (
+            <>
+              <div style={{ marginTop: "22px" }}>
+                <PortalSelectField
+                  label="Course"
+                  value={courseId}
+                  options={courseOptions}
+                  onChange={(value) => {
+                    setCourseId(value);
+                    if (validationTrigger) {
+                      setCourseIdError(selectValidator(value));
+                    }
+                  }}
+                  error={courseIdError}
+                />
+              </div>
+
+              <div style={{ marginTop: "22px" }}>
+                <PortalSelectField
+                  label="Experience"
+                  value={experience}
+                  options={experienceOptions}
+                  onChange={(value) => {
+                    setExperience(value);
+                    if (validationTrigger) {
+                      setExperienceError(selectValidator(value));
+                    }
+                  }}
+                  error={experienceError}
+                />
+              </div>
+
+              <div
+                style={{
+                  marginTop: "26px",
+                  display: "flex",
+                  gap: "12px",
+                  width: "100%",
+                }}
+              >
+                <p className="userpassword_label">Upload profile</p>
+                <input
+                  type="file"
+                  style={{ width: "70%" }}
+                  onChange={handleProfileAttachment}
+                />
+              </div>
+            </>
+          )}
 
           <div className="user_formbuttonContainer">
             {buttonLoading ? (
@@ -291,7 +446,7 @@ export default function Users() {
             )}
           </div>
         </form>
-      </Modal>
+      </Drawer>
     </div>
   );
 }

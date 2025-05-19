@@ -34,6 +34,9 @@
   justify-content: center;
   align-items: center;
 }
+.courses_trainercard_deafultimages {
+  color: rgba(128, 128, 128, 0.61);
+}
 .courses_trainercard_images {
   width: 92%;
 }
