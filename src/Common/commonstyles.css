@@ -220,13 +220,13 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-top: 40px;
-  font-size: 16px;
+  margin-top: 30px;
+  font-size: 15px;
   font-weight: 600;
   flex-direction: column;
   gap: 16px;
   color: #ababab;
 }
 .common_nodataimage {
-  width: 190px;
+  width: 170px;
 }

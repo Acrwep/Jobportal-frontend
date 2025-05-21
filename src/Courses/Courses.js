@@ -17,6 +17,7 @@ import {
   getCompanyVideosAndDocuments,
   updateCompany,
   deleteCompany,
+  deleteTopic,
 } from "../Common/action";
 import {
   addressValidator,
@@ -91,6 +92,8 @@ export default function Courses() {
   const [topicName, setTopicName] = useState("");
   const [topicNameError, setTopicNameError] = useState("");
   const [addTopicModal, setAddTopicModal] = useState(false);
+  const [deleteTopicId, setDeleteTopicId] = useState(null);
+  const [topicDeleteModal, setTopicDeleteModal] = useState(false);
   //course usestates
   const [courseId, setCourseId] = useState(null);
   const [courseName, setCourseName] = useState("");
@@ -417,6 +420,7 @@ export default function Courses() {
 
   //topics related functions
   const handleTopicTab = (index, Id) => {
+    if (index === courseTopicIndex) return;
     setCourseTopicIndex(index);
     setActiveTopicTabId(Id);
     getVideosAndDocumentsData(Id);
@@ -427,6 +431,30 @@ export default function Courses() {
     setTopicEdit(true);
     setTopicName(item.name);
     setTopicId(item.id);
+  };
+
+  const handleTopicDelete = async () => {
+    try {
+      await deleteTopic(deleteTopicId);
+      CommonToaster("Topic deleted");
+      getTopicsData(trainerId);
+      setTimeout(() => {
+        formReset();
+      }, 300);
+    } catch (error) {
+      const Error = error?.response?.data;
+      if (
+        Error.details ===
+        "Error deleting topic: Unable to remove the topic because it contains content."
+      ) {
+        CommonToaster("Unable to delete because it contains content");
+      } else {
+        CommonToaster(
+          error?.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
+      }
+    }
   };
 
   const handleTopicCreate = async () => {
@@ -441,7 +469,7 @@ export default function Courses() {
     const payload = {
       ...(topicEdit && { topic_id: topicId }),
       topic: topicName,
-      ...(topicEdit === false && { course_id: courseId }),
+      course_id: courseId,
     };
 
     if (topicEdit) {
@@ -846,6 +874,8 @@ export default function Courses() {
     setFormValidationTrigger(false);
     setTopicName("");
     setTopicNameError("");
+    setTopicDeleteModal(false);
+    setDeleteTopicId(null);
     setMapTrainers([]);
     setMapTrainersError("");
     setContentDrawer(false);
@@ -970,7 +1000,8 @@ export default function Courses() {
           {pages === "trainers" ? (
             <>
               <p className="courses_trainerheading">
-                {courseTrainersList.length >= 1 ? "Trainers" : ""}
+                {/* {courseTrainersList.length >= 1 ? "Trainers" : ""} */}
+                Trainers
               </p>
               <Row gutter={30}>
                 {courseTrainersList.length >= 1 ? (
@@ -1078,84 +1109,93 @@ export default function Courses() {
                 </p>
 
                 <Row gutter={30}>
-                  {companyList.map((item, index) => {
-                    const logotype = getMimeType(item.logo);
-                    const companylogo = `data:${logotype};base64,${item.logo}`;
-                    return (
-                      <React.Fragment key={index}>
-                        <Col
-                          xs={24}
-                          sm={12}
-                          md={24}
-                          lg={8}
-                          style={{ marginBottom: "24px" }}
-                        >
-                          <div className="courses_companyCards">
-                            <div
-                              className="courses_interprepration_companyCards_innerContainer"
-                              onClick={() => {
-                                setPages("interview");
-                                setClickedCardName(item.company_name);
-                                setClickedCompanyId(item.id);
-                                dispatch(storeCompanyId(item.id));
-                              }}
+                  {companyList.length >= 1 ? (
+                    <>
+                      {companyList.map((item, index) => {
+                        const logotype = getMimeType(item.logo);
+                        const companylogo = `data:${logotype};base64,${item.logo}`;
+                        return (
+                          <React.Fragment key={index}>
+                            <Col
+                              xs={24}
+                              sm={12}
+                              md={24}
+                              lg={8}
+                              style={{ marginBottom: "24px" }}
                             >
-                              <img
-                                src={companylogo}
-                                className="courses_interprepration_companylogos"
-                              />
-
-                              <div>
-                                <p className="courses_interprepration_companyname">
-                                  {item.company_name}
-                                </p>
+                              <div className="courses_companyCards">
                                 <div
-                                  style={{
-                                    display: "flex",
-                                    gap: "6px",
-                                    marginTop: "4px",
+                                  className="courses_interprepration_companyCards_innerContainer"
+                                  onClick={() => {
+                                    setPages("interview");
+                                    setClickedCardName(item.company_name);
+                                    setClickedCompanyId(item.id);
+                                    dispatch(storeCompanyId(item.id));
                                   }}
                                 >
-                                  <div>
-                                    <p className="courses_companycard_videotext">
-                                      Videos:
-                                    </p>
-                                    <p className="courses_companycard_videotext">
-                                      Documents:
-                                    </p>
-                                  </div>
+                                  <img
+                                    src={companylogo}
+                                    className="courses_interprepration_companylogos"
+                                  />
 
                                   <div>
-                                    <p className="courses_companycard_videotext">
-                                      {item.video_count}
+                                    <p className="courses_interprepration_companyname">
+                                      {item.company_name}
                                     </p>
-                                    <p className="courses_companycard_videotext">
-                                      {item.document_count}
-                                    </p>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        gap: "6px",
+                                        marginTop: "4px",
+                                      }}
+                                    >
+                                      <div>
+                                        <p className="courses_companycard_videotext">
+                                          Videos:
+                                        </p>
+                                        <p className="courses_companycard_videotext">
+                                          Documents:
+                                        </p>
+                                      </div>
+
+                                      <div>
+                                        <p className="courses_companycard_videotext">
+                                          {item.video_count}
+                                        </p>
+                                        <p className="courses_companycard_videotext">
+                                          {item.document_count}
+                                        </p>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
 
-                            <div className="courses_companycard_editContainer">
-                              <AiTwotoneEdit
-                                size={18}
-                                onClick={() => handleCompanyEdit(item)}
-                              />
-                              <RiDeleteBinLine
-                                size={18}
-                                color="#d32215"
-                                onClick={() => {
-                                  setCompanyId(item.id);
-                                  setCompanyDeleteModal(true);
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </Col>
-                      </React.Fragment>
-                    );
-                  })}
+                                <div className="courses_companycard_editContainer">
+                                  <AiTwotoneEdit
+                                    size={18}
+                                    onClick={() => handleCompanyEdit(item)}
+                                  />
+                                  <RiDeleteBinLine
+                                    size={18}
+                                    color="#d32215"
+                                    onClick={() => {
+                                      setCompanyId(item.id);
+                                      setCompanyDeleteModal(true);
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </Col>
+                          </React.Fragment>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <CommonNodataFound
+                      title="No companies are available for this course"
+                      style={{ marginBottom: "40px" }}
+                    />
+                  )}
                 </Row>
               </div>
             </>
@@ -1163,30 +1203,51 @@ export default function Courses() {
             <div className="courses_topicsmainContainer">
               <Row style={{ marginBottom: "20px" }}>
                 <Col span={6} className="courses_topics_sidebarContainer">
-                  {courseTopicsData.map((item, index) => {
-                    return (
-                      <React.Fragment key={index}>
-                        <div
-                          className={
-                            index === courseTopicIndex
-                              ? "courses_topactivetab_div"
-                              : "courses_topinactivetab_div"
-                          }
-                          onClick={() => handleTopicTab(index, item.id)}
-                        >
-                          <p>{item.name}</p>
+                  {courseTopicsData.length >= 1 ? (
+                    <>
+                      {courseTopicsData.map((item, index) => {
+                        return (
+                          <React.Fragment key={index}>
+                            <div
+                              className={
+                                index === courseTopicIndex
+                                  ? "courses_topactivetab_div"
+                                  : "courses_topinactivetab_div"
+                              }
+                            >
+                              <div
+                                className="courses_topics_innerContainer"
+                                onClick={() => handleTopicTab(index, item.id)}
+                              >
+                                <p>{item.name}</p>
+                              </div>
 
-                          <div className="courses_topics_editanddeleteiconContainer">
-                            <AiTwotoneEdit
-                              size={17}
-                              className="courses_topics_editanddeleteicon"
-                              onClick={() => handleTopicEdit(item)}
-                            />
-                          </div>
-                        </div>
-                      </React.Fragment>
-                    );
-                  })}
+                              <div className="courses_topics_editanddeleteiconContainer">
+                                <AiTwotoneEdit
+                                  size={18}
+                                  className="courses_topics_editanddeleteicon"
+                                  onClick={() => handleTopicEdit(item)}
+                                />
+                                <RiDeleteBinLine
+                                  size={18}
+                                  color="#d32215"
+                                  className="courses_topics_editanddeleteicon"
+                                  onClick={() => {
+                                    setDeleteTopicId(item.id);
+                                    setTopicDeleteModal(true);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </React.Fragment>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <div className="courses_topics_nodataContainer">
+                      <p>No topice found for this course</p>
+                    </div>
+                  )}
                 </Col>
                 <Col span={18}>
                   <div className="courses_videomainContainer">
@@ -1427,6 +1488,44 @@ export default function Courses() {
             <Button
               className="question_deletemodal_deletebutton"
               onClick={handleCompanyDelete}
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/*company delete modal */}
+      <Modal
+        open={topicDeleteModal}
+        onCancel={formReset}
+        footer={false}
+        closable
+        width={420}
+      >
+        <div className="questionupload_deletemodalContainer">
+          <div className="questionupload_deletemodal_iconContainer">
+            <MdDelete size={20} color="#db2728" />
+          </div>
+
+          <p className="question_deletemodal_confirmdeletetext">
+            Confirm Delete
+          </p>
+
+          <p className="question_deletemodal_text">
+            Are you sure want to delete the topic?
+          </p>
+
+          <div className="question_deletemodal_footerContainer">
+            <Button
+              className="question_deletemodal_cancelbutton"
+              onClick={formReset}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="question_deletemodal_deletebutton"
+              onClick={handleTopicDelete}
             >
               Delete
             </Button>

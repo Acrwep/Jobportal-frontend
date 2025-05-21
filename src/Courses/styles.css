@@ -85,7 +85,9 @@
   transform: translateX(0px);
   opacity: 1;
 }
-
+.courses_topics_innerContainer {
+  width: 85%;
+}
 .courses_topinactivetab_div {
   border-radius: 12px;
   padding: 9px 12px;
@@ -102,16 +104,25 @@
   /* display: none; */
   position: absolute;
   top: 25%;
-  right: 24px;
+  right: 16px;
   transform: translateX(20px);
   transition: all 0.3s ease-in-out;
   opacity: 0;
+  display: flex;
+  gap: 12px;
 }
 .courses_topics_editanddeleteicon:hover {
   transform: scale(1.1);
 }
 .courses_videomainContainer {
   padding: 12px 12px 20px 12px;
+}
+.courses_topics_nodataContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-weight: 600;
 }
 /* course videos styles */
 .courses_iframevideos {
@@ -146,6 +157,9 @@
 }
 .courses_videodelete_icon {
   opacity: 0;
+}
+.courses_video_col_Container {
+  margin-bottom: 26px;
 }
 .courses_video_col_Container:hover .courses_videodelete_icon {
   opacity: 1;

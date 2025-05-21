@@ -414,6 +414,15 @@ export const getTopics = async (courseId) => {
   }
 };
 
+export const deleteTopic = async (topicId) => {
+  try {
+    const response = await api.delete(`/api/deleteTopic?topic_id=${topicId}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 //map trainers to the course
 export const trainerMapping = async (payload) => {
   try {
