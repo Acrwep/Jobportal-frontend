@@ -2,18 +2,21 @@ import React, { useState, useEffect } from "react";
 import "./styles.css";
 import { Button, Col, Modal, Row, Tabs, Spin, Drawer, Upload } from "antd";
 import { useLocation } from "react-router-dom";
-import Trainer from "../images/trainer.png";
 import CourseVideos from "./CourseVideos";
 import PortalInputField from "../Common/PortalInputField";
 import {
   createTopic,
   getAllUsers,
-  getCourses,
   getParticularCourseTrainers,
   getTopics,
   getVideoAndDocuments,
   trainerMapping,
   updateTopic,
+  createCompany,
+  getCompanies,
+  getCompanyVideosAndDocuments,
+  updateCompany,
+  deleteCompany,
 } from "../Common/action";
 import {
   addressValidator,
@@ -30,32 +33,35 @@ import { AiTwotoneEdit } from "react-icons/ai";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import Loader from "../Common/Loader";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
+  storeCompanyDocuments,
+  storeCompanyId,
+  storeCompanyList,
+  storeCompanyVideos,
   storeCourseDocuments,
   storeCourseVideos,
   storeTrainerId,
+  storeTrainersList,
 } from "../Redux/slice";
 import CommonNodataFound from "../Common/CommonNodataFound";
 import axios from "axios";
 import CourseDocuments from "./CourseDocuments";
-import { FiUser } from "react-icons/fi";
+import { SlCloudUpload } from "react-icons/sl";
+import { RiDeleteBinLine } from "react-icons/ri";
+import InterviewVideos from "./InterviewVideos";
+import InterviewDocuments from "./InterviewDocuments";
+import { MdDelete } from "react-icons/md";
+
 const { Dragger } = Upload;
 
 export default function Courses() {
   const location = useLocation();
   const dispatch = useDispatch();
+  const companyList = useSelector((state) => state.companylist);
+  const courseTrainersList = useSelector((state) => state.trainerslist);
   const [courseTopicIndex, setCourseTopicIndex] = useState(0);
   const [courseVideoLoader, setCourseVideoLoader] = useState(true);
-  const courseTopics = [
-    { id: 1, name: "HTML" },
-    { id: 2, name: "CSS" },
-    { id: 3, name: "Javascript" },
-    { id: 4, name: "React Js" },
-    { id: 5, name: "Angular Js" },
-    { id: 6, name: "Java" },
-    { id: 7, name: "Spring Boot" },
-  ];
 
   const API_URL = process.env.REACT_APP_API_URL;
 
@@ -77,26 +83,25 @@ export default function Courses() {
       return Promise.reject(error);
     }
   );
-
-  const [courseId, setCourseId] = useState(null);
-  const [addTopicModal, setAddTopicModal] = useState(false);
+  const [pages, setPages] = useState("trainers");
+  //topic usestates
   const [topicEdit, setTopicEdit] = useState(false);
   const [topicId, setTopicId] = useState(null);
   const [activeTopicTabId, setActiveTopicTabId] = useState(null);
   const [topicName, setTopicName] = useState("");
   const [topicNameError, setTopicNameError] = useState("");
+  const [addTopicModal, setAddTopicModal] = useState(false);
+  //course usestates
+  const [courseId, setCourseId] = useState(null);
   const [courseName, setCourseName] = useState("");
-  const [buttonLoader, setButtonLoader] = useState(false);
-  const [formValidationTrigger, setFormValidationTrigger] = useState(false);
-
+  const [courseTopicsData, setCourseTopicsData] = useState([]);
+  //map trainers usestates
   const [mapModal, setMapModal] = useState(false);
   const [mapTrainers, setMapTrainers] = useState([]);
   const [mapTrainersError, setMapTrainersError] = useState("");
-  const [showVideos, setShowVideos] = useState(false);
   const [trainersList, setTrainersList] = useState([]);
   const [trainerId, setTrainerId] = useState(null);
-  const [courseTrainersList, setCourseTrainersList] = useState([]);
-  const [courseTopicsData, setCourseTopicsData] = useState([]);
+  //content usesates
   const [contentTitle, setContentTitle] = useState("");
   const [contentTitleError, setContentTitleError] = useState("");
   const [youtubeLink, setYoutubeLink] = useState("");
@@ -112,7 +117,22 @@ export default function Courses() {
   ];
   const [contentType, setContentType] = useState(null);
   const [contentTypeError, setContentTypeError] = useState("");
+  //company usesates
+  const [companyModal, setCompanyModal] = useState(false);
+  const [companyName, setCompanyName] = useState("");
+  const [companyNameError, setCompanyNameError] = useState("");
+  const [companyLogo, setCompanyLogo] = useState("");
+  const [companyLogoType, setCompanyLogoType] = useState("");
+  const [clickedCardName, setClickedCardName] = useState("");
+  const [clickedCompanyId, setClickedCompanyId] = useState(null);
+  const [companyId, setCompanyId] = useState(null);
+  const [companyEdit, setCompanyEdit] = useState(false);
+  const [companyDeleteModal, setCompanyDeleteModal] = useState(false);
+  //loading usestates
+  const [companyLoading, setCompanyLoading] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [buttonLoader, setButtonLoader] = useState(false);
+  const [formValidationTrigger, setFormValidationTrigger] = useState(false);
 
   const tabItems = [
     {
@@ -141,6 +161,19 @@ export default function Courses() {
     },
   ];
 
+  const companyTabItems = [
+    {
+      key: "1",
+      label: "Videos",
+      children: <InterviewVideos companyLoading={companyLoading} />,
+    },
+    {
+      key: "2",
+      label: "Documents",
+      children: <InterviewDocuments companyLoading={companyLoading} />,
+    },
+  ];
+
   useEffect(() => {
     setTimeout(() => {
       getTrainersData();
@@ -152,9 +185,14 @@ export default function Courses() {
     const selectedCourseId = localStorage.getItem("selectedCourseId");
     setCourseName(selectedCourseName);
     setCourseId(selectedCourseId);
-    setShowVideos(false);
+    setPages("trainers");
     setCourseTopicIndex(0);
+    setLoading(true);
     getParticularCourseTrainersData();
+    setTimeout(() => {
+      setLoading(true);
+      getCompaniesData();
+    }, 300);
   }, [location.pathname]);
 
   const getTrainersData = async () => {
@@ -177,7 +215,6 @@ export default function Courses() {
   };
 
   const getParticularCourseTrainersData = async () => {
-    setLoading(true);
     const selectedCourseId = localStorage.getItem("selectedCourseId");
     try {
       const response = await getParticularCourseTrainers(
@@ -186,12 +223,41 @@ export default function Courses() {
       console.log("course trainers", response);
       const trainers = response?.data?.trainers;
       if (trainers.length >= 1) {
-        setCourseTrainersList(trainers);
+        dispatch(storeTrainersList(trainers));
       } else {
-        setCourseTrainersList([]);
+        dispatch(storeTrainersList([]));
       }
     } catch (error) {
-      setCourseTrainersList([]);
+      dispatch(storeTrainersList([]));
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
+    } finally {
+      setTimeout(() => {
+        if (clickedCompanyId) {
+          getCompaniesData();
+        } else {
+          setLoading(false);
+        }
+      }, 300);
+    }
+  };
+
+  const getCompaniesData = async () => {
+    const selectedCourseId = localStorage.getItem("selectedCourseId");
+    try {
+      const response = await getCompanies(selectedCourseId);
+      console.log("companies response", response);
+      const companies = response?.data?.companies || [];
+
+      if (companies.length >= 1) {
+        dispatch(storeCompanyList(companies));
+      } else {
+        dispatch(storeCompanyList([]));
+      }
+    } catch (error) {
+      dispatch(storeCompanyList([]));
       CommonToaster(
         error?.response?.data?.message ||
           "Something went wrong. Try again later"
@@ -253,7 +319,7 @@ export default function Courses() {
         const filterCourseDocuments = videos.filter(
           (f) => f.content_data != null
         );
-
+        console.log("course documents", filterCourseDocuments);
         dispatch(storeCourseVideos(filterCourseVideos));
         dispatch(storeCourseDocuments(filterCourseDocuments));
       } else {
@@ -271,6 +337,46 @@ export default function Courses() {
       setTimeout(() => {
         setLoading(false);
         setCourseVideoLoader(false);
+        setCompanyLoading(false);
+      }, 300);
+    }
+  };
+
+  const getCompanyVideosAndDocumentsData = async () => {
+    setCompanyLoading(true);
+    const payload = {
+      company_id: clickedCompanyId,
+    };
+    try {
+      const response = await getCompanyVideosAndDocuments(payload);
+      console.log("videos response", response);
+      const videos = response?.data?.videos || [];
+      if (videos.length >= 1) {
+        const filterCourseVideos = videos.filter(
+          (f) => f.content_data === null
+        );
+        const filterCourseDocuments = videos.filter(
+          (f) => f.content_data != null
+        );
+
+        dispatch(storeCompanyVideos(filterCourseVideos));
+        dispatch(storeCompanyDocuments(filterCourseDocuments));
+      } else {
+        dispatch(storeCompanyVideos([]));
+        dispatch(storeCompanyDocuments([]));
+      }
+    } catch (error) {
+      dispatch(storeCompanyVideos([]));
+      dispatch(storeCompanyDocuments([]));
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+        setCourseVideoLoader(false);
+        setCompanyLoading(false);
       }, 300);
     }
   };
@@ -299,6 +405,7 @@ export default function Courses() {
       await trainerMapping(payload);
       CommonToaster("Trainer mapped");
       formReset();
+      setLoading(true);
       getParticularCourseTrainersData();
     } catch (error) {
       CommonToaster(
@@ -427,7 +534,16 @@ export default function Courses() {
     }
   };
 
-  const handleVideoSubmit = async () => {
+  const companyVideoAndDocumentUpload = async (payload) => {
+    try {
+      const response = await api.post("/api/uploadCompanyContent", payload);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleContentSubmit = async () => {
     const contentTitleValidate = addressValidator(contentTitle);
     const contentTypeValidate = selectValidator(contentType);
 
@@ -484,7 +600,11 @@ export default function Courses() {
 
       formData.append("course_id", courseId);
       formData.append("topic_id", activeTopicTabId);
-      formData.append("trainer_id", trainerId);
+      if (clickedCompanyId) {
+        formData.append("company_id", clickedCompanyId);
+      } else {
+        formData.append("trainer_id", trainerId);
+      }
       formData.append("title", contentTitle);
       if (youtubeLink) {
         formData.append("content_type", "youtube");
@@ -494,14 +614,25 @@ export default function Courses() {
         formData.append("video", courseVideo);
       }
       console.log("successs", formData);
+      let response;
       try {
-        const response = await videoAndDocumentUpload(formData);
+        if (clickedCompanyId) {
+          response = await companyVideoAndDocumentUpload(formData);
+        } else {
+          response = await videoAndDocumentUpload(formData);
+        }
         console.log(response, "reponse");
         CommonToaster("Video uploaded");
         setCourseVideoLoader(true);
+        setCompanyLoading(true);
         setTimeout(() => {
           formReset();
-          getVideosAndDocumentsData(activeTopicTabId);
+          getParticularCourseTrainersData();
+          if (clickedCompanyId) {
+            getCompanyVideosAndDocumentsData();
+          } else {
+            getVideosAndDocumentsData(activeTopicTabId);
+          }
         }, 300);
       } catch (error) {
         setButtonLoader(false);
@@ -517,22 +648,188 @@ export default function Courses() {
 
       formData.append("course_id", courseId);
       formData.append("topic_id", activeTopicTabId);
-      formData.append("trainer_id", trainerId);
+      if (clickedCompanyId) {
+        formData.append("company_id", clickedCompanyId);
+      } else {
+        formData.append("trainer_id", trainerId);
+      }
       formData.append("title", contentTitle);
       formData.append("content_type", "document");
       formData.append("document_content", pdfFile);
-
+      let response;
       try {
-        const response = await videoAndDocumentUpload(formData);
+        if (clickedCompanyId) {
+          response = await companyVideoAndDocumentUpload(formData);
+        } else {
+          response = await videoAndDocumentUpload(formData);
+        }
         console.log(response, "reponse");
         CommonToaster("Document uploaded");
         setCourseVideoLoader(true);
         setTimeout(() => {
           formReset();
-          getVideosAndDocumentsData(activeTopicTabId);
+          getParticularCourseTrainersData();
+          if (clickedCompanyId) {
+            getCompanyVideosAndDocumentsData();
+          } else {
+            getVideosAndDocumentsData(activeTopicTabId);
+          }
         }, 300);
       } catch (error) {
         setButtonLoader(false);
+        CommonToaster(
+          error?.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
+      }
+    }
+  };
+
+  const getInitials = (name) => {
+    const words = name.split(" ");
+    if (words.length === 1) {
+      return words[0].charAt(0).toUpperCase();
+    } else if (words.length > 1) {
+      return (
+        words[0].charAt(0).toUpperCase() + words[1].charAt(0).toUpperCase()
+      );
+    } else {
+      return "";
+    }
+  };
+
+  //company related functions
+  const handleCompanyLogoAttachment = ({ file }) => {
+    console.log(file);
+
+    const isValidType =
+      file.type === "image/png" ||
+      file.type === "image/jpeg" ||
+      file.type === "image/jpg" ||
+      file.type === "image/svg" ||
+      file.type === "image/svg+xml";
+
+    if (file.status === "uploading" || file.status === "removed") {
+      setCompanyLogo([]);
+      return;
+    }
+    if (isValidType) {
+      console.log("fileeeee", file);
+      CommonToaster("Logo uploaded");
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result.split(",")[1]; // Extract Base64 content
+        setCompanyLogo(base64String); // Store in state
+        setCompanyLogoType(file.type);
+      };
+    } else {
+      CommonToaster("Accept only .png, .jpg, .jpeg and .svg");
+      setCompanyLogo("");
+    }
+  };
+
+  const handleCompanyCreate = async () => {
+    const selectedCourseId = localStorage.getItem("selectedCourseId");
+
+    const companyNameValidate = addressValidator(companyName);
+    const companyLogoValidate = selectValidator(companyLogo);
+
+    setCompanyNameError(companyNameValidate);
+    if (companyLogoValidate) {
+      CommonToaster("Company logo is required!");
+    }
+
+    if (companyNameValidate || companyLogoValidate) return;
+
+    setButtonLoader(true);
+    const payload = {
+      ...(companyId && { company_id: companyId }),
+      name: companyName,
+      logo: companyLogo,
+      course_id: selectedCourseId,
+    };
+    if (companyEdit) {
+      try {
+        await updateCompany(payload);
+        CommonToaster("Company updated");
+        setLoading(true);
+        getCompaniesData();
+        setTimeout(() => {
+          formReset();
+        }, 300);
+      } catch (error) {
+        setButtonLoader(false);
+        CommonToaster(
+          error?.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
+      }
+    } else {
+      try {
+        await createCompany(payload);
+        CommonToaster("Company created");
+        setLoading(true);
+        getCompaniesData();
+        setTimeout(() => {
+          formReset();
+        }, 300);
+      } catch (error) {
+        setButtonLoader(false);
+        CommonToaster(
+          error?.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
+      }
+    }
+  };
+
+  function getMimeType(base64) {
+    if (!base64) return "";
+    const signature = base64.slice(0, 5).toUpperCase();
+    switch (signature) {
+      case "IVBOR":
+        return "image/png";
+      case "/9J/4":
+        return "image/jpeg";
+      case "R0LGO":
+        return "image/gif";
+      case "PD94B":
+        return "image/svg+xml"; // usually SVG base64 starts with '<?xml' which is 'PD94B' when encoded
+      default:
+        return "image/*"; // fallback
+    }
+  }
+
+  const handleCompanyEdit = (item) => {
+    console.log("clicked company", item);
+    setCompanyId(item.id);
+    setCompanyName(item.company_name);
+    setCompanyLogo(item.logo);
+    setCompanyModal(true);
+    setCompanyEdit(true);
+  };
+
+  const handleCompanyDelete = async () => {
+    setCompanyDeleteModal(false);
+    try {
+      await deleteCompany(companyId);
+      CommonToaster("Company deleted");
+      setLoading(true);
+      getCompaniesData();
+      setTimeout(() => {
+        formReset();
+      }, 300);
+    } catch (error) {
+      setButtonLoader(false);
+      const Error = error?.response?.data;
+
+      if (
+        Error.details ===
+        "Error deleting company: Unable to remove the company because it contains content."
+      ) {
+        CommonToaster("Unable to delete because it contains content");
+      } else {
         CommonToaster(
           error?.response?.data?.message ||
             "Something went wrong. Try again later"
@@ -562,6 +859,14 @@ export default function Courses() {
     setCourseVideoArray([]);
     setPdfFile(null);
     setPdfArray([]);
+    setCompanyModal(false);
+    setCompanyName("");
+    setCompanyNameError("");
+    setCompanyLogo("");
+    setCompanyLogoType("");
+    setCompanyId(null);
+    setCompanyDeleteModal(false);
+    setCompanyEdit(false);
     setButtonLoader(false);
   };
 
@@ -569,41 +874,55 @@ export default function Courses() {
     <div>
       <div className="portal_headinContainer">
         <div className="courses_backbutton_mainContainer">
-          {showVideos === true && (
+          {pages === "videos" || pages === "interview" ? (
             <div
               className="courses_backbutton_Container"
               onClick={() => {
-                setShowVideos(false);
                 setTrainerId(null);
                 setCourseTopicIndex(0);
                 setActiveTopicTabId(null);
                 dispatch(storeTrainerId(null));
+                setClickedCardName("");
+                setClickedCompanyId(null);
+                setPages("trainers");
               }}
             >
               <IoArrowBack color="#0056b3" size={20} />
             </div>
+          ) : (
+            ""
           )}
-          <p
-            className="portal_mainheadings"
-            onClick={() => console.log("eeeeee", trainerId, activeTopicTabId)}
-          >
-            {courseName}
-          </p>
+          <p className="portal_mainheadings">{`${courseName} ${
+            clickedCardName ? ">" : ""
+          } ${clickedCardName}`}</p>
         </div>
         <div className="courses_maptrainerbutton_container">
-          {showVideos === false ? (
-            <button
-              className="courses_addtopic_button"
-              onClick={() => setMapModal(true)}
-            >
-              <MdAssignmentAdd
-                size={16}
-                color="#fff"
-                style={{ marginRight: "6px" }}
-              />{" "}
-              Map Trainers
-            </button>
-          ) : (
+          {pages === "trainers" ? (
+            <>
+              <button
+                className="courses_addtopic_button"
+                onClick={() => setMapModal(true)}
+              >
+                <MdAssignmentAdd
+                  size={16}
+                  color="#fff"
+                  style={{ marginRight: "6px" }}
+                />{" "}
+                Map Trainers
+              </button>
+              <button
+                className="courses_addtopic_button"
+                onClick={() => setCompanyModal(true)}
+              >
+                <IoMdAdd
+                  size={16}
+                  color="#fff"
+                  style={{ marginRight: "6px" }}
+                />{" "}
+                Add Company
+              </button>
+            </>
+          ) : pages === "videos" ? (
             <>
               <button
                 className="courses_addtopic_button"
@@ -629,6 +948,18 @@ export default function Courses() {
                 Add Content
               </button>
             </>
+          ) : (
+            <button
+              className="courses_addtopic_button"
+              onClick={() => setContentDrawer(true)}
+            >
+              <HiOutlineDocumentAdd
+                size={18}
+                color="#fff"
+                style={{ marginRight: "6px" }}
+              />{" "}
+              Add Content
+            </button>
           )}
         </div>
       </div>
@@ -636,7 +967,7 @@ export default function Courses() {
         <Loader />
       ) : (
         <>
-          {showVideos === false ? (
+          {pages === "trainers" ? (
             <>
               <p className="courses_trainerheading">
                 {courseTrainersList.length >= 1 ? "Trainers" : ""}
@@ -648,7 +979,13 @@ export default function Courses() {
                       const profileBase64String = `data:image/jpeg;base64,${item.profile}`;
                       return (
                         <React.Fragment key={index}>
-                          <Col xs={24} sm={24} md={24} lg={8}>
+                          <Col
+                            xs={24}
+                            sm={24}
+                            md={24}
+                            lg={8}
+                            style={{ marginBottom: "24px" }}
+                          >
                             <div
                               className="courses_trainercard"
                               style={{
@@ -660,7 +997,9 @@ export default function Courses() {
                                     : "#5297a7",
                               }}
                               onClick={() => {
-                                setShowVideos(true);
+                                setPages("videos");
+                                console.log("clicked trainer", item);
+                                setClickedCardName(item.trainer_name);
                                 setTrainerId(item.trainer_id);
                                 dispatch(storeTrainerId(item.trainer_id));
                                 getTopicsData(item.trainer_id);
@@ -674,30 +1013,53 @@ export default function Courses() {
                                   />
                                 </div>
                               ) : (
-                                <div
-                                  className="courses_trainercard_imagesContainer"
-                                  style={{
-                                    border:
-                                      "1px solid rgba(128, 128, 128, 0.61)",
-                                  }}
-                                >
-                                  <FiUser
-                                    size={35}
-                                    className="courses_trainercard_deafultimages"
-                                  />
+                                <div className="courses_trainercard_imagesContainer">
+                                  <p
+                                    style={{
+                                      fontSize: "24px",
+                                      fontWeight: 500,
+                                      color:
+                                        index === 0
+                                          ? "#6068cd"
+                                          : index === 1
+                                          ? "#ac5ac7"
+                                          : "#5297a7",
+                                    }}
+                                  >
+                                    {getInitials(item.trainer_name)}
+                                  </p>
                                 </div>
                               )}
                               <div className="courses_trainercard_contentContainer">
                                 <p className="courses_trainercard_name">
                                   {item.trainer_name}
                                 </p>
-                                <p className="courses_trainercard_exp">
-                                  Experience:{" "}
-                                  {item.experience ? item.experience : "-"}
-                                </p>
-                                <p className="courses_trainercard_exp">
-                                  Videos: {item.video_count}
-                                </p>
+
+                                <div style={{ display: "flex", gap: "6px" }}>
+                                  <div>
+                                    <p className="courses_trainercard_exp">
+                                      Experience:{" "}
+                                    </p>
+                                    <p className="courses_trainercard_exp">
+                                      Videos:
+                                    </p>
+                                    <p className="courses_trainercard_exp">
+                                      Documents:
+                                    </p>
+                                  </div>
+
+                                  <div>
+                                    <p className="courses_trainercard_exp">
+                                      {item.experience ? item.experience : "-"}
+                                    </p>
+                                    <p className="courses_trainercard_exp">
+                                      {item.video_count}
+                                    </p>
+                                    <p className="courses_trainercard_exp">
+                                      {item.document_count}
+                                    </p>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </Col>
@@ -709,8 +1071,95 @@ export default function Courses() {
                   <CommonNodataFound title="No trainers are available for this course" />
                 )}
               </Row>
+
+              <div className="courses_interprepration_container">
+                <p className="courses_interprepration_heading">
+                  Interview Preparation
+                </p>
+
+                <Row gutter={30}>
+                  {companyList.map((item, index) => {
+                    const logotype = getMimeType(item.logo);
+                    const companylogo = `data:${logotype};base64,${item.logo}`;
+                    return (
+                      <React.Fragment key={index}>
+                        <Col
+                          xs={24}
+                          sm={12}
+                          md={24}
+                          lg={8}
+                          style={{ marginBottom: "24px" }}
+                        >
+                          <div className="courses_companyCards">
+                            <div
+                              className="courses_interprepration_companyCards_innerContainer"
+                              onClick={() => {
+                                setPages("interview");
+                                setClickedCardName(item.company_name);
+                                setClickedCompanyId(item.id);
+                                dispatch(storeCompanyId(item.id));
+                              }}
+                            >
+                              <img
+                                src={companylogo}
+                                className="courses_interprepration_companylogos"
+                              />
+
+                              <div>
+                                <p className="courses_interprepration_companyname">
+                                  {item.company_name}
+                                </p>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    gap: "6px",
+                                    marginTop: "4px",
+                                  }}
+                                >
+                                  <div>
+                                    <p className="courses_companycard_videotext">
+                                      Videos:
+                                    </p>
+                                    <p className="courses_companycard_videotext">
+                                      Documents:
+                                    </p>
+                                  </div>
+
+                                  <div>
+                                    <p className="courses_companycard_videotext">
+                                      {item.video_count}
+                                    </p>
+                                    <p className="courses_companycard_videotext">
+                                      {item.document_count}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="courses_companycard_editContainer">
+                              <AiTwotoneEdit
+                                size={18}
+                                onClick={() => handleCompanyEdit(item)}
+                              />
+                              <RiDeleteBinLine
+                                size={18}
+                                color="#d32215"
+                                onClick={() => {
+                                  setCompanyId(item.id);
+                                  setCompanyDeleteModal(true);
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </Col>
+                      </React.Fragment>
+                    );
+                  })}
+                </Row>
+              </div>
             </>
-          ) : (
+          ) : pages === "videos" ? (
             <div className="courses_topicsmainContainer">
               <Row style={{ marginBottom: "20px" }}>
                 <Col span={6} className="courses_topics_sidebarContainer">
@@ -746,9 +1195,12 @@ export default function Courses() {
                 </Col>
               </Row>
             </div>
+          ) : (
+            <Tabs defaultActiveKey="1" items={companyTabItems} />
           )}
         </>
       )}
+      {/* add topic modal */}
       <Modal
         open={addTopicModal}
         onCancel={formReset}
@@ -756,7 +1208,7 @@ export default function Courses() {
         footer={[
           <div className="courses_addtopicmodal_footerContainer">
             {buttonLoader ? (
-              <Button className="courses_addtopicmodal_disablesubmitbutton">
+              <Button className="courses_modal_disablesubmitbutton">
                 <>
                   <Spin
                     size="small"
@@ -767,7 +1219,7 @@ export default function Courses() {
               </Button>
             ) : (
               <Button
-                className="courses_addtopicmodal_submitbutton"
+                className="courses_modal_submitbutton"
                 onClick={handleTopicCreate}
               >
                 Submit
@@ -799,6 +1251,8 @@ export default function Courses() {
           />
         </div>
       </Modal>
+
+      {/* map trainers modal */}
       <Modal
         open={mapModal}
         onCancel={formReset}
@@ -806,7 +1260,7 @@ export default function Courses() {
         footer={[
           <div className="courses_addtopicmodal_footerContainer">
             {buttonLoader ? (
-              <Button className="courses_addtopicmodal_disablesubmitbutton">
+              <Button className="courses_modal_disablesubmitbutton">
                 <>
                   <Spin
                     size="small"
@@ -817,7 +1271,7 @@ export default function Courses() {
               </Button>
             ) : (
               <Button
-                className="courses_addtopicmodal_submitbutton"
+                className="courses_modal_submitbutton"
                 onClick={handleMapTrainerSubmit}
               >
                 Submit
@@ -843,6 +1297,143 @@ export default function Courses() {
           />
         </div>
       </Modal>
+
+      {/* addcompany modal */}
+      <Modal
+        open={companyModal}
+        onCancel={formReset}
+        title="Add Company"
+        footer={[
+          <div className="courses_addtopicmodal_footerContainer">
+            {buttonLoader ? (
+              <Button className="courses_modal_disablesubmitbutton">
+                <>
+                  <Spin
+                    size="small"
+                    className="courses_addtopicbutton_spin"
+                    indicator={<LoadingOutlined spin color="#fff" />}
+                  />{" "}
+                </>
+              </Button>
+            ) : (
+              <Button
+                className="courses_modal_submitbutton"
+                onClick={handleCompanyCreate}
+              >
+                Submit
+              </Button>
+            )}
+          </div>,
+        ]}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <div
+            className="courses_companylogo_container"
+            // style={{ backgroundColor: companyLogo === "" ? "#0056b3" : "" }}
+          >
+            {companyLogo ? (
+              <>
+                {companyLogoType === "image/png" ? (
+                  <img
+                    src={`data:image/png;base64,${companyLogo}`}
+                    className="courses_companymodal_logo"
+                  />
+                ) : companyLogoType === "image/jpeg" ? (
+                  <img
+                    src={`data:image/jpeg;base64,${companyLogo}`}
+                    className="courses_companymodal_logo"
+                  />
+                ) : companyLogoType === "image/jpg" ? (
+                  <img
+                    src={`data:image/jpg;base64,${companyLogo}`}
+                    className="courses_companymodal_logo"
+                  />
+                ) : (
+                  <img
+                    src={`data:image/svg+xml;base64,${companyLogo}`}
+                    className="courses_companymodal_logo"
+                  />
+                )}
+              </>
+            ) : (
+              <SlCloudUpload size={60} color="#0056b3" />
+            )}
+          </div>
+
+          <div className="courses_companylogo_uploadContainer">
+            <Upload
+              maxCount={1}
+              beforeUpload={(file) => {
+                return false; // Prevent auto-upload
+              }}
+              onChange={handleCompanyLogoAttachment}
+              fileList={[]}
+            >
+              <Button className="courses_companylogo_uploadbutton">
+                Upload Logo
+              </Button>
+            </Upload>
+          </div>
+        </div>
+        <div style={{ marginTop: "20px" }}>
+          <PortalInputField
+            label="Company Name"
+            mandatory={true}
+            value={companyName}
+            onChange={(e) => {
+              setCompanyName(e.target.value);
+              setCompanyNameError(addressValidator(e.target.value));
+            }}
+            error={companyNameError}
+          />
+        </div>
+      </Modal>
+
+      {/*company delete modal */}
+      <Modal
+        open={companyDeleteModal}
+        onCancel={formReset}
+        footer={false}
+        closable
+        width={420}
+      >
+        <div className="questionupload_deletemodalContainer">
+          <div className="questionupload_deletemodal_iconContainer">
+            <MdDelete size={20} color="#db2728" />
+          </div>
+
+          <p className="question_deletemodal_confirmdeletetext">
+            Confirm Delete
+          </p>
+
+          <p className="question_deletemodal_text">
+            Are you sure want to delete the company?
+          </p>
+
+          <div className="question_deletemodal_footerContainer">
+            <Button
+              className="question_deletemodal_cancelbutton"
+              onClick={formReset}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="question_deletemodal_deletebutton"
+              onClick={handleCompanyDelete}
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      {/* create content drawer */}
       <Drawer
         open={contentDrawer}
         onClose={formReset}
@@ -958,7 +1549,7 @@ export default function Courses() {
           ) : (
             <button
               className="courses_addvideo_submitbutton"
-              onClick={handleVideoSubmit}
+              onClick={handleContentSubmit}
             >
               Submit
             </button>

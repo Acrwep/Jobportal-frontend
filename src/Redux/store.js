@@ -6,6 +6,11 @@ import {
   courseVideosReducer,
   courseDocumentsReducer,
   trainerIdReducer,
+  companyIdReducer,
+  trainersListReducer,
+  companyListReducer,
+  companyVideosReducer,
+  companyDocumentsReducer,
 } from "./slice";
 
 export const store = configureStore({
@@ -17,5 +22,10 @@ export const store = configureStore({
     coursevideos: courseVideosReducer,
     coursedocuments: courseDocumentsReducer,
     trainerid: trainerIdReducer,
+    companyid: companyIdReducer,
+    trainerslist: trainersListReducer,
+    companylist: companyListReducer,
+    companyvideos: companyVideosReducer,
+    companydocuments: companyDocumentsReducer,
   },
 });

@@ -48,11 +48,33 @@ const courseVideosSlice = createSlice({
   },
 });
 
+const companyVideosSlice = createSlice({
+  name: "companyvideos",
+  initialState,
+  reducers: {
+    storeCompanyVideos(state, action) {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
 const courseDocumentsSlice = createSlice({
   name: "coursedocuments",
   initialState,
   reducers: {
     storeCourseDocuments(state, action) {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
+const companyDocumentsSlice = createSlice({
+  name: "companydocuments",
+  initialState,
+  reducers: {
+    storeCompanyDocuments(state, action) {
       state = action.payload;
       return state;
     },
@@ -71,12 +93,51 @@ const trainerIdSlice = createSlice({
   },
 });
 
+const companyId = null;
+const companyIdSlice = createSlice({
+  name: "companyid",
+  initialState: companyId,
+  reducers: {
+    storeCompanyId(state, action) {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
+const trainersListSlice = createSlice({
+  name: "trainerslist",
+  initialState,
+  reducers: {
+    storeTrainersList(state, action) {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
+const companyListSlice = createSlice({
+  name: "companylist",
+  initialState,
+  reducers: {
+    storeCompanyList(state, action) {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
 export const { storeFolderProfiles } = folderProfilesSlice.actions;
 export const { storePortalMenuStatus } = portalMenuStatusSlice.actions;
 export const { storeLogoutMenuStatus } = logoutMenuStatusSlice.actions;
 export const { storeCourseVideos } = courseVideosSlice.actions;
 export const { storeTrainerId } = trainerIdSlice.actions;
 export const { storeCourseDocuments } = courseDocumentsSlice.actions;
+export const { storeCompanyId } = companyIdSlice.actions;
+export const { storeTrainersList } = trainersListSlice.actions;
+export const { storeCompanyList } = companyListSlice.actions;
+export const { storeCompanyVideos } = companyVideosSlice.actions;
+export const { storeCompanyDocuments } = companyDocumentsSlice.actions;
 
 export const folderProfilesReducer = folderProfilesSlice.reducer;
 export const portalMenuStatusReducer = portalMenuStatusSlice.reducer;
@@ -84,3 +145,8 @@ export const logoutMenuStatusReducer = logoutMenuStatusSlice.reducer;
 export const courseVideosReducer = courseVideosSlice.reducer;
 export const trainerIdReducer = trainerIdSlice.reducer;
 export const courseDocumentsReducer = courseDocumentsSlice.reducer;
+export const companyIdReducer = companyIdSlice.reducer;
+export const trainersListReducer = trainersListSlice.reducer;
+export const companyListReducer = companyListSlice.reducer;
+export const companyVideosReducer = companyVideosSlice.reducer;
+export const companyDocumentsReducer = companyDocumentsSlice.reducer;

@@ -80,6 +80,7 @@ export default function TestInvite() {
             state: {
               userId: users[0].id,
               courseId: users[0].course_id,
+              token: token,
             },
           });
           setButtonLoading(false);

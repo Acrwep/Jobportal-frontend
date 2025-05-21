@@ -85,18 +85,23 @@ export default function OnlineTest() {
     };
   }, []);
 
-  // Timer logic
   useEffect(() => {
+    console.log(location?.state?.userId, location?.state?.courseId);
     const user_id = location?.state?.userId || null;
     setUserId(user_id);
 
     const course_id = location?.state?.courseId || null;
     setCourseId(course_id);
 
+    const token = location?.state?.token || null;
     if (course_id === null || user_id === null) {
-      navigate("/test-invite");
+      CommonToaster("Something went wrong. Contact Admin");
+      navigate(`/test-invite/${token}`);
     }
+  }, []);
 
+  // Timer logic
+  useEffect(() => {
     const minutesLeft = Math.floor((timeLeft % 3600) / 60);
     if (minutesLeft <= 1) {
       setTimerAlert(true);

@@ -1,95 +1,83 @@
-import React, { useState } from "react";
-import { Col, Row, Modal, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Row, Col, Modal, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import "./styles.css";
-import Loader from "../Common/Loader";
-import CommonNodataFound from "../Common/CommonNodataFound";
-import { RiDeleteBinLine } from "react-icons/ri";
-import { MdDelete } from "react-icons/md";
 import { CommonToaster } from "../Common/CommonToaster";
 import {
-  getParticularCourseTrainers,
-  getVideoAndDocuments,
-  videoDelete,
+  deleteCompanyVideosAndDocuments,
+  getCompanies,
+  getCompanyVideosAndDocuments,
 } from "../Common/action";
-import {
-  storeCourseDocuments,
-  storeCourseVideos,
-  storeTrainersList,
-} from "../Redux/slice";
+import CommonNodataFound from "../Common/CommonNodataFound";
+import { RiDeleteBinLine } from "react-icons/ri";
+import Loader from "../Common/Loader";
+import { MdDelete } from "react-icons/md";
+import { storeCompanyList, storeCompanyVideos } from "../Redux/slice";
 
-export default function CourseVideos({ courseId, topicid, loading }) {
-  const dispatch = useDispatch();
-  const courseVideos = useSelector((state) => state.coursevideos);
-  const trainerId = useSelector((state) => state.trainerid);
+export default function InterviewVideos({ companyLoading }) {
   const API_URL = process.env.REACT_APP_API_URL;
+  const dispatch = useDispatch();
+  const companyVideos = useSelector((state) => state.companyvideos);
+  const companyId = useSelector((state) => state.companyid);
+  const [loading, setLoading] = useState(true);
   const [deleteModal, setDeleteModal] = useState(false);
   const [videoId, setVideoId] = useState(null);
   const [videoName, setVideoName] = useState("");
-  const [videoLoading, setVideoLoading] = useState(false);
 
-  const getVideosAndDocumentsData = async () => {
-    setVideoLoading(true);
-    console.log(courseId, topicid, trainerId);
+  useEffect(() => {
+    getCompanyVideosData();
+  }, []);
+
+  const getCompanyVideosData = async () => {
+    setLoading(true);
     const payload = {
-      course_id: courseId,
-      topic_id: topicid,
-      trainer_id: trainerId,
+      company_id: companyId,
     };
     try {
-      const response = await getVideoAndDocuments(payload);
-      console.log("videos response", response);
+      const response = await getCompanyVideosAndDocuments(payload);
       const videos = response?.data?.videos || [];
+
       if (videos.length >= 1) {
         const filterCourseVideos = videos.filter(
           (f) => f.content_data === null
         );
-        const filterCourseDocuments = videos.filter(
-          (f) => f.content_data != null
-        );
-
-        dispatch(storeCourseVideos(filterCourseVideos));
-        dispatch(storeCourseDocuments(filterCourseDocuments));
+        dispatch(storeCompanyVideos(filterCourseVideos));
       } else {
-        dispatch(storeCourseVideos([]));
-        dispatch(storeCourseDocuments([]));
+        dispatch(storeCompanyVideos([]));
       }
     } catch (error) {
-      dispatch(storeCourseVideos([]));
-      dispatch(storeCourseDocuments([]));
+      dispatch(storeCompanyVideos([]));
       CommonToaster(
         error?.response?.data?.message ||
           "Something went wrong. Try again later"
       );
     } finally {
       setTimeout(() => {
-        getParticularCourseTrainersData();
+        getCompaniesData();
       }, 300);
     }
   };
 
-  const getParticularCourseTrainersData = async () => {
+  const getCompaniesData = async () => {
     const selectedCourseId = localStorage.getItem("selectedCourseId");
     try {
-      const response = await getParticularCourseTrainers(
-        parseInt(selectedCourseId)
-      );
-      console.log("course trainers", response);
-      const trainers = response?.data?.trainers;
-      if (trainers.length >= 1) {
-        dispatch(storeTrainersList(trainers));
+      const response = await getCompanies(selectedCourseId);
+      console.log("companies response", response);
+      const companies = response?.data?.companies || [];
+
+      if (companies.length >= 1) {
+        dispatch(storeCompanyList(companies));
       } else {
-        dispatch(storeTrainersList([]));
+        dispatch(storeCompanyList([]));
       }
     } catch (error) {
-      dispatch(storeTrainersList([]));
+      dispatch(storeCompanyList([]));
       CommonToaster(
         error?.response?.data?.message ||
           "Something went wrong. Try again later"
       );
     } finally {
       setTimeout(() => {
-        setVideoLoading(false);
+        setLoading(false);
       }, 300);
     }
   };
@@ -100,10 +88,10 @@ export default function CourseVideos({ courseId, topicid, loading }) {
       filename: videoName,
     };
     try {
-      await videoDelete(payload);
+      await deleteCompanyVideosAndDocuments(payload);
       CommonToaster("Video deleted");
       setDeleteModal(false);
-      getVideosAndDocumentsData();
+      getCompanyVideosData();
     } catch (error) {
       CommonToaster(
         error?.response?.data?.message ||
@@ -114,13 +102,13 @@ export default function CourseVideos({ courseId, topicid, loading }) {
 
   return (
     <div>
-      {loading || videoLoading ? (
+      {loading || companyLoading ? (
         <Loader />
       ) : (
         <Row gutter={16} style={{ marginBottom: "20px" }}>
-          {courseVideos.length >= 1 ? (
+          {companyVideos.length >= 1 ? (
             <>
-              {courseVideos.map((item, index) => {
+              {companyVideos.map((item, index) => {
                 let embedLink;
                 let isYoutubeLink = false;
                 if (item.file_path) {
@@ -140,6 +128,7 @@ export default function CourseVideos({ courseId, topicid, loading }) {
                         sm={24}
                         md={24}
                         lg={8}
+                        style={{ marginBottom: "22px" }}
                         className="courses_video_col_Container"
                       >
                         <div className="courses_videoContainer">
@@ -170,8 +159,6 @@ export default function CourseVideos({ courseId, topicid, loading }) {
                             onClick={() => {
                               setVideoId(item.id);
                               setVideoName(item.filename);
-                              console.log("eeeeeeeeeeeeeeeeeeeee");
-
                               setDeleteModal(true);
                             }}
                           />
@@ -183,7 +170,7 @@ export default function CourseVideos({ courseId, topicid, loading }) {
               })}
             </>
           ) : (
-            <CommonNodataFound title="No videos are available for this topic" />
+            <CommonNodataFound title="No videos are available for this company" />
           )}
         </Row>
       )}

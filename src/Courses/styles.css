@@ -11,7 +11,9 @@
 }
 .courses_trainercard {
   border-radius: 12px;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  /* box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; */
+  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em,
+    rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
   cursor: pointer;
   display: flex;
   height: 100%;
@@ -21,8 +23,10 @@
   align-items: center;
 }
 .courses_trainercard:hover {
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  /* box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px; */
+  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em,
+    rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
   transform: scale(1.03);
 }
 .courses_trainercard_imagesContainer {
@@ -294,6 +298,7 @@
   position: relative;
 }
 .courses_documentcard {
+  height: 300px;
   border: 1px solid #d4d2d0;
   overflow: hidden;
   box-sizing: border-box;
@@ -319,3 +324,120 @@
   opacity: 0;
   transition: all 0.3s ease-in-out;
 }
+
+/* interview preparation styles */
+.courses_interprepration_container {
+  margin-top: 40px;
+}
+.courses_interprepration_heading {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 12px !important;
+}
+.courses_companyCards {
+  height: 100%;
+  transition: all 0.4s ease-in;
+  border-radius: 12px;
+  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em,
+    rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+  background-color: #fff;
+  cursor: pointer;
+  position: relative;
+}
+.courses_companyCards:hover {
+  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em,
+    rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+  transform: scale(1.03);
+}
+.courses_companyCards:hover .courses_companycard_editContainer {
+  opacity: 1;
+  transform: translateX(0px);
+}
+
+.courses_interprepration_companyCards_innerContainer {
+  display: flex;
+  gap: 16px;
+  padding: 16px 24px;
+  align-items: center;
+}
+.courses_interprepration_companylogos {
+  width: 75px;
+}
+.courses_interprepration_companyname {
+  font-weight: 600;
+  font-size: 17px;
+}
+.courses_companycard_videotext {
+  margin-bottom: 2px !important;
+}
+.courses_companycard_editContainer {
+  position: absolute;
+  right: 16px;
+  top: 12px;
+  transform: translateX(19px);
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  gap: 12px;
+  opacity: 0;
+}
+.courses_companylogo_container {
+  margin-top: 6px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: #0057b318; */
+}
+.courses_companymodal_logo {
+  width: 120px;
+}
+.courses_companylogo_uploadContainer {
+  position: relative;
+  margin-top: 20px;
+  cursor: pointer;
+}
+.courses_companylogo_uploadbutton:hover {
+  color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
+.courses_modal_submitbutton {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #0056b3 !important;
+  border-radius: 6px !important;
+  outline: 0 !important;
+  border: none;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 105px;
+  height: 34px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.courses_modal_submitbutton:hover {
+  color: #fff !important;
+  opacity: 0.8;
+}
+.courses_modal_submitbutton:active {
+  transform: scale(0.9);
+  box-shadow: 3px 2px 22px 1px #027cff73;
+}
+.courses_modal_disablesubmitbutton {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #0056b3 !important;
+  border-radius: 6px !important;
+  outline: 0 !important;
+  border: none;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 105px;
+  height: 34px;
+  cursor: default;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* company videos and documents styles */

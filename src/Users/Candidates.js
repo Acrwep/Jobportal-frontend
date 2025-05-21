@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Input, Spin, Modal } from "antd";
+import { Row, Col, Input, Spin, Drawer, Collapse } from "antd";
 import { useNavigate } from "react-router-dom";
 import CommonTable from "../Common/CommonTable";
 import { IoIosSend } from "react-icons/io";
 import { CommonToaster } from "../Common/CommonToaster";
 import {
   getAllUsers,
+  getAssessmentAnswers,
   getCandidates,
   getCourses,
   sendInterviewRequest,
@@ -14,7 +15,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import moment from "moment";
 import PortalSelectField from "../Common/PortalSelectField";
 import PortalDoubleDatePicker from "../Common/PortalDoubleDatePicker";
-import CommonDoubleDatePicker from "../Common/CommonDoubleDatePicker";
+import { AiOutlineEye } from "react-icons/ai";
 const { Search } = Input;
 
 export default function Candidates() {
@@ -36,6 +37,8 @@ export default function Candidates() {
   const [courseOptions, setCourseOptions] = useState([]);
   const [courseId, setCourseId] = useState(null);
   const [selectedDates, setSelectedDates] = useState([]);
+  const [resultDrawer, setResultDrawer] = useState(false);
+  const [answersData, setAnswersData] = useState([]);
 
   const columns = [
     { title: "Name", key: "name", dataIndex: "name", width: 200 },
@@ -44,13 +47,13 @@ export default function Candidates() {
       title: "Branch",
       key: "course_location",
       dataIndex: "course_location",
-      width: 200,
+      width: 180,
     },
     {
       title: "Course",
       key: "course_name",
       dataIndex: "course_name",
-      width: 260,
+      width: 220,
     },
     {
       title: "Course Joining Date",
@@ -69,7 +72,7 @@ export default function Candidates() {
       title: "Test Attempt",
       key: "attempt_number",
       dataIndex: "attempt_number",
-      width: 180,
+      width: 150,
       render: (text, record) => {
         return (
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -86,6 +89,20 @@ export default function Candidates() {
         return (
           <div style={{ display: "flex", justifyContent: "center" }}>
             <p>{text ? moment(text).format("DD/MM/YYYY") : "-"}</p>
+          </div>
+        );
+      },
+    },
+    {
+      title: "Result",
+      width: 140,
+      render: (text, record) => {
+        return (
+          <div
+            className="candiadtes_resultviewContainer"
+            onClick={() => getAnswersData(text.id)}
+          >
+            <AiOutlineEye size={20} />
           </div>
         );
       },
@@ -142,6 +159,95 @@ export default function Candidates() {
       setTimeout(() => {
         setTableLoading(false);
       }, 500);
+    }
+  };
+
+  const getAnswersData = async (userId) => {
+    setResultDrawer(true);
+    const payload = {
+      user_id: userId,
+    };
+    try {
+      const response = await getAssessmentAnswers(payload);
+      const answers = response?.data?.data || [];
+      console.log("answers response", response);
+      if (answers.length >= 1) {
+        const addChildren = answers.map((item, index) => {
+          return {
+            ...item,
+            key: index + 1,
+            label: `Attempt ${item.attempt_number}`,
+            children: (
+              <div>
+                <Row style={{ marginBottom: "12px" }}>
+                  <Col span={12}>
+                    <p>
+                      Date:{" "}
+                      <span>
+                        {moment(item.attempt_date).format("DD-MM-YYYY")}
+                      </span>
+                    </p>
+                  </Col>
+                  <Col span={12}>
+                    <p>Total Questions: {item.total_questions}</p>
+                  </Col>
+                </Row>
+
+                <Row style={{ marginBottom: "20px" }}>
+                  <Col span={12}>
+                    <p>
+                      Correct Answer: <span>{item.correct_answers}</span>
+                    </p>
+                  </Col>
+                  <Col span={12}>
+                    <p>
+                      Percentage:{" "}
+                      <span style={{ fontWeight: 600, color: "#0056b3" }}>
+                        {item.percentage}%
+                      </span>
+                    </p>
+                  </Col>
+                </Row>
+                {item.answers.map((answer, i) => (
+                  <div key={i}>
+                    <div className="candidates_questionContainer">
+                      <p className="candidates_questionheading">
+                        Question {i + 1}:
+                      </p>
+                      <p>{answer.question}</p>
+
+                      <div className="candidates_selectedanswer_container">
+                        <p className="candidates_question_selectedanswer">
+                          Selected Answer:{" "}
+                          <span style={{ fontWeight: 600 }}>
+                            {answer.selected_option}
+                          </span>
+                        </p>
+                        <p>
+                          Mark:{" "}
+                          <span
+                            style={{
+                              fontWeight: 600,
+                              color: answer.mark === 1 ? "green" : "red",
+                            }}
+                          >
+                            1
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                    {/* Optional: render answer.question or similar here */}
+                  </div>
+                ))}
+              </div>
+            ),
+          };
+        });
+        console.log("update answerItem", addChildren);
+        setAnswersData(addChildren);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -294,6 +400,20 @@ export default function Candidates() {
           selectedDatas={handleSelectedRow}
         />
       </div>
+
+      <Drawer
+        title="Result"
+        open={resultDrawer}
+        onClose={() => setResultDrawer(false)}
+        width="42%"
+        closable
+      >
+        <Collapse
+          className="candidates_result_collapse"
+          items={answersData}
+          defaultActiveKey={["1"]}
+        ></Collapse>
+      </Drawer>
     </div>
   );
 }

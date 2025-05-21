@@ -455,3 +455,78 @@ export const videoDelete = async (payload) => {
     throw error;
   }
 };
+
+// get assessment answers api
+export const getAssessmentAnswers = async (payload) => {
+  try {
+    const response = await api.get("/api/user-attempts", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//company api's
+export const getCompanies = async (courseId) => {
+  try {
+    const response = await api.get(
+      `/api/getCompanyByCourse?course_id=${courseId}`
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createCompany = async (payload) => {
+  try {
+    const response = await api.post("/api/insertCompany", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateCompany = async (payload) => {
+  try {
+    const response = await api.put("/api/updateCompany", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteCompany = async (companyId) => {
+  try {
+    const response = await api.delete(
+      `/api/deleteCompany?company_id=${companyId}`
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCompanyVideosAndDocuments = async (payload) => {
+  try {
+    const response = await api.get("/api/getCompanyContents", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteCompanyVideosAndDocuments = async (payload) => {
+  try {
+    const response = await api.delete("/api/deleteCompanyContent", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

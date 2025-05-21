@@ -10,31 +10,27 @@ import { AiOutlineEye } from "react-icons/ai";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
 import {
-  getParticularCourseTrainers,
-  getVideoAndDocuments,
+  deleteCompanyVideosAndDocuments,
+  getCompanies,
+  getCompanyVideosAndDocuments,
   videoDelete,
 } from "../Common/action";
-import {
-  storeCourseDocuments,
-  storeCourseVideos,
-  storeTrainersList,
-} from "../Redux/slice";
 import { CommonToaster } from "../Common/CommonToaster";
+import { storeCompanyDocuments, storeCompanyList } from "../Redux/slice";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
   import.meta.url
 ).toString();
 
-export default function CourseDocuments({ courseId, topicid, loading }) {
+export default function InterviewDocuments({ companyLoading }) {
   const dispatch = useDispatch();
   const containerRef = useRef(null);
-  const courseDocuments = useSelector((state) => state.coursedocuments);
-  const trainerId = useSelector((state) => state.trainerid);
+  const companyId = useSelector((state) => state.companyid);
+  const companyDocuments = useSelector((state) => state.companydocuments);
 
   // Track page numbers and total pages for each PDF
   const [pageNumbers, setPageNumbers] = useState({});
-  const [numPagesMap, setNumPagesMap] = useState({});
   const [selectedDocumentId, setSelectedDocumentId] = useState("");
   const [selectedDocument, setSelectedDocument] = useState("");
   const [selectedDocumentName, setSelectedDocumentName] = useState("");
@@ -42,7 +38,7 @@ export default function CourseDocuments({ courseId, topicid, loading }) {
   const [deleteModal, setDeleteModal] = useState(false);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-  const [documentLoading, setDocumentLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [containerWidth, setContainerWidth] = useState(0);
 
@@ -59,73 +55,67 @@ export default function CourseDocuments({ courseId, topicid, loading }) {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [documentLoading]);
+  }, [loading]);
+
+  useEffect(() => {
+    getCompanyDocumentsData();
+  }, []);
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
   };
 
-  const getVideosAndDocumentsData = async () => {
-    setDocumentLoading(true);
+  const getCompanyDocumentsData = async () => {
+    setLoading(true);
     const payload = {
-      course_id: courseId,
-      topic_id: topicid,
-      trainer_id: trainerId,
+      company_id: companyId,
     };
     try {
-      const response = await getVideoAndDocuments(payload);
-      console.log("videos response", response);
+      const response = await getCompanyVideosAndDocuments(payload);
+      console.log("company documents response", response);
       const videos = response?.data?.videos || [];
-      if (videos.length >= 1) {
-        const filterCourseVideos = videos.filter(
-          (f) => f.content_data === null
-        );
-        const filterCourseDocuments = videos.filter(
-          (f) => f.content_data != null
-        );
-
-        dispatch(storeCourseVideos(filterCourseVideos));
-        dispatch(storeCourseDocuments(filterCourseDocuments));
+      const filterDocuments = videos.filter(
+        (f) => f.content_type === "document"
+      );
+      if (filterDocuments.length >= 1) {
+        dispatch(storeCompanyDocuments(filterDocuments));
       } else {
-        dispatch(storeCourseVideos([]));
-        dispatch(storeCourseDocuments([]));
+        dispatch(storeCompanyDocuments([]));
       }
     } catch (error) {
-      dispatch(storeCourseVideos([]));
-      dispatch(storeCourseDocuments([]));
+      dispatch(storeCompanyDocuments([]));
       CommonToaster(
         error?.response?.data?.message ||
           "Something went wrong. Try again later"
       );
     } finally {
       setTimeout(() => {
-        getParticularCourseTrainersData();
+        getCompaniesData();
       }, 300);
     }
   };
 
-  const getParticularCourseTrainersData = async () => {
+  const getCompaniesData = async () => {
     const selectedCourseId = localStorage.getItem("selectedCourseId");
     try {
-      const response = await getParticularCourseTrainers(
-        parseInt(selectedCourseId)
-      );
-      console.log("course trainers", response);
-      const trainers = response?.data?.trainers;
-      if (trainers.length >= 1) {
-        dispatch(storeTrainersList(trainers));
+      const response = await getCompanies(selectedCourseId);
+      console.log("companies response", response);
+      const companies = response?.data?.companies || [];
+
+      if (companies.length >= 1) {
+        dispatch(storeCompanyList(companies));
       } else {
-        dispatch(storeTrainersList([]));
+        dispatch(storeCompanyList([]));
       }
     } catch (error) {
-      dispatch(storeTrainersList([]));
+      dispatch(storeCompanyList([]));
       CommonToaster(
         error?.response?.data?.message ||
           "Something went wrong. Try again later"
       );
     } finally {
       setTimeout(() => {
-        setDocumentLoading(false);
+        setLoading(false);
       }, 300);
     }
   };
@@ -133,12 +123,13 @@ export default function CourseDocuments({ courseId, topicid, loading }) {
   const handleDelete = async () => {
     const payload = {
       id: selectedDocumentId,
+      filename: selectedDocumentName,
     };
     try {
-      await videoDelete(payload);
+      await deleteCompanyVideosAndDocuments(payload);
       CommonToaster("Document deleted");
       setDeleteModal(false);
-      getVideosAndDocumentsData();
+      getCompanyDocumentsData();
     } catch (error) {
       CommonToaster(
         error?.response?.data?.message ||
@@ -149,13 +140,12 @@ export default function CourseDocuments({ courseId, topicid, loading }) {
 
   return (
     <div>
-      {loading || documentLoading ? (
+      {loading || companyLoading ? (
         <Loader />
       ) : (
         <Row gutter={16} style={{ marginBottom: "20px" }}>
-          {courseDocuments.length >= 1 ? (
-            courseDocuments.map((item, index) => {
-              console.log("documentss", item);
+          {companyDocuments.length >= 1 ? (
+            companyDocuments.map((item, index) => {
               const pdfDataUrl = `data:application/pdf;base64,${item.content_data}`;
               return (
                 <>
@@ -164,7 +154,7 @@ export default function CourseDocuments({ courseId, topicid, loading }) {
                       xs={24}
                       sm={24}
                       md={12}
-                      lg={8}
+                      lg={6}
                       key={index}
                       style={{ marginBottom: "22px" }}
                     >
@@ -174,10 +164,24 @@ export default function CourseDocuments({ courseId, topicid, loading }) {
                           ref={containerRef}
                           className="courses_documentcard"
                         >
-                          <Document file={pdfDataUrl}>
+                          <Document
+                            file={pdfDataUrl}
+                            onLoadSuccess={() => {
+                              const canvases = document.querySelectorAll(
+                                ".courses_documentcard canvas"
+                              );
+                              canvases.forEach((canvas) => {
+                                canvas.removeAttribute("style"); // removes hardcoded width & height
+                                canvas.style.height = "100%";
+                                canvas.style.width = "auto";
+                                canvas.style.display = "block";
+                              });
+                            }}
+                          >
                             <Page
                               pageNumber={pageNumbers[index] || 1}
                               width={containerWidth}
+                              height={300}
                             />
                           </Document>
                         </div>
@@ -208,7 +212,7 @@ export default function CourseDocuments({ courseId, topicid, loading }) {
               );
             })
           ) : (
-            <CommonNodataFound title="No documents are available for this topic" />
+            <CommonNodataFound title="No documents are available for this company" />
           )}
         </Row>
       )}
