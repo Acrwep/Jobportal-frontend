@@ -37,6 +37,7 @@ import Candidates from "../Users/Candidates";
 import Courses from "../Courses/Courses";
 import SidebarLogo from "../images/old-acte-logo.png";
 import { getCourses } from "../Common/action";
+import StudentResult from "../StudentResult/StudentResult";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
@@ -134,6 +135,10 @@ const MainSideMenu = () => {
         // navigate("/test-invite");
         setShowPages(false);
         setShowSideBar(false);
+      }
+      if (location.pathname.includes("/assessment-results")) {
+        setShowPages(false);
+        setShowSideBar(true);
       }
     } else {
       if (location.pathname === "/register") {
@@ -421,7 +426,7 @@ const MainSideMenu = () => {
 
                 <Divider className="portallayout_header_divider" />
                 <div
-                  style={{ padding: "0px 20px" }}
+                  style={{ padding: "0px 20px 20px 20px" }}
                   onClick={() => {
                     dispatch(storePortalMenuStatus(false));
                     dispatch(storeLogoutMenuStatus(false));
@@ -435,6 +440,10 @@ const MainSideMenu = () => {
                     <Route element={<Users />} path="/users" />
                     <Route element={<Candidates />} path="/candidates" />
                     <Route element={<Courses />} path="/courses/:courseName" />
+                    <Route
+                      element={<StudentResult />}
+                      path="/assessment-results"
+                    />
                   </Routes>
                 </div>
               </>

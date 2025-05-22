@@ -157,37 +157,3 @@
   font-weight: 600;
   opacity: 0.7;
 }
-.candidates_result_collapse .ant-collapse-header-text {
-  font-weight: 600 !important;
-}
-.candiadtes_resultviewContainer {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  font-size: 13px;
-  margin-left: 12px;
-  cursor: pointer;
-  width: 50%;
-}
-.candidates_questionContainer {
-  margin-bottom: 20px;
-}
-.candidates_questionheading {
-  font-weight: 500;
-  font-size: 18px;
-  margin-bottom: 6px !important;
-}
-.candidates_selectedanswer_container {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
-    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-  padding: 12px;
-  border-radius: 6px;
-}
-/* .candidates_question_selectedanswer {
-  margin-top: 6px !important;
-  margin-bottom: 6px !important;
-} */

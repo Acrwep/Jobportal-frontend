@@ -65,7 +65,11 @@ export default function PortalSelectField({
         onChange={onChange}
         options={options.map((item) => ({
           value: item.id ? item.id : item.name,
-          label: item.full_Name ? item.full_Name : item.name,
+          label: item.full_Name
+            ? item.full_Name
+            : item.course_name
+            ? item.course_name
+            : item.name,
         }))}
         value={value}
         error={error}

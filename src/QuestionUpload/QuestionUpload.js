@@ -8,6 +8,7 @@ import {
   createOptionsForQuestion,
   createQuestion,
   deleteQuestion,
+  getCourseByTrainers,
   getCourses,
   getQuestions,
   getSections,
@@ -132,29 +133,68 @@ export default function QuestionUpload() {
   };
 
   const getCourseData = async () => {
-    try {
-      const response = await getCourses();
-      console.log("course response", response);
-      if (response?.data?.data) {
-        setCourseData(response?.data?.data);
-      } else {
+    const roleId = parseInt(localStorage.getItem("loginUserRoleId"));
+    const loginUserId = parseInt(localStorage.getItem("loginUserId"));
+    let courseArray;
+
+    if (roleId === 1) {
+      try {
+        const response = await getCourses();
+        console.log("course response", response);
+        if (response?.data?.data) {
+          courseArray = response?.data?.data;
+          setCourseData(response?.data?.data);
+        } else {
+          courseArray = [];
+          setCourseData([]);
+        }
+      } catch (error) {
+        courseArray = [];
         setCourseData([]);
+        console.log("course error", error);
+      } finally {
+        setTimeout(() => {
+          getQuestionsData(null, null, courseArray);
+        }, 300);
       }
-    } catch (error) {
-      setCourseData([]);
-      console.log("course error", error);
-    } finally {
-      setTimeout(() => {
-        getQuestionsData(null, null);
-      }, 300);
+    } else {
+      try {
+        const response = await getCourseByTrainers(loginUserId);
+        console.log("course response", response);
+        if (response?.data?.courses) {
+          courseArray = response?.data?.courses;
+          setCourseData(response?.data?.courses);
+        } else {
+          courseArray = [];
+          setCourseData([]);
+        }
+      } catch (error) {
+        courseArray = [];
+        setCourseData([]);
+        console.log("course error", error);
+      } finally {
+        setTimeout(() => {
+          getQuestionsData(null, null, courseArray);
+        }, 300);
+      }
     }
   };
 
-  const getQuestionsData = async (sectionid, courseid) => {
+  const getQuestionsData = async (sectionid, courseid, courseArray) => {
     setTableLoading(true);
+    let courses = [];
+    if (courseid) {
+      courses.push(courseid);
+    } else {
+      courses = courseArray.map((c) => {
+        return c.id;
+      });
+    }
+    console.log("coursesssssss", courses);
+
     const payload = {
       section_id: sectionid === undefined ? null : sectionid,
-      course_id: courseid === undefined ? null : courseid,
+      courses: courses,
     };
     try {
       const response = await getQuestions(payload);
@@ -198,14 +238,14 @@ export default function QuestionUpload() {
     console.log("session", value);
     const sec = value === undefined ? null : value;
     setSectionFilterId(sec);
-    getQuestionsData(sec, courseFilterId);
+    getQuestionsData(sec, courseFilterId, courseData);
   };
 
   const handleCourseFilter = (value) => {
     console.log("course", value);
     const cour = value === undefined ? null : value;
     setCourseFilterId(cour);
-    getQuestionsData(sectionFilterId, cour);
+    getQuestionsData(sectionFilterId, cour, courseData);
   };
 
   //handle edit
@@ -300,7 +340,7 @@ export default function QuestionUpload() {
         CommonToaster("Question updated");
         setTableLoading(true);
         setTimeout(() => {
-          getQuestionsData(sectionFilterId, courseFilterId);
+          getQuestionsData(sectionFilterId, courseFilterId, courseData);
           formReset();
         }, 300);
       } catch (error) {
@@ -317,7 +357,7 @@ export default function QuestionUpload() {
         setTableLoading(true);
 
         setTimeout(() => {
-          getQuestionsData(sectionFilterId, courseFilterId);
+          getQuestionsData(sectionFilterId, courseFilterId, courseData);
           formReset();
         }, 300);
       } catch (error) {
@@ -341,7 +381,7 @@ export default function QuestionUpload() {
       setTableLoading(true);
       setQuestionId(null);
       setTimeout(() => {
-        getQuestionsData(sectionFilterId, courseFilterId);
+        getQuestionsData(sectionFilterId, courseFilterId, courseData);
       }, 300);
     } catch (error) {
       CommonToaster(

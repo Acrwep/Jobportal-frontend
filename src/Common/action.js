@@ -339,9 +339,7 @@ export const updateQuestion = async (payload) => {
 
 export const getQuestions = async (payload) => {
   try {
-    const response = await api.post("/api/getquestions", {
-      params: payload,
-    });
+    const response = await api.post("/api/getquestions", payload);
     return response;
   } catch (error) {
     throw error;

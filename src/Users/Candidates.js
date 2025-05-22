@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Input, Spin, Drawer, Collapse } from "antd";
+import { Row, Col, Input, Spin, Drawer, Collapse, Divider } from "antd";
 import { useNavigate } from "react-router-dom";
 import CommonTable from "../Common/CommonTable";
 import { IoIosSend } from "react-icons/io";
@@ -16,6 +16,9 @@ import moment from "moment";
 import PortalSelectField from "../Common/PortalSelectField";
 import PortalDoubleDatePicker from "../Common/PortalDoubleDatePicker";
 import { AiOutlineEye } from "react-icons/ai";
+import { ImCross } from "react-icons/im";
+import { PiCheckFatFill } from "react-icons/pi";
+import CommonNodataFound from "../Common/CommonNodataFound";
 const { Search } = Input;
 
 export default function Candidates() {
@@ -99,7 +102,7 @@ export default function Candidates() {
       render: (text, record) => {
         return (
           <div
-            className="candiadtes_resultviewContainer"
+            className="assesmntresult_viewContainer"
             onClick={() => getAnswersData(text.id)}
           >
             <AiOutlineEye size={20} />
@@ -208,37 +211,87 @@ export default function Candidates() {
                     </p>
                   </Col>
                 </Row>
-                {item.answers.map((answer, i) => (
-                  <div key={i}>
-                    <div className="candidates_questionContainer">
-                      <p className="candidates_questionheading">
-                        Question {i + 1}:
-                      </p>
-                      <p>{answer.question}</p>
+                {item.answers.map((answer, i) => {
+                  let lastIndex = item.answers.length - 1;
+                  return (
+                    <div key={i}>
+                      <div className="assesmntresult_questionContainer">
+                        <p className="assesmntresult_questionheading">
+                          Question {i + 1}:
+                        </p>
+                        <p className="assesmntresult_question">
+                          {answer.question}
+                        </p>
 
-                      <div className="candidates_selectedanswer_container">
-                        <p className="candidates_question_selectedanswer">
-                          Selected Answer:{" "}
-                          <span style={{ fontWeight: 600 }}>
-                            {answer.selected_option}
-                          </span>
-                        </p>
-                        <p>
-                          Mark:{" "}
-                          <span
-                            style={{
-                              fontWeight: 600,
-                              color: answer.mark === 1 ? "green" : "red",
-                            }}
-                          >
-                            1
-                          </span>
-                        </p>
+                        <div className="assesmntresult_selectedanswer_container">
+                          {answer.options.map((optin) => (
+                            <div
+                              className={
+                                optin.value === answer.correct_answer &&
+                                answer.correct_answer === answer.selected_option
+                                  ? "assesmntresult_correctselectoptionContainer"
+                                  : optin.value === answer.correct_answer
+                                  ? "assesmntresult_correctoptionContainer"
+                                  : optin.value === answer.selected_option
+                                  ? "assesmntresult_wrongoptionContainer"
+                                  : "assesmntresult_optionContainer"
+                              }
+                            >
+                              {optin.value === answer.correct_answer &&
+                              answer.correct_answer ===
+                                answer.selected_option ? (
+                                <PiCheckFatFill size={18} color="#4CAF50" />
+                              ) : optin.value === answer.correct_answer ? (
+                                ""
+                              ) : optin.value === answer.selected_option ? (
+                                <ImCross size={14} color="#dc3545" />
+                              ) : (
+                                ""
+                              )}
+                              <p>{optin.value}</p>
+
+                              {optin.value === answer.correct_answer &&
+                              answer.correct_answer ===
+                                answer.selected_option ? (
+                                <div className="assesmntresult_youranswerContainer">
+                                  <p>Candidate answer</p>
+                                </div>
+                              ) : optin.value === answer.selected_option ? (
+                                <div className="assesmntresult_youranswerContainer">
+                                  <p>Candidate answer</p>
+                                </div>
+                              ) : optin.value === answer.correct_answer ? (
+                                <div className="assesmntresult_youranswerContainer">
+                                  <p>Correct answer</p>
+                                </div>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          ))}
+                          <p className="assesmntresult_mark">
+                            Mark:{" "}
+                            <span
+                              style={{
+                                fontWeight: 600,
+                                color: answer.mark === 1 ? "green" : "red",
+                              }}
+                            >
+                              {answer.mark}
+                            </span>
+                          </p>
+                        </div>
                       </div>
+                      {/* Optional: render answer.question or similar here */}
+
+                      {i === lastIndex ? (
+                        ""
+                      ) : (
+                        <Divider className="assesmntresult_divider" />
+                      )}
                     </div>
-                    {/* Optional: render answer.question or similar here */}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ),
           };
@@ -405,14 +458,18 @@ export default function Candidates() {
         title="Result"
         open={resultDrawer}
         onClose={() => setResultDrawer(false)}
-        width="42%"
+        width="45%"
         closable
       >
-        <Collapse
-          className="candidates_result_collapse"
-          items={answersData}
-          defaultActiveKey={["1"]}
-        ></Collapse>
+        {answersData.length >= 1 ? (
+          <Collapse
+            className="assesmntresult_collapse"
+            items={answersData}
+            defaultActiveKey={["1"]}
+          ></Collapse>
+        ) : (
+          <CommonNodataFound title="No result found" />
+        )}
       </Drawer>
     </div>
   );

@@ -12,6 +12,7 @@ import { SlMagnifier } from "react-icons/sl";
 import { GiMaterialsScience } from "react-icons/gi";
 import { BsBarChartLine, BsCloudArrowDown } from "react-icons/bs";
 import { CiBullhorn } from "react-icons/ci";
+import { GrNotes } from "react-icons/gr";
 import { getCourseByTrainers, getCourses } from "../Common/action";
 
 export default function SideMenu() {
@@ -144,12 +145,28 @@ export default function SideMenu() {
             };
           });
 
-          defaultItems.push({
-            key: "courses",
-            label: "Courses",
-            icon: <MdMenuBook size={17} />,
-            children: courseSubItems,
-          });
+          if (roleId == 1) {
+            defaultItems.push({
+              key: "courses",
+              label: "Courses",
+              icon: <MdMenuBook size={17} />,
+              children: courseSubItems,
+            });
+          } else {
+            defaultItems.push(
+              {
+                key: "courses",
+                label: "Courses",
+                icon: <MdMenuBook size={17} />,
+                children: courseSubItems,
+              },
+              {
+                key: "assessment-results",
+                icon: <GrNotes size={17} />,
+                label: "Result",
+              }
+            );
+          }
         }
 
         setMenuItems(defaultItems);

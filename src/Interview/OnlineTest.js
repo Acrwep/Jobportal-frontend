@@ -166,7 +166,7 @@ export default function OnlineTest() {
   const getSectionBQuestionsData = async () => {
     const payload = {
       section_id: 2,
-      course_id: courseId,
+      courses: [location?.state?.courseId || null],
     };
     try {
       const response = await getQuestions(payload);

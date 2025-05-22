@@ -1,0 +1,90 @@
+.assesmntresult_collapse .ant-collapse-header-text {
+  font-weight: 600 !important;
+}
+.assesmntresult_viewContainer {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+  margin-left: 12px;
+  cursor: pointer;
+  width: 50%;
+}
+.assesmntresult_questionContainer {
+  margin-bottom: 12px;
+}
+.assesmntresult_questionheading {
+  font-weight: 500;
+  font-size: 20px;
+  margin-bottom: 6px !important;
+}
+.assesmntresult_selectedanswer_container {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  border-radius: 6px;
+}
+.assesmntresult_optionContainer {
+  padding: 10px 10px 10px 20px;
+  background-color: #f1f1f1;
+  font-weight: 500;
+  font-size: 15px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.assesmntresult_correctselectoptionContainer {
+  padding: 10px 10px 10px 20px;
+  background-color: #d4edda;
+  font-weight: 500;
+  font-size: 15px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.assesmntresult_correctoptionContainer {
+  padding: 10px 10px 10px 20px;
+  background-color: #ddd;
+  font-weight: 500;
+  font-size: 15px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.assesmntresult_wrongoptionContainer {
+  padding: 10px 10px 10px 20px;
+  background-color: #f8d7da;
+  font-weight: 500;
+  font-size: 15px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.assesmntresult_youranswerContainer {
+  position: absolute;
+  top: 18%;
+  right: 16px;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 2px 12px;
+  color: #fff;
+}
+.assesmntresult_mark {
+  font-size: 15px;
+  padding: 6px 20px;
+}
+.assesmntresult_question {
+  font-size: 15px;
+  margin-top: 16px !important;
+  color: #000;
+}
+.assesmntresult_divider {
+  margin: 0px !important;
+  /* margin-top: 6px !important; */
+  margin-bottom: 24px !important;
+  border-color: #eee !important;
+}

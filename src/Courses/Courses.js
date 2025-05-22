@@ -954,51 +954,53 @@ export default function Courses() {
                   Map Trainers
                 </button>
               )}
-              {roleId === 1 ||
-                (roleId === 2 && (
-                  <button
-                    className="courses_addtopic_button"
-                    onClick={() => setCompanyModal(true)}
-                  >
-                    <IoMdAdd
-                      size={16}
-                      color="#fff"
-                      style={{ marginRight: "6px" }}
-                    />{" "}
-                    Add Company
-                  </button>
-                ))}
+              {roleId === 1 || roleId === 2 ? (
+                <button
+                  className="courses_addtopic_button"
+                  onClick={() => setCompanyModal(true)}
+                >
+                  <IoMdAdd
+                    size={16}
+                    color="#fff"
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Add Company
+                </button>
+              ) : (
+                ""
+              )}
             </>
           ) : pages === "videos" ? (
             <>
-              {roleId === 1 ||
-                (roleId === 2 && (
-                  <>
-                    <button
-                      className="courses_addtopic_button"
-                      onClick={() => setAddTopicModal(true)}
-                    >
-                      <IoMdAdd
-                        size={18}
-                        color="#fff"
-                        style={{ marginRight: "6px" }}
-                      />{" "}
-                      Add Topics
-                    </button>
+              {roleId === 1 || roleId === 2 ? (
+                <>
+                  <button
+                    className="courses_addtopic_button"
+                    onClick={() => setAddTopicModal(true)}
+                  >
+                    <IoMdAdd
+                      size={18}
+                      color="#fff"
+                      style={{ marginRight: "6px" }}
+                    />{" "}
+                    Add Topics
+                  </button>
 
-                    <button
-                      className="courses_addtopic_button"
-                      onClick={() => setContentDrawer(true)}
-                    >
-                      <HiOutlineDocumentAdd
-                        size={18}
-                        color="#fff"
-                        style={{ marginRight: "6px" }}
-                      />{" "}
-                      Add Content
-                    </button>
-                  </>
-                ))}
+                  <button
+                    className="courses_addtopic_button"
+                    onClick={() => setContentDrawer(true)}
+                  >
+                    <HiOutlineDocumentAdd
+                      size={18}
+                      color="#fff"
+                      style={{ marginRight: "6px" }}
+                    />{" "}
+                    Add Content
+                  </button>
+                </>
+              ) : (
+                ""
+              )}
             </>
           ) : (
             <>
