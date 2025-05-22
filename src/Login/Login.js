@@ -56,6 +56,8 @@ export default function Login() {
       const loginDetails = response?.data?.details;
       localStorage.setItem("Accesstoken", loginDetails.token);
       localStorage.setItem("loginUserId", loginDetails.id);
+      console.log("rrrrrrrrrrr", loginDetails.role_id);
+      localStorage.setItem("loginUserRoleId", loginDetails.role_id);
       localStorage.setItem("loginDetails", JSON.stringify(loginDetails));
       const event = new Event("localStorageUpdated");
       window.dispatchEvent(event);

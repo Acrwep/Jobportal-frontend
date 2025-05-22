@@ -294,7 +294,7 @@ export const getSections = async (payload) => {
 
 export const getCourses = async (payload) => {
   try {
-    const response = await api.get("/api/getcourses", payload);
+    const response = await api.post("/api/getcourses", payload);
     return response;
   } catch (error) {
     throw error;
@@ -339,7 +339,7 @@ export const updateQuestion = async (payload) => {
 
 export const getQuestions = async (payload) => {
   try {
-    const response = await api.get("/api/getquestions", {
+    const response = await api.post("/api/getquestions", {
       params: payload,
     });
     return response;
@@ -427,6 +427,17 @@ export const deleteTopic = async (topicId) => {
 export const trainerMapping = async (payload) => {
   try {
     const response = await api.post("/api/courseMap", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCourseByTrainers = async (trainerId) => {
+  try {
+    const response = await api.get(
+      `/api/getCourseByTrainers?user_id=${trainerId}`
+    );
     return response;
   } catch (error) {
     throw error;

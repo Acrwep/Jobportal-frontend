@@ -131,7 +131,8 @@ export default function Courses() {
   const [companyId, setCompanyId] = useState(null);
   const [companyEdit, setCompanyEdit] = useState(false);
   const [companyDeleteModal, setCompanyDeleteModal] = useState(false);
-  //loading usestates
+  //other usestates
+  const [roleId, setRoleId] = useState(null);
   const [companyLoading, setCompanyLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [buttonLoader, setButtonLoader] = useState(false);
@@ -199,6 +200,8 @@ export default function Courses() {
   }, [location.pathname]);
 
   const getTrainersData = async () => {
+    const roleid = parseInt(localStorage.getItem("loginUserRoleId"));
+    setRoleId(roleid);
     try {
       const response = await getAllUsers();
       const allUsers = response?.data?.data || [];
@@ -219,6 +222,8 @@ export default function Courses() {
 
   const getParticularCourseTrainersData = async () => {
     const selectedCourseId = localStorage.getItem("selectedCourseId");
+    const loginUserId = parseInt(localStorage.getItem("loginUserId"));
+    const roleid = parseInt(localStorage.getItem("loginUserRoleId"));
     try {
       const response = await getParticularCourseTrainers(
         parseInt(selectedCourseId)
@@ -226,7 +231,14 @@ export default function Courses() {
       console.log("course trainers", response);
       const trainers = response?.data?.trainers;
       if (trainers.length >= 1) {
-        dispatch(storeTrainersList(trainers));
+        if (roleid === 2) {
+          const mappingTrainers = trainers.filter(
+            (f) => f.trainer_id === loginUserId
+          );
+          dispatch(storeTrainersList(mappingTrainers));
+        } else {
+          dispatch(storeTrainersList(trainers));
+        }
       } else {
         dispatch(storeTrainersList([]));
       }
@@ -929,67 +941,82 @@ export default function Courses() {
         <div className="courses_maptrainerbutton_container">
           {pages === "trainers" ? (
             <>
-              <button
-                className="courses_addtopic_button"
-                onClick={() => setMapModal(true)}
-              >
-                <MdAssignmentAdd
-                  size={16}
-                  color="#fff"
-                  style={{ marginRight: "6px" }}
-                />{" "}
-                Map Trainers
-              </button>
-              <button
-                className="courses_addtopic_button"
-                onClick={() => setCompanyModal(true)}
-              >
-                <IoMdAdd
-                  size={16}
-                  color="#fff"
-                  style={{ marginRight: "6px" }}
-                />{" "}
-                Add Company
-              </button>
+              {roleId === 1 && (
+                <button
+                  className="courses_addtopic_button"
+                  onClick={() => setMapModal(true)}
+                >
+                  <MdAssignmentAdd
+                    size={16}
+                    color="#fff"
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Map Trainers
+                </button>
+              )}
+              {roleId === 1 ||
+                (roleId === 2 && (
+                  <button
+                    className="courses_addtopic_button"
+                    onClick={() => setCompanyModal(true)}
+                  >
+                    <IoMdAdd
+                      size={16}
+                      color="#fff"
+                      style={{ marginRight: "6px" }}
+                    />{" "}
+                    Add Company
+                  </button>
+                ))}
             </>
           ) : pages === "videos" ? (
             <>
-              <button
-                className="courses_addtopic_button"
-                onClick={() => setAddTopicModal(true)}
-              >
-                <IoMdAdd
-                  size={18}
-                  color="#fff"
-                  style={{ marginRight: "6px" }}
-                />{" "}
-                Add Topics
-              </button>
+              {roleId === 1 ||
+                (roleId === 2 && (
+                  <>
+                    <button
+                      className="courses_addtopic_button"
+                      onClick={() => setAddTopicModal(true)}
+                    >
+                      <IoMdAdd
+                        size={18}
+                        color="#fff"
+                        style={{ marginRight: "6px" }}
+                      />{" "}
+                      Add Topics
+                    </button>
 
-              <button
-                className="courses_addtopic_button"
-                onClick={() => setContentDrawer(true)}
-              >
-                <HiOutlineDocumentAdd
-                  size={18}
-                  color="#fff"
-                  style={{ marginRight: "6px" }}
-                />{" "}
-                Add Content
-              </button>
+                    <button
+                      className="courses_addtopic_button"
+                      onClick={() => setContentDrawer(true)}
+                    >
+                      <HiOutlineDocumentAdd
+                        size={18}
+                        color="#fff"
+                        style={{ marginRight: "6px" }}
+                      />{" "}
+                      Add Content
+                    </button>
+                  </>
+                ))}
             </>
           ) : (
-            <button
-              className="courses_addtopic_button"
-              onClick={() => setContentDrawer(true)}
-            >
-              <HiOutlineDocumentAdd
-                size={18}
-                color="#fff"
-                style={{ marginRight: "6px" }}
-              />{" "}
-              Add Content
-            </button>
+            <>
+              {roleId === 1 ||
+                (roleId === 2 && (
+                  <button
+                    className="courses_addtopic_button"
+                    onClick={() => setContentDrawer(true)}
+                  >
+                    <HiOutlineDocumentAdd
+                      size={18}
+                      color="#fff"
+                      style={{ marginRight: "6px" }}
+                    />{" "}
+                    Add Content
+                  </button>
+                ))}
+            </>
           )}
         </div>
       </div>
@@ -1170,20 +1197,24 @@ export default function Courses() {
                                   </div>
                                 </div>
 
-                                <div className="courses_companycard_editContainer">
-                                  <AiTwotoneEdit
-                                    size={18}
-                                    onClick={() => handleCompanyEdit(item)}
-                                  />
-                                  <RiDeleteBinLine
-                                    size={18}
-                                    color="#d32215"
-                                    onClick={() => {
-                                      setCompanyId(item.id);
-                                      setCompanyDeleteModal(true);
-                                    }}
-                                  />
-                                </div>
+                                {roleId === 1 || roleId === 2 ? (
+                                  <div className="courses_companycard_editContainer">
+                                    <AiTwotoneEdit
+                                      size={18}
+                                      onClick={() => handleCompanyEdit(item)}
+                                    />
+                                    <RiDeleteBinLine
+                                      size={18}
+                                      color="#d32215"
+                                      onClick={() => {
+                                        setCompanyId(item.id);
+                                        setCompanyDeleteModal(true);
+                                      }}
+                                    />
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
                               </div>
                             </Col>
                           </React.Fragment>

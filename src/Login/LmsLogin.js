@@ -8,7 +8,7 @@ import {
   nameValidator,
 } from "../Common/Validation";
 import { CommonToaster } from "../Common/CommonToaster";
-import { adminLogin } from "../Common/action";
+import { adminLogin, getCourses } from "../Common/action";
 import { LoadingOutlined } from "@ant-design/icons";
 
 export default function LmsLogin() {
@@ -52,18 +52,46 @@ export default function LmsLogin() {
       localStorage.setItem("Accesstoken", loginDetails.token);
       localStorage.setItem("loginUserId", loginDetails.id);
       localStorage.setItem("loginUserRole", loginDetails.role);
+      localStorage.setItem("loginUserRoleId", loginDetails.role_id);
       localStorage.setItem("loginDetails", JSON.stringify(loginDetails));
       const event = new Event("localStorageUpdated");
       window.dispatchEvent(event);
 
       setTimeout(() => {
         setLoading(false);
-        navigate("/question-upload");
+        if (loginDetails.role_id === 1 || loginDetails.role_id === 2) {
+          navigate("/question-upload");
+        } else {
+          getCourseData(loginDetails.course_id);
+        }
       }, 1000);
     } catch (error) {
       console.log("login error", error);
       setLoading(false);
       CommonToaster(error?.response?.data?.message || "Internal server error.");
+    }
+  };
+
+  const getCourseData = async (courseid) => {
+    const payload = {
+      courses: [courseid],
+    };
+    try {
+      const response = await getCourses(payload);
+      const allCourses = response?.data?.data || [];
+      console.log("all courses", allCourses);
+      if (allCourses.length >= 1) {
+        const courseName = allCourses[0].name;
+        const courseId = allCourses[0].id;
+        localStorage.setItem("selectedCourseName", courseName);
+        localStorage.setItem("selectedCourseId", courseId);
+        navigate(`/courses`);
+      }
+    } catch (error) {
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
     }
   };
 
