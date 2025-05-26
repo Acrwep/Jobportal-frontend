@@ -4,7 +4,11 @@ import Placement from "../images/hiring-black.png";
 import LMS from "../images/study.png";
 import Interview from "../images/meeting.png";
 import { useDispatch, useSelector } from "react-redux";
-import { storeLogoutMenuStatus, storePortalMenuStatus } from "../Redux/slice";
+import {
+  storeCurrentPortalName,
+  storeLogoutMenuStatus,
+  storePortalMenuStatus,
+} from "../Redux/slice";
 import { Avatar, Divider } from "antd";
 import { TbGridDots } from "react-icons/tb";
 import { FaRegCheckCircle } from "react-icons/fa";
@@ -19,7 +23,9 @@ export default function PortalMenu() {
   const dispatch = useDispatch();
   const portalMenu = useSelector((state) => state.portalmenu);
   const logoutMenu = useSelector((state) => state.logoutmenu);
+  const currentPortalName = useSelector((state) => state.currentportalname);
   const notificationCount = useSelector((state) => state.notificationcount);
+
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [roleId, setRoleId] = useState(null);
@@ -48,6 +54,7 @@ export default function PortalMenu() {
   const handlePlacementButton = () => {
     dispatch(storePortalMenuStatus(false));
     dispatch(storeLogoutMenuStatus(false));
+    dispatch(storeCurrentPortalName("placement"));
     if (roleId === 3) {
       navigate("/placementregister");
     } else {
@@ -58,6 +65,7 @@ export default function PortalMenu() {
   const handleLmsClick = () => {
     dispatch(storePortalMenuStatus(false));
     dispatch(storeLogoutMenuStatus(false));
+    dispatch(storeCurrentPortalName("lms"));
     if (roleId === 3) {
       const defaultCourseName = localStorage.getItem("defaultCourseName");
       localStorage.setItem("selectedCourseName", defaultCourseName);
@@ -73,6 +81,7 @@ export default function PortalMenu() {
   const handleInterviewClick = () => {
     dispatch(storePortalMenuStatus(false));
     dispatch(storeLogoutMenuStatus(false));
+    dispatch(storeCurrentPortalName("interview"));
     if (roleId === 3) {
       navigate(`/assessments`);
     } else {
@@ -136,7 +145,11 @@ export default function PortalMenu() {
       >
         <div className="common_portalmenu_menuInnerContainer">
           <div
-            className="common_portalmenu_menuItemContainer"
+            className={
+              currentPortalName === "placement"
+                ? "common_portalmenu_activemenuItemContainer"
+                : "common_portalmenu_menuItemContainer"
+            }
             onClick={handlePlacementButton}
           >
             <img src={Placement} style={{ width: "34px" }} />
@@ -164,8 +177,14 @@ export default function PortalMenu() {
           </div>
 
           <div
-            className="portallayout_menuItemContainer"
-            style={{ width: "84px" }}
+            className={
+              currentPortalName === "lms"
+                ? "common_portalmenu_activemenuItemContainer"
+                : "common_portalmenu_menuItemContainer"
+            }
+            style={{
+              width: "84px",
+            }}
             onClick={handleLmsClick}
           >
             <img src={LMS} style={{ width: "34px" }} />
@@ -176,7 +195,11 @@ export default function PortalMenu() {
           </div>
 
           <div
-            className="common_portalmenu_menuItemContainer"
+            className={
+              currentPortalName === "interview"
+                ? "common_portalmenu_activemenuItemContainer"
+                : "common_portalmenu_menuItemContainer"
+            }
             onClick={handleInterviewClick}
           >
             <img src={Interview} className="common_portalmenu_menuImage" />

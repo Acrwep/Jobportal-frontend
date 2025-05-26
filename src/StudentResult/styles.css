@@ -33,6 +33,9 @@
   margin: 0px !important;
 }
 /* result styles */
+.assesmntresult_collapse {
+  margin-top: 20px;
+}
 .assesmntresult_collapse .ant-collapse-header-text {
   font-weight: 600 !important;
 }

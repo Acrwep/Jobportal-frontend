@@ -30,6 +30,7 @@ import Interview from "../images/meeting.png";
 import { MdOutlineLogout } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  storeCurrentPortalName,
   storeLogoutMenuStatus,
   storeNotificationCount,
   storePortalMenuStatus,
@@ -58,6 +59,7 @@ const MainSideMenu = () => {
   const dispatch = useDispatch();
   const portalMenu = useSelector((state) => state.portalmenu);
   const logoutMenu = useSelector((state) => state.logoutmenu);
+  const currentPortalName = useSelector((state) => state.currentportalname);
   const notificationCount = useSelector((state) => state.notificationcount);
 
   const [showPages, setShowPages] = useState(false);
@@ -226,6 +228,30 @@ const MainSideMenu = () => {
     };
   }, []);
 
+  useEffect(() => {
+    //the code below highlights the active portal even after a refresh
+    const pathName = location.pathname.split("/")[1];
+
+    if (
+      pathName === "placementregister" ||
+      pathName === "profiles" ||
+      pathName === "search" ||
+      pathName === "favorites" ||
+      pathName === "foldermanagement" ||
+      pathName === "folderprofiles" ||
+      pathName === "profiledetails"
+    ) {
+      dispatch(storeCurrentPortalName("placement"));
+    } else if (
+      pathName === "assessments" ||
+      pathName === "assessment-results"
+    ) {
+      dispatch(storeCurrentPortalName("interview"));
+    } else {
+      dispatch(storeCurrentPortalName("lms"));
+    }
+  }, []);
+
   const checkCandidate = async (email) => {
     try {
       const response = await checkCandidateRegisteredInPlacement(email);
@@ -268,6 +294,7 @@ const MainSideMenu = () => {
 
   const handlePlacementButton = () => {
     setShowPages(true);
+    dispatch(storeCurrentPortalName("placement"));
     dispatch(storePortalMenuStatus(false));
     dispatch(storeLogoutMenuStatus(false));
     if (roleId === 3) {
@@ -283,6 +310,7 @@ const MainSideMenu = () => {
   const handleLmsClick = () => {
     setShowPages(false);
     setShowSideBar(true);
+    dispatch(storeCurrentPortalName("lms"));
     dispatch(storePortalMenuStatus(false));
     dispatch(storeLogoutMenuStatus(false));
     if (roleId === 3) {
@@ -304,6 +332,7 @@ const MainSideMenu = () => {
   const handleInterviewClick = () => {
     setShowPages(false);
     setShowSideBar(true);
+    dispatch(storeCurrentPortalName("interview"));
     dispatch(storePortalMenuStatus(false));
     dispatch(storeLogoutMenuStatus(false));
     if (roleId === 3) {
@@ -462,8 +491,16 @@ const MainSideMenu = () => {
                   >
                     <div className="portallayout_menuInnerContainer">
                       <div
-                        className="portallayout_menuItemContainer"
-                        onClick={handlePlacementButton}
+                        className={
+                          currentPortalName === "placement"
+                            ? "portallayout_activemenuItemContainer"
+                            : "portallayout_menuItemContainer"
+                        }
+                        onClick={
+                          currentPortalName === "placement"
+                            ? () => console.log("clicked active portal")
+                            : handlePlacementButton
+                        }
                       >
                         <img src={Placement} style={{ width: "34px" }} />
                         <p className="portallayout_menuname">
@@ -489,9 +526,19 @@ const MainSideMenu = () => {
                       </div>
 
                       <div
-                        className="portallayout_menuItemContainer"
-                        style={{ width: "84px" }}
-                        onClick={handleLmsClick}
+                        className={
+                          currentPortalName === "lms"
+                            ? "portallayout_activemenuItemContainer"
+                            : "portallayout_menuItemContainer"
+                        }
+                        style={{
+                          width: "84px",
+                        }}
+                        onClick={
+                          currentPortalName === "lms"
+                            ? () => console.log("clicked active portal")
+                            : handleLmsClick
+                        }
                       >
                         <img src={LMS} style={{ width: "34px" }} />
                         <p className="portallayout_menuname">
@@ -501,8 +548,16 @@ const MainSideMenu = () => {
                       </div>
 
                       <div
-                        className="portallayout_menuItemContainer"
-                        onClick={handleInterviewClick}
+                        className={
+                          currentPortalName === "interview"
+                            ? "portallayout_activemenuItemContainer"
+                            : "portallayout_menuItemContainer"
+                        }
+                        onClick={
+                          currentPortalName === "interview"
+                            ? () => console.log("clicked active portal")
+                            : handleInterviewClick
+                        }
                       >
                         <img
                           src={Interview}

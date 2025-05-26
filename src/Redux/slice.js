@@ -2,6 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = [];
 
+const currentPortalName = "";
+const currentPortalNameSlice = createSlice({
+  name: "currentportalname",
+  initialState: currentPortalName,
+  reducers: {
+    storeCurrentPortalName(state, action) {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
 const folderProfilesSlice = createSlice({
   name: "folderprofiles",
   initialState,
@@ -139,6 +151,7 @@ const notificationCountSlice = createSlice({
   },
 });
 
+export const { storeCurrentPortalName } = currentPortalNameSlice.actions;
 export const { storeFolderProfiles } = folderProfilesSlice.actions;
 export const { storePortalMenuStatus } = portalMenuStatusSlice.actions;
 export const { storeLogoutMenuStatus } = logoutMenuStatusSlice.actions;
@@ -152,6 +165,7 @@ export const { storeCompanyVideos } = companyVideosSlice.actions;
 export const { storeCompanyDocuments } = companyDocumentsSlice.actions;
 export const { storeNotificationCount } = notificationCountSlice.actions;
 
+export const currentPortalNameReducer = currentPortalNameSlice.reducer;
 export const folderProfilesReducer = folderProfilesSlice.reducer;
 export const portalMenuStatusReducer = portalMenuStatusSlice.reducer;
 export const logoutMenuStatusReducer = logoutMenuStatusSlice.reducer;

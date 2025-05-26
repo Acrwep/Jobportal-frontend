@@ -148,6 +148,7 @@ export default function Courses() {
           courseId={courseId}
           topicid={activeTopicTabId}
           trainer_id={trainerId}
+          roleId={roleId}
         />
       ),
     },
@@ -160,6 +161,7 @@ export default function Courses() {
           courseId={courseId}
           topicid={activeTopicTabId}
           trainer_id={trainerId}
+          roleId={roleId}
         />
       ),
     },
@@ -169,12 +171,16 @@ export default function Courses() {
     {
       key: "1",
       label: "Videos",
-      children: <InterviewVideos companyLoading={companyLoading} />,
+      children: (
+        <InterviewVideos companyLoading={companyLoading} roleId={roleId} />
+      ),
     },
     {
       key: "2",
       label: "Documents",
-      children: <InterviewDocuments companyLoading={companyLoading} />,
+      children: (
+        <InterviewDocuments companyLoading={companyLoading} roleId={roleId} />
+      ),
     },
   ];
 
@@ -1134,7 +1140,7 @@ export default function Courses() {
 
               <div className="courses_interprepration_container">
                 <p className="courses_interprepration_heading">
-                  Interview Preparation
+                  Company Based Interview Preparation
                 </p>
 
                 <Row gutter={30}>
@@ -1255,22 +1261,26 @@ export default function Courses() {
                                 <p>{item.name}</p>
                               </div>
 
-                              <div className="courses_topics_editanddeleteiconContainer">
-                                <AiTwotoneEdit
-                                  size={18}
-                                  className="courses_topics_editanddeleteicon"
-                                  onClick={() => handleTopicEdit(item)}
-                                />
-                                <RiDeleteBinLine
-                                  size={18}
-                                  color="#d32215"
-                                  className="courses_topics_editanddeleteicon"
-                                  onClick={() => {
-                                    setDeleteTopicId(item.id);
-                                    setTopicDeleteModal(true);
-                                  }}
-                                />
-                              </div>
+                              {roleId === 1 || roleId === 2 ? (
+                                <div className="courses_topics_editanddeleteiconContainer">
+                                  <AiTwotoneEdit
+                                    size={18}
+                                    className="courses_topics_editanddeleteicon"
+                                    onClick={() => handleTopicEdit(item)}
+                                  />
+                                  <RiDeleteBinLine
+                                    size={18}
+                                    color="#d32215"
+                                    className="courses_topics_editanddeleteicon"
+                                    onClick={() => {
+                                      setDeleteTopicId(item.id);
+                                      setTopicDeleteModal(true);
+                                    }}
+                                  />
+                                </div>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           </React.Fragment>
                         );

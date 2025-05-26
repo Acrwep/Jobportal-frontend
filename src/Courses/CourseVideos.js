@@ -18,7 +18,7 @@ import {
   storeTrainersList,
 } from "../Redux/slice";
 
-export default function CourseVideos({ courseId, topicid, loading }) {
+export default function CourseVideos({ courseId, topicid, roleId, loading }) {
   const dispatch = useDispatch();
   const courseVideos = useSelector((state) => state.coursevideos);
   const trainerId = useSelector((state) => state.trainerid);
@@ -164,17 +164,21 @@ export default function CourseVideos({ courseId, topicid, loading }) {
                         </div>
                         <div className="courses_videotitle_container">
                           <p className="courses_videotitle">{item.title}</p>
-                          <RiDeleteBinLine
-                            size={18}
-                            className="courses_videodelete_icon"
-                            onClick={() => {
-                              setVideoId(item.id);
-                              setVideoName(item.filename);
-                              console.log("eeeeeeeeeeeeeeeeeeeee");
+                          {roleId === 1 || roleId === 2 ? (
+                            <RiDeleteBinLine
+                              size={18}
+                              className="courses_videodelete_icon"
+                              onClick={() => {
+                                setVideoId(item.id);
+                                setVideoName(item.filename);
+                                console.log("eeeeeeeeeeeeeeeeeeeee");
 
-                              setDeleteModal(true);
-                            }}
-                          />
+                                setDeleteModal(true);
+                              }}
+                            />
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </Col>
                     )}

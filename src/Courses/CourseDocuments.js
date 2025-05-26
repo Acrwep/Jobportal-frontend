@@ -26,7 +26,12 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
-export default function CourseDocuments({ courseId, topicid, loading }) {
+export default function CourseDocuments({
+  courseId,
+  topicid,
+  roleId,
+  loading,
+}) {
   const dispatch = useDispatch();
   const containerRef = useRef(null);
   const courseDocuments = useSelector((state) => state.coursedocuments);
@@ -192,14 +197,18 @@ export default function CourseDocuments({ courseId, topicid, loading }) {
                               setIsOpen(true);
                             }}
                           />
-                          <RiDeleteBinLine
-                            size={20}
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              setSelectedDocumentId(item.id);
-                              setDeleteModal(true);
-                            }}
-                          />
+                          {roleId === 1 || roleId === 2 ? (
+                            <RiDeleteBinLine
+                              size={20}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                setSelectedDocumentId(item.id);
+                                setDeleteModal(true);
+                              }}
+                            />
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </div>
                     </Col>

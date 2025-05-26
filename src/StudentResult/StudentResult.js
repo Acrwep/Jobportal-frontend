@@ -162,6 +162,7 @@ export default function StudentResult() {
 
   return (
     <div>
+      <p className="portal_mainheadings">Result</p>
       {loading ? (
         <Loader />
       ) : (

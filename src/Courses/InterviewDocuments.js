@@ -23,7 +23,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
-export default function InterviewDocuments({ companyLoading }) {
+export default function InterviewDocuments({ roleId, companyLoading }) {
   const dispatch = useDispatch();
   const containerRef = useRef(null);
   const companyId = useSelector((state) => state.companyid);
@@ -196,14 +196,18 @@ export default function InterviewDocuments({ companyLoading }) {
                               setIsOpen(true);
                             }}
                           />
-                          <RiDeleteBinLine
-                            size={20}
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              setSelectedDocumentId(item.id);
-                              setDeleteModal(true);
-                            }}
-                          />
+                          {roleId === 1 || roleId === 2 ? (
+                            <RiDeleteBinLine
+                              size={20}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                setSelectedDocumentId(item.id);
+                                setDeleteModal(true);
+                              }}
+                            />
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </div>
                     </Col>

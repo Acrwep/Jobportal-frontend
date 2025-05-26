@@ -13,7 +13,7 @@ import Loader from "../Common/Loader";
 import { MdDelete } from "react-icons/md";
 import { storeCompanyList, storeCompanyVideos } from "../Redux/slice";
 
-export default function InterviewVideos({ companyLoading }) {
+export default function InterviewVideos({ roleId, companyLoading }) {
   const API_URL = process.env.REACT_APP_API_URL;
   const dispatch = useDispatch();
   const companyVideos = useSelector((state) => state.companyvideos);
@@ -153,15 +153,19 @@ export default function InterviewVideos({ companyLoading }) {
                         </div>
                         <div className="courses_videotitle_container">
                           <p className="courses_videotitle">{item.title}</p>
-                          <RiDeleteBinLine
-                            size={18}
-                            className="courses_videodelete_icon"
-                            onClick={() => {
-                              setVideoId(item.id);
-                              setVideoName(item.filename);
-                              setDeleteModal(true);
-                            }}
-                          />
+                          {roleId === 1 || roleId === 2 ? (
+                            <RiDeleteBinLine
+                              size={18}
+                              className="courses_videodelete_icon"
+                              onClick={() => {
+                                setVideoId(item.id);
+                                setVideoName(item.filename);
+                                setDeleteModal(true);
+                              }}
+                            />
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </Col>
                     )}
