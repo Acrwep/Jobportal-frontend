@@ -25,10 +25,15 @@ import { Button, Layout, Avatar, theme, Divider } from "antd";
 import OnlineTest from "../Interview/OnlineTest";
 import { TbGridDots } from "react-icons/tb";
 import Placement from "../images/hiring-black.png";
-import Interview from "../images/interview-black.png";
+import LMS from "../images/study.png";
+import Interview from "../images/meeting.png";
 import { MdOutlineLogout } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { storeLogoutMenuStatus, storePortalMenuStatus } from "../Redux/slice";
+import {
+  storeLogoutMenuStatus,
+  storeNotificationCount,
+  storePortalMenuStatus,
+} from "../Redux/slice";
 import TestInvite from "../Interview/TestInvite";
 import TestExpired from "../Interview/TestExpired";
 import Result from "../Interview/Result";
@@ -36,8 +41,15 @@ import Users from "../Users/Users";
 import Candidates from "../Users/Candidates";
 import Courses from "../Courses/Courses";
 import SidebarLogo from "../images/old-acte-logo.png";
-import { getCourses } from "../Common/action";
+import {
+  checkCandidateRegisteredInPlacement,
+  getAssessmentLinks,
+  getCourses,
+} from "../Common/action";
 import StudentResult from "../StudentResult/StudentResult";
+import { PiWarningCircleBold } from "react-icons/pi";
+import { FaRegCheckCircle } from "react-icons/fa";
+import Assessments from "../StudentResult/Assessments";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
@@ -46,12 +58,15 @@ const MainSideMenu = () => {
   const dispatch = useDispatch();
   const portalMenu = useSelector((state) => state.portalmenu);
   const logoutMenu = useSelector((state) => state.logoutmenu);
+  const notificationCount = useSelector((state) => state.notificationcount);
 
   const [showPages, setShowPages] = useState(false);
   const [showSideBar, setShowSideBar] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [placmentStatus, setPlacementStatus] = useState(false);
+  const [roleId, setRoleId] = useState(null);
 
   useEffect(() => {
     // const handleStorageUpdate = () => {
@@ -60,10 +75,13 @@ const MainSideMenu = () => {
     const loginDetails = localStorage.getItem("loginDetails");
     const loginDetailsJson = JSON.parse(loginDetails);
     const selectedCourseName = localStorage.getItem("selectedCourseName");
+    console.log("selected course name", selectedCourseName);
 
     if (loginDetailsJson) {
       setUserName(loginDetailsJson.name);
       setUserEmail(loginDetailsJson.email);
+      setRoleId(loginDetailsJson.role_id);
+      checkCandidate(loginDetailsJson.email);
     }
 
     if (accessToken) {
@@ -140,16 +158,25 @@ const MainSideMenu = () => {
         setShowPages(false);
         setShowSideBar(true);
       }
+
+      if (location.pathname === "/placementregister") {
+        navigate("/placementregister");
+        setShowPages(false);
+        setShowSideBar(false);
+      }
     } else {
-      if (location.pathname === "/register") {
+      if (location.pathname === "/placementregister") {
+        navigate("/placementregister");
+        setShowPages(false);
+        setShowSideBar(false);
+      } else if (location.pathname === "/register") {
         navigate("/register");
         setShowPages(false);
-      } else if (location.pathname === "/lmsregister") {
-        navigate("/lmsregister");
-        setShowPages(false);
+        setShowSideBar(false);
       } else if (location.pathname === "/portal") {
         navigate("/portal");
         setShowPages(false);
+        setShowSideBar(false);
       } else if (location.pathname === "/online-test") {
         navigate("/online-test");
         setShowPages(false);
@@ -199,6 +226,36 @@ const MainSideMenu = () => {
     };
   }, []);
 
+  const checkCandidate = async (email) => {
+    try {
+      const response = await checkCandidateRegisteredInPlacement(email);
+      console.log("check candidate registed in placement", response);
+      const status = response?.data?.data || false;
+      localStorage.setItem("checkCandidateRegisteredInPlacement", status);
+      setPlacementStatus(status);
+    } catch (error) {
+      console.log("check candidate", error);
+    } finally {
+      setTimeout(() => {
+        getAssessmentLinkData();
+      }, 300);
+    }
+  };
+
+  const getAssessmentLinkData = async () => {
+    const loginuserId = localStorage.getItem("loginUserId");
+    try {
+      const response = await getAssessmentLinks(loginuserId);
+      console.log("assesmnt link response", response);
+      const data = response?.data?.data || null;
+      if (data) {
+        dispatch(storeNotificationCount(data?.unread_count));
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -207,6 +264,53 @@ const MainSideMenu = () => {
     console.log(portalMenu);
     dispatch(storePortalMenuStatus(!portalMenu));
     dispatch(storeLogoutMenuStatus(false));
+  };
+
+  const handlePlacementButton = () => {
+    setShowPages(true);
+    dispatch(storePortalMenuStatus(false));
+    dispatch(storeLogoutMenuStatus(false));
+    if (roleId === 3) {
+      setShowPages(false);
+      setShowSideBar(false);
+      navigate("/placementregister");
+    } else {
+      console.log("adddddd", roleId);
+      navigate("/search");
+    }
+  };
+
+  const handleLmsClick = () => {
+    setShowPages(false);
+    setShowSideBar(true);
+    dispatch(storePortalMenuStatus(false));
+    dispatch(storeLogoutMenuStatus(false));
+    if (roleId === 3) {
+      setShowPages(false);
+      setShowSideBar(true);
+      const defaultCourseName = localStorage.getItem("defaultCourseName");
+      localStorage.setItem("selectedCourseName", defaultCourseName);
+
+      const defaultCourseId = localStorage.getItem("defaultCourseId");
+      localStorage.setItem("selectedCourseId", defaultCourseId);
+      navigate(`/courses`);
+    } else {
+      setShowPages(false);
+      setShowSideBar(true);
+      navigate("/question-upload");
+    }
+  };
+
+  const handleInterviewClick = () => {
+    setShowPages(false);
+    setShowSideBar(true);
+    dispatch(storePortalMenuStatus(false));
+    dispatch(storeLogoutMenuStatus(false));
+    if (roleId === 3) {
+      navigate(`/assessments`);
+    } else {
+      navigate("/question-upload");
+    }
   };
 
   const handleLogoutMenu = () => {
@@ -227,13 +331,13 @@ const MainSideMenu = () => {
         <Routes>
           <Route path="/login" element={<LmsLogin />} />
         </Routes>
+      ) : location.pathname === "/placementregister" ? (
+        <Routes>
+          <Route path="/placementregister" element={<CandidateRegister />} />
+        </Routes>
       ) : location.pathname === "/register" ? (
         <Routes>
-          <Route path="/register" element={<CandidateRegister />} />
-        </Routes>
-      ) : location.pathname === "/lmsregister" ? (
-        <Routes>
-          <Route path="/lmsregister" element={<Register />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       ) : location.pathname === "/portal" ? (
         <Routes>
@@ -324,6 +428,7 @@ const MainSideMenu = () => {
                       display: "flex",
                       gap: "16px",
                       alignItems: "center",
+                      position: "relative",
                     }}
                   >
                     <button
@@ -331,6 +436,14 @@ const MainSideMenu = () => {
                       className="portallayout_headermenubutton"
                     >
                       <TbGridDots size={20} />
+
+                      {notificationCount >= 1 && roleId === 3 ? (
+                        <div className="portallayout_notificationCount_container">
+                          <p>{notificationCount}</p>
+                        </div>
+                      ) : (
+                        ""
+                      )}
                     </button>
 
                     <button
@@ -350,32 +463,63 @@ const MainSideMenu = () => {
                     <div className="portallayout_menuInnerContainer">
                       <div
                         className="portallayout_menuItemContainer"
-                        onClick={() => {
-                          setShowPages(true);
-                          dispatch(storePortalMenuStatus(false));
-                          dispatch(storeLogoutMenuStatus(false));
-                          navigate("/search");
-                        }}
+                        onClick={handlePlacementButton}
                       >
                         <img src={Placement} style={{ width: "34px" }} />
-                        <p className="portallayout_menuname">Placement</p>
+                        <p className="portallayout_menuname">
+                          Placement <br />
+                          Portal
+                        </p>
+
+                        {roleId === 3 && (
+                          <>
+                            {placmentStatus === true ? (
+                              <FaRegCheckCircle
+                                color="#52c41a"
+                                className="portalmenu_placementStatusIcon"
+                              />
+                            ) : (
+                              <PiWarningCircleBold
+                                color="#faad14"
+                                className="portalmenu_placementStatusIcon"
+                              />
+                            )}
+                          </>
+                        )}
                       </div>
 
                       <div
                         className="portallayout_menuItemContainer"
-                        onClick={() => {
-                          setShowPages(false);
-                          setShowSideBar(true);
-                          dispatch(storePortalMenuStatus(false));
-                          dispatch(storeLogoutMenuStatus(false));
-                          navigate("/question-upload");
-                        }}
+                        style={{ width: "84px" }}
+                        onClick={handleLmsClick}
+                      >
+                        <img src={LMS} style={{ width: "34px" }} />
+                        <p className="portallayout_menuname">
+                          LMS <br />
+                          Portal
+                        </p>
+                      </div>
+
+                      <div
+                        className="portallayout_menuItemContainer"
+                        onClick={handleInterviewClick}
                       >
                         <img
                           src={Interview}
                           className="portallayout_menuImage"
                         />
-                        <p className="portallayout_menunametwo">Interview</p>
+                        <p className="portallayout_menunametwo">
+                          Interview
+                          <br />
+                          Portal
+                        </p>
+                        {notificationCount >= 1 && roleId === 3 ? (
+                          <div className="portallayout_interviewportal_notificationCount_container">
+                            <p>{notificationCount}</p>
+                          </div>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </div>
                   </div>
@@ -440,6 +584,7 @@ const MainSideMenu = () => {
                     <Route element={<Users />} path="/users" />
                     <Route element={<Candidates />} path="/candidates" />
                     <Route element={<Courses />} path="/courses/:courseName" />
+                    <Route element={<Assessments />} path="/assessments" />
                     <Route
                       element={<StudentResult />}
                       path="/assessment-results"

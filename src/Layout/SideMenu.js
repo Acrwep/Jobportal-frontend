@@ -14,12 +14,15 @@ import { BsBarChartLine, BsCloudArrowDown } from "react-icons/bs";
 import { CiBullhorn } from "react-icons/ci";
 import { GrNotes } from "react-icons/gr";
 import { getCourseByTrainers, getCourses } from "../Common/action";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 export default function SideMenu() {
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedKey, setSelectedKey] = useState("");
   const [menuItems, setMenuItems] = useState([]);
+  const [isInterviewPortal, setIsInterviewPortal] = useState(false);
+  const [interviewPortalMenu, setInterviewPortalMenu] = useState([]);
 
   useEffect(() => {
     const pathName = location.pathname.split("/")[1];
@@ -35,6 +38,25 @@ export default function SideMenu() {
       7: "digitalmarketing",
     };
 
+    if (pathName === "assessments" || pathName === "assessment-results") {
+      setIsInterviewPortal(true);
+      setSelectedKey(pathName);
+      setInterviewPortalMenu([
+        {
+          key: "assessments",
+          icon: <FaExternalLinkAlt size={17} />,
+          label: "Assessments",
+        },
+        {
+          key: "assessment-results",
+          icon: <GrNotes size={17} />,
+          label: "Result",
+        },
+      ]);
+      return;
+    }
+    setIsInterviewPortal(false);
+    setInterviewPortalMenu([]);
     if (pathName === "") {
       setSelectedKey("question-upload");
     }
@@ -153,19 +175,12 @@ export default function SideMenu() {
               children: courseSubItems,
             });
           } else {
-            defaultItems.push(
-              {
-                key: "courses",
-                label: "Courses",
-                icon: <MdMenuBook size={17} />,
-                children: courseSubItems,
-              },
-              {
-                key: "assessment-results",
-                icon: <GrNotes size={17} />,
-                label: "Result",
-              }
-            );
+            defaultItems.push({
+              key: "courses",
+              label: "Courses",
+              icon: <MdMenuBook size={17} />,
+              children: courseSubItems,
+            });
           }
         }
 
@@ -247,6 +262,11 @@ export default function SideMenu() {
   };
 
   const handleMenuClick = ({ key }) => {
+    if (isInterviewPortal) {
+      setSelectedKey(key);
+      navigate(`/${key}`);
+      return;
+    }
     const findItem = (items) => {
       for (let item of items) {
         if (item.key === key) return item;
@@ -284,7 +304,7 @@ export default function SideMenu() {
       selectedKeys={[selectedKey]}
       defaultOpenKeys={["courses"]}
       onClick={handleMenuClick}
-      items={menuItems}
+      items={isInterviewPortal ? interviewPortalMenu : menuItems}
     />
   );
 }

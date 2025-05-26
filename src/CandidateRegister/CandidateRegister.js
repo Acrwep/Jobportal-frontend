@@ -3,12 +3,26 @@ import "./styles.css";
 import CommonInputField from "../Common/CommonInputField";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import CommonSelectField from "../Common/CommonSelectField";
-import { Row, Col, Button, Checkbox, Divider, Upload, Input, Spin } from "antd";
+import {
+  Row,
+  Col,
+  Button,
+  Checkbox,
+  Divider,
+  Upload,
+  Input,
+  Spin,
+  Avatar,
+} from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import CommonDatePicker from "../Common/CommonDatePicker";
 import { AiOutlineDelete } from "react-icons/ai";
 import Actelogo from "../images/acte-logo.png";
+import { TbGridDots } from "react-icons/tb";
+import { FaRegCheckCircle } from "react-icons/fa";
+import { PiWarningCircleBold } from "react-icons/pi";
 import { BsPatchCheckFill } from "react-icons/bs";
+import { MdOutlineLogout } from "react-icons/md";
 import cardImage from "../images/registrationimage.png";
 import {
   nameValidator,
@@ -25,6 +39,10 @@ import { CloudUploadOutlined } from "@ant-design/icons";
 import { Country, State, City } from "country-state-city";
 import { candidateRegistration, getCourses } from "../Common/action";
 import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
+import { storeLogoutMenuStatus, storePortalMenuStatus } from "../Redux/slice";
+import { useNavigate } from "react-router-dom";
+import PortalMenu from "../Common/PortalMenu";
 
 export default function CandidateRegister() {
   const api = axios.create({
@@ -51,6 +69,7 @@ export default function CandidateRegister() {
   };
   const { TextArea } = Input;
   const { Dragger } = Upload;
+  const dispatch = useDispatch();
   const [pageSection, setPageSection] = useState(1);
   //contact info usestates
   const [firstName, setFirstName] = useState("");
@@ -873,16 +892,19 @@ export default function CandidateRegister() {
             <img src={Actelogo} className="candidateregister_actelogo" />
           </Col>
           <Col span={12} className="candidate_headertextContainer">
-            <p
-              className="candidate_headerheading"
-              style={{ color: "#0056b3", fontWeight: "500" }}
-            >
-              Register here
-            </p>
+            <PortalMenu />
           </Col>
         </Row>
       </div>
-      <div className="candidate_maincontainer" id="candidate_maincontainer">
+
+      <div
+        className="candidate_maincontainer"
+        id="candidate_maincontainer"
+        onClick={() => {
+          dispatch(storePortalMenuStatus(false));
+          dispatch(storeLogoutMenuStatus(false));
+        }}
+      >
         <Row>
           <Col
             xs={0}

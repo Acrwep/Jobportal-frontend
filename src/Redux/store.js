@@ -11,6 +11,7 @@ import {
   companyListReducer,
   companyVideosReducer,
   companyDocumentsReducer,
+  notificationCountReducer,
 } from "./slice";
 
 export const store = configureStore({
@@ -27,5 +28,6 @@ export const store = configureStore({
     companylist: companyListReducer,
     companyvideos: companyVideosReducer,
     companydocuments: companyDocumentsReducer,
+    notificationcount: notificationCountReducer,
   },
 });

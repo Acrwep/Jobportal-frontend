@@ -127,6 +127,18 @@ const companyListSlice = createSlice({
   },
 });
 
+const notificationCount = null;
+const notificationCountSlice = createSlice({
+  name: "notificationcount",
+  initialState: notificationCount,
+  reducers: {
+    storeNotificationCount(state, action) {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
 export const { storeFolderProfiles } = folderProfilesSlice.actions;
 export const { storePortalMenuStatus } = portalMenuStatusSlice.actions;
 export const { storeLogoutMenuStatus } = logoutMenuStatusSlice.actions;
@@ -138,6 +150,7 @@ export const { storeTrainersList } = trainersListSlice.actions;
 export const { storeCompanyList } = companyListSlice.actions;
 export const { storeCompanyVideos } = companyVideosSlice.actions;
 export const { storeCompanyDocuments } = companyDocumentsSlice.actions;
+export const { storeNotificationCount } = notificationCountSlice.actions;
 
 export const folderProfilesReducer = folderProfilesSlice.reducer;
 export const portalMenuStatusReducer = portalMenuStatusSlice.reducer;
@@ -150,3 +163,4 @@ export const trainersListReducer = trainersListSlice.reducer;
 export const companyListReducer = companyListSlice.reducer;
 export const companyVideosReducer = companyVideosSlice.reducer;
 export const companyDocumentsReducer = companyDocumentsSlice.reducer;
+export const notificationCountReducer = notificationCountSlice.reducer;

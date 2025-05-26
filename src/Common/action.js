@@ -270,6 +270,14 @@ export const createAdmin = async (payload) => {
   }
 };
 
+export const checkCandidateRegisteredInPlacement = async (email) => {
+  try {
+    const response = await api.get(`/api/checkCandidate?email=${email}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 // get role api
 export const getRoles = async (payload) => {
   try {
@@ -543,6 +551,27 @@ export const deleteCompanyVideosAndDocuments = async (payload) => {
     const response = await api.delete("/api/deleteCompanyContent", {
       params: payload,
     });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//assessment link api
+export const getAssessmentLinks = async (candidateId) => {
+  try {
+    const response = await api.get(
+      `/api/getTestLinkByUser?user_id=${candidateId}`
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const readTestLink = async (linkId) => {
+  try {
+    const response = await api.put(`/api/readTestLink?id=${linkId}`);
     return response;
   } catch (error) {
     throw error;

@@ -70,23 +70,3 @@
   border-color: #0056b3 !important;
   color: #0056b3 !important;
 }
-.placementheader_menuContainer {
-  background-color: #fff;
-  position: absolute;
-  top: 130%;
-  right: 0px;
-  z-index: 99;
-  border-radius: 9px;
-  padding: 9px 22px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-}
-.placementheader_logoutmenuContainer {
-  background-color: #fff;
-  position: absolute;
-  width: 250px;
-  top: 130%;
-  right: 0px;
-  z-index: 99;
-  border-radius: 14px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-}

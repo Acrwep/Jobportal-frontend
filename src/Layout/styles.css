@@ -66,13 +66,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  outline: none !important;
 }
 .portallayout_headermenubutton:hover {
   color: black !important;
   background-color: #e1e1e1;
+  outline: none !important;
 }
 .portallayout_headermenubutton:focus-visible {
-  outline: 0 !important;
+  outline: none !important;
 }
 .portallayout_headeravatarbutton {
   background-color: transparent;
@@ -83,7 +85,7 @@
   background-color: #fff;
   position: absolute;
   top: 130%;
-  right: 2px;
+  right: 20px;
   z-index: 99;
   border-radius: 9px;
   padding: 9px 22px;
@@ -100,6 +102,7 @@
   padding: 8px;
   border-radius: 9px;
   cursor: pointer;
+  position: relative;
 }
 .portallayout_menuItemContainer:hover {
   background-color: #eaf1f9;
@@ -112,18 +115,25 @@
   margin-top: 4px !important;
   font-size: 13px;
   line-height: 20px !important;
+  text-align: center;
 }
 .portallayout_menunametwo {
   margin-top: 6px !important;
   font-size: 13px;
   line-height: 20px !important;
+  text-align: center;
+}
+.portalmenu_placementStatusIcon {
+  position: absolute;
+  top: 5%;
+  right: 16px;
 }
 .portallayout_logoutmenuContainer {
   background-color: #fff;
   position: absolute;
   width: 250px;
   top: 130%;
-  right: 2px;
+  right: 20px;
   z-index: 99;
   border-radius: 14px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
@@ -148,6 +158,7 @@
   display: flex;
   padding: 12px 22px;
   cursor: pointer;
+  border-bottom-right-radius: 9px;
 }
 .logoutmenu_button {
   background-color: transparent;
@@ -162,4 +173,32 @@
 }
 .portalsidebar_coursesicon {
   width: 17px;
+}
+.portallayout_notificationCount_container {
+  position: absolute;
+  top: 5px;
+  left: 25px;
+  background-color: #cb112d;
+  font-weight: 500;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 1px 7px;
+  justify-content: center;
+  border-radius: 50%;
+}
+.portallayout_interviewportal_notificationCount_container {
+  position: absolute;
+  top: 3px;
+  right: 8px;
+  background-color: #cb112d;
+  font-weight: 500;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 1px 7px;
+  justify-content: center;
+  border-radius: 50%;
 }

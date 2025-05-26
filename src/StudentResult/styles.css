@@ -1,3 +1,38 @@
+.assessments_mainContainer {
+  display: flex;
+  /* padding: 20px 90px; */
+  margin-top: 20px;
+  flex-direction: column;
+  justify-content: center;
+}
+.assessments_linkContainer {
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  border-radius: 6px;
+  /* margin-bottom: 30px; */
+}
+.assessments_testlinks {
+  color: #0056b3;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.assessments_testlinks:hover {
+  color: #0056b3 !important;
+  text-decoration: underline;
+}
+.assessments_testlinks .assessments_testlinks_seemore {
+  text-decoration: none !important;
+  display: inline-block;
+}
+
+.assessments_timeagotext {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 13px;
+}
+.assessments_linkdivider {
+  margin: 0px !important;
+}
+/* result styles */
 .assesmntresult_collapse .ant-collapse-header-text {
   font-weight: 600 !important;
 }

@@ -205,6 +205,7 @@ export default function Register() {
                     fontWeight: 600,
                     cursor: "pointer",
                   }}
+                  onClick={() => navigate("/login")}
                 >
                   Sign in
                 </span>

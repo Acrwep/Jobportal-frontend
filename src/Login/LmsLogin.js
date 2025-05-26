@@ -85,6 +85,9 @@ export default function LmsLogin() {
         const courseId = allCourses[0].id;
         localStorage.setItem("selectedCourseName", courseName);
         localStorage.setItem("selectedCourseId", courseId);
+
+        localStorage.setItem("defaultCourseName", courseName);
+        localStorage.setItem("defaultCourseId", courseId);
         navigate(`/courses`);
       }
     } catch (error) {
@@ -144,7 +147,7 @@ export default function LmsLogin() {
                     fontWeight: 600,
                     cursor: "pointer",
                   }}
-                  onClick={() => navigate("/lmsregister")}
+                  onClick={() => navigate("/register")}
                 >
                   Sign Up
                 </span>

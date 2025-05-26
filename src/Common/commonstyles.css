@@ -230,3 +230,185 @@
 .common_nodataimage {
   width: 170px;
 }
+
+/* common portal styles */
+.common_portalmenu_headermenubutton {
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  border-radius: 50%;
+  padding: 9px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.common_portalmenu_headermenubutton:hover {
+  color: black !important;
+  background-color: #e1e1e1;
+}
+.common_portalmenu_headermenubutton:focus-visible {
+  outline: 0 !important;
+}
+.common_portal_headeravatarbutton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+.common_portalmenu_avatar {
+  background-color: #0056b3;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.common_portalmenu_placementreg_menuContainer {
+  background-color: #fff;
+  position: absolute;
+  top: 156%;
+  right: 28px;
+  z-index: 99;
+  border-radius: 9px;
+  padding: 9px 22px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+.common_portalmenu_menuContainer {
+  background-color: #fff;
+  position: absolute;
+  top: 142%;
+  right: 0px;
+  z-index: 99;
+  border-radius: 9px;
+  padding: 9px 22px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+.common_portalmenu_menuInnerContainer {
+  display: flex;
+  gap: 19px;
+}
+.common_portalmenu_menuItemContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border-radius: 9px;
+  cursor: pointer;
+  position: relative;
+}
+.common_portalmenu_menuItemContainer:hover {
+  background-color: #eaf1f9;
+}
+.common_portalmenu_menuname {
+  margin-top: 4px !important;
+  font-size: 13px;
+  line-height: 20px !important;
+  text-align: center;
+}
+.common_portalmenu_menunametwo {
+  margin-top: 6px !important;
+  font-size: 13px;
+  line-height: 20px !important;
+  text-align: center;
+}
+.common_portalmenu_placementStatusIcon {
+  position: absolute;
+  top: 5%;
+  right: 16px;
+}
+.common_portalmenu_menuImage {
+  width: 32px;
+}
+.common_portalmenu_menuItemContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border-radius: 9px;
+  cursor: pointer;
+  position: relative;
+}
+.common_portalmenu_menuItemContainer:hover {
+  background-color: #eaf1f9;
+}
+.common_portalmenu_placementreg_logoutmenuContainer {
+  background-color: #fff;
+  position: absolute;
+  width: 260px;
+  top: 156%;
+  right: 28px;
+  z-index: 99;
+  border-radius: 14px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+.common_portalmenu_logoutmenuContainer {
+  background-color: #fff;
+  position: absolute;
+  width: 260px;
+  top: 142%;
+  right: 0px;
+  z-index: 99;
+  border-radius: 14px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+.common_portalmenu_logoutmenuemail {
+  line-height: 22px !important;
+  margin-top: 12px !important;
+  text-align: center;
+  word-break: break-all;
+  font-weight: 400;
+}
+.common_portalmenu_logoutmenu_username {
+  line-height: 22px !important;
+  margin-top: 6px !important;
+  text-align: center;
+  word-break: break-all;
+  font-weight: 400;
+}
+.common_portalmenu_logoutmenu_divider {
+  margin: 0 !important;
+  margin-top: 9px !important;
+}
+.common_portalmenu_logoutmenu_buttonContainer {
+  display: flex;
+  padding: 12px 22px;
+  cursor: pointer;
+  border-bottom-right-radius: 9px;
+}
+.common_portalmenu_logoutmenu_buttonContainer:hover {
+  background-color: #eaf1f9;
+}
+.common_portalmenu_logoutmenu_button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  line-height: 16px !important;
+}
+.common_portalmenu_notificationCount_container {
+  position: absolute;
+  top: 5px;
+  left: 25px;
+  background-color: #cb112d;
+  font-weight: 500;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 1px 7px;
+  justify-content: center;
+  border-radius: 50%;
+}
+.commonportalmenu_interviewportal_notificationCount_container {
+  position: absolute;
+  top: 3px;
+  right: 8px;
+  background-color: #cb112d;
+  font-weight: 500;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 1px 7px;
+  justify-content: center;
+  border-radius: 50%;
+}
