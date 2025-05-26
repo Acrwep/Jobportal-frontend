@@ -25,7 +25,8 @@ export default function Assessments() {
       console.log("link response", response);
       const data = response?.data?.data || null;
       if (data) {
-        setLinkData(data?.links || []);
+        const reverseData = data.links.reverse();
+        setLinkData(reverseData);
         dispatch(storeNotificationCount(data?.unread_count));
       }
     } catch (error) {
@@ -40,6 +41,12 @@ export default function Assessments() {
   const handleSeeMore = (index) => {
     let data = [...linkData];
     data[index].seemore = true;
+    setLinkData(data);
+  };
+
+  const handleSeeLess = (index) => {
+    let data = [...linkData];
+    data[index].seemore = false;
     setLinkData(data);
   };
 
@@ -76,9 +83,6 @@ export default function Assessments() {
                       <Col xs={16} sm={16} md={20} lg={22}>
                         <a
                           className="assessments_testlinks"
-                          style={{
-                            width: item.seemore != true ? "86%" : "100%",
-                          }}
                           href={item.test_link}
                           target="_blank"
                           onClick={() => handleTextLink(item.id)}
@@ -86,21 +90,31 @@ export default function Assessments() {
                           {item.seemore === true
                             ? item.test_link
                             : item.test_link.slice(0, 120)}{" "}
-                          {item.seemore === false || !item.seemore ? (
-                            <span
-                              onClick={() => handleSeeMore(index)}
-                              className="assessments_testlinks_seemore"
-                              style={{
-                                color: "rgba(0,0,0,0.6)",
-                                cursor: "pointer",
-                              }}
-                            >
-                              ...see more
-                            </span>
-                          ) : (
-                            ""
-                          )}
                         </a>
+
+                        {item.seemore === false || !item.seemore ? (
+                          <span
+                            onClick={() => handleSeeMore(index)}
+                            className="assessments_testlinks_seemore"
+                            style={{
+                              color: "rgba(0,0,0,0.6)",
+                              cursor: "pointer",
+                            }}
+                          >
+                            ...see more
+                          </span>
+                        ) : (
+                          <span
+                            onClick={() => handleSeeLess(index)}
+                            className="assessments_testlinks_seemore"
+                            style={{
+                              color: "rgba(0,0,0,0.6)",
+                              cursor: "pointer",
+                            }}
+                          >
+                            ...see less
+                          </span>
+                        )}
                       </Col>
                       <Col
                         xs={8}

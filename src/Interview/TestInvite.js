@@ -13,6 +13,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { CommonToaster } from "../Common/CommonToaster";
 import moment from "moment";
 import { jwtDecode } from "jwt-decode";
+import Loader from "../Common/Loader";
 
 export default function TestInvite() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function TestInvite() {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [validationTrigger, setValidationTrigger] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const today = new Date();
 
@@ -29,8 +31,12 @@ export default function TestInvite() {
     if (isTokenExpired(token)) {
       console.log("Token is expired");
       navigate("/token-unavailable");
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     } else {
       localStorage.setItem("Accesstoken", token);
+      setLoading(false);
       console.log("Token is valid");
     }
   }, []);
@@ -99,126 +105,136 @@ export default function TestInvite() {
   };
 
   return (
-    <div className="testinvite_mainContainer">
-      <Row style={{ height: "84vh" }}>
-        <Col
-          xs={24}
-          sm={24}
-          md={24}
-          lg={12}
-          style={{ borderRight: "1px solid rgba(128, 128, 128, 0.404)" }}
-        >
-          <img src={Actelogo} className="testinvite_logo" />
-          <div style={{ marginTop: "20px" }}>
-            <p className="testinvite_sessionheading">Test Overview</p>
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="testinvite_mainContainer">
+          <Row style={{ height: "84vh" }}>
+            <Col
+              xs={24}
+              sm={24}
+              md={24}
+              lg={12}
+              style={{ borderRight: "1px solid rgba(128, 128, 128, 0.404)" }}
+            >
+              <img src={Actelogo} className="testinvite_logo" />
+              <div style={{ marginTop: "20px" }}>
+                <p className="testinvite_sessionheading">Test Overview</p>
 
-            <div className="testinvite_detailsContainer">
-              <div>
-                <p className="testinvite_detailsheadings">Test Name: </p>
-                <p className="testinvite_detailsheadings">Total Duration: </p>
-                <p className="testinvite_detailsheadings">Date: </p>
-              </div>
+                <div className="testinvite_detailsContainer">
+                  <div>
+                    <p className="testinvite_detailsheadings">Test Name: </p>
+                    <p className="testinvite_detailsheadings">
+                      Total Duration:{" "}
+                    </p>
+                    <p className="testinvite_detailsheadings">Date: </p>
+                  </div>
 
-              <div>
-                <p className="testinvite_detailstext">Online Assessment</p>
-                <p className="testinvite_detailstext">30 Minutes</p>
-                <p className="testinvite_detailstext">
-                  {moment(today).format("DD MMMM YYYY")}
+                  <div>
+                    <p className="testinvite_detailstext">Online Assessment</p>
+                    <p className="testinvite_detailstext">30 Minutes</p>
+                    <p className="testinvite_detailstext">
+                      {moment(today).format("DD MMMM YYYY")}
+                    </p>
+                  </div>
+                </div>
+
+                <p className="testinvite_sectionoverview_heading">
+                  Sections Overview
                 </p>
+
+                <div className="testinvite_detailsContainer">
+                  <div>
+                    <p className="testinvite_sectiontableheading">Section</p>
+                    <p className="testinvite_sectiontabledatas">Section A</p>
+                    <p className="testinvite_sectiontabledatas">Section B</p>
+                  </div>
+
+                  <div>
+                    <p className="testinvite_sectiontableheading">
+                      No. of Questions
+                    </p>
+                    <p className="testinvite_sectiontabledatas">10</p>
+                    <p className="testinvite_sectiontabledatas">10</p>
+                  </div>
+
+                  <div>
+                    <p className="testinvite_sectiontableheading">Time</p>
+                    <p className="testinvite_sectiontabledatas">20</p>
+                    <p className="testinvite_sectiontabledatas">25</p>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <p className="testinvite_sectionoverview_heading">
-              Sections Overview
-            </p>
-
-            <div className="testinvite_detailsContainer">
-              <div>
-                <p className="testinvite_sectiontableheading">Section</p>
-                <p className="testinvite_sectiontabledatas">Section A</p>
-                <p className="testinvite_sectiontabledatas">Section B</p>
-              </div>
-
-              <div>
-                <p className="testinvite_sectiontableheading">
-                  No. of Questions
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={12}>
+              <div className="testinvite_formmainContainer">
+                <p className="testinvite_formheading">
+                  Please fill your details
                 </p>
-                <p className="testinvite_sectiontabledatas">10</p>
-                <p className="testinvite_sectiontabledatas">10</p>
-              </div>
 
-              <div>
-                <p className="testinvite_sectiontableheading">Time</p>
-                <p className="testinvite_sectiontabledatas">20</p>
-                <p className="testinvite_sectiontabledatas">25</p>
-              </div>
-            </div>
-          </div>
-        </Col>
-        <Col xs={24} sm={24} md={24} lg={12}>
-          <div className="testinvite_formmainContainer">
-            <p className="testinvite_formheading">Please fill your details</p>
-
-            <form className="testinvite_formContainer">
-              <div style={{ marginBottom: "22px" }}>
-                <CommonInputField
-                  label="Full Name"
-                  mandatory
-                  value={fullName}
-                  onChange={(e) => {
-                    setFullName(e.target.value);
-                    if (validationTrigger) {
-                      setFullNameError(addressValidator(e.target.value));
-                    }
-                  }}
-                  error={fullNameError}
-                />
-              </div>
-              <div>
-                <CommonInputField
-                  label="Email"
-                  mandatory
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (validationTrigger) {
-                      setEmailError(addressValidator(e.target.value));
-                    }
-                  }}
-                  error={emailError}
-                />
-              </div>
-              <div className="testinvite_formbuttonContainer">
-                {buttonLoading ? (
-                  <button
-                    className="testinvite_formbuttondisable"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <>
-                      <Spin
-                        size="small"
-                        indicator={
-                          <LoadingOutlined
-                            style={{ color: "#ffffff", marginRight: "6px" }}
-                            spin
-                          />
+                <form className="testinvite_formContainer">
+                  <div style={{ marginBottom: "22px" }}>
+                    <CommonInputField
+                      label="Full Name"
+                      mandatory
+                      value={fullName}
+                      onChange={(e) => {
+                        setFullName(e.target.value);
+                        if (validationTrigger) {
+                          setFullNameError(addressValidator(e.target.value));
                         }
-                      />{" "}
-                    </>
-                  </button>
-                ) : (
-                  <button
-                    className="testinvite_formbutton"
-                    onClick={handleSubmit}
-                  >
-                    Start Test
-                  </button>
-                )}
+                      }}
+                      error={fullNameError}
+                    />
+                  </div>
+                  <div>
+                    <CommonInputField
+                      label="Email"
+                      mandatory
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (validationTrigger) {
+                          setEmailError(addressValidator(e.target.value));
+                        }
+                      }}
+                      error={emailError}
+                    />
+                  </div>
+                  <div className="testinvite_formbuttonContainer">
+                    {buttonLoading ? (
+                      <button
+                        className="testinvite_formbuttondisable"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <>
+                          <Spin
+                            size="small"
+                            indicator={
+                              <LoadingOutlined
+                                style={{ color: "#ffffff", marginRight: "6px" }}
+                                spin
+                              />
+                            }
+                          />{" "}
+                        </>
+                      </button>
+                    ) : (
+                      <button
+                        className="testinvite_formbutton"
+                        onClick={handleSubmit}
+                      >
+                        Start Test
+                      </button>
+                    )}
+                  </div>
+                </form>
               </div>
-            </form>
-          </div>
-        </Col>
-      </Row>
-    </div>
+            </Col>
+          </Row>
+        </div>
+      )}
+    </>
   );
 }

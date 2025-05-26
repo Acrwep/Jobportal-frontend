@@ -10,6 +10,9 @@ import {
 import { CommonToaster } from "../Common/CommonToaster";
 import { adminLogin, getCourses } from "../Common/action";
 import { LoadingOutlined } from "@ant-design/icons";
+import { MdMenuBook } from "react-icons/md";
+import { FaUsers } from "react-icons/fa";
+import InterviewIcon from "../images/login-interview-icon.png";
 
 export default function LmsLogin() {
   const navigate = useNavigate();
@@ -113,25 +116,45 @@ export default function LmsLogin() {
           >
             <div className="register_leftContainer">
               <p className="register_heading">
-                Learn Fast.
+                Login Once.
                 <br />
-                Break Nothing.
+                Access 3 Portals.
               </p>
 
               <div className="register_points">
-                <h3>Remove Barriers</h3>
-                <p>
-                  Enrollment delays and course approvals can slow you down — now
-                  you can easily remove these barriers and start learning right
-                  away.
-                </p>
+                <div className="lmsregister_subheadingContainer">
+                  <MdMenuBook color="#ffffff" size={20} />
+                  <h3>LMS</h3>
+                </div>
 
-                <h3 style={{ marginTop: "24px" }}>Access Smart Guidance</h3>
-                <p>
-                  We use advanced tools and personalized support to guide your
-                  educational journey, making enrollment, learning, and progress
-                  tracking simple and efficient.
-                </p>
+                <ul>
+                  <li>Watch top trainers' videos and docs</li>
+                  <li>Learn anytime with videos and documents.</li>
+                  <li>
+                    Quickly find topics with organized learning materials.
+                  </li>
+                </ul>
+
+                <div className="lmsregister_subheadingContainer">
+                  <img src={InterviewIcon} style={{ width: "20px" }} />
+                  <h3>Interview</h3>
+                </div>
+
+                <ul>
+                  <li>Practice company-based interview questions.</li>
+                  <li>Take online assessment tests to crack interviews</li>
+                  <li>Prepare effectively with real-world questions.</li>
+                </ul>
+
+                <div className="lmsregister_subheadingContainer">
+                  <FaUsers color="#ffffff" size={20} />
+                  <h3>Placement</h3>
+                </div>
+                <ul>
+                  <li>Upload your updated resume to the placement portal</li>
+                  <li>Mention ACTE course in your resume for placement</li>
+                  <li>Stay confident—your dream job awaits!</li>
+                </ul>
               </div>
             </div>
           </Col>
@@ -182,7 +205,7 @@ export default function LmsLogin() {
                     {"Email" + " " + emailError}
                   </p>
                 </div>
-                <div style={{ marginTop: "22px", marginBottom: "10px" }}>
+                <div style={{ marginTop: "26px", marginBottom: "10px" }}>
                   <p className="register_inputlabel">Password</p>
                   <Input.Password
                     className={
@@ -213,6 +236,7 @@ export default function LmsLogin() {
                 {loading ? (
                   <button
                     className="register_disablesubmitbutton"
+                    style={{ marginTop: "30px" }}
                     onClick={(e) => e.preventDefault()}
                   >
                     <>
@@ -231,6 +255,7 @@ export default function LmsLogin() {
                 ) : (
                   <button
                     className="register_submitbutton"
+                    style={{ marginTop: "30px" }}
                     onClick={handleSubmit}
                     type="submit"
                   >

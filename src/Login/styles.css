@@ -149,7 +149,7 @@
 .lmslogin_rightContainer {
   background: #ffffff;
   border-radius: 22px;
-  padding: 30px 40px;
+  padding: 40px 40px 70px 40px;
   z-index: 1;
   position: relative;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
@@ -167,8 +167,46 @@
     transparent
   );
   transform: translate(-74%, -48%);
-  filter: blur(100px);
-  /* opacity: 0.8; */
-  border-radius: 50%;
+  filter: blur(90px);
+  border-radius: 30%;
   z-index: 0;
+}
+@media (min-width: 320px) and (max-width: 425px) {
+  .lmslogin_blurBackground {
+    position: absolute;
+    top: 50%;
+    left: 40%;
+    width: 500px;
+    height: 1120px;
+    background: radial-gradient(
+      circle at center,
+      rgba(63, 99, 255, 0.7) 10%,
+      rgb(49 46 105 / 85%),
+      transparent
+    );
+    transform: translate(-54%, -65%);
+    filter: blur(90px);
+    border-radius: 30%;
+    z-index: 0;
+  }
+}
+
+@media (min-width: 426px) and (max-width: 990px) {
+  .lmslogin_blurBackground {
+    position: absolute;
+    top: 50%;
+    left: 40%;
+    width: 760px;
+    height: 800px;
+    background: radial-gradient(
+      circle at center,
+      rgba(63, 99, 255, 0.7) 10%,
+      rgb(49 46 105 / 85%),
+      transparent
+    );
+    transform: translate(-46%, -63%);
+    filter: blur(90px);
+    border-radius: 30%;
+    z-index: 0;
+  }
 }

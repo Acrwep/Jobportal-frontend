@@ -1060,6 +1060,14 @@ export default function Courses() {
                                     ? "#6068cd"
                                     : index === 1
                                     ? "#ac5ac7"
+                                    : index === 2
+                                    ? "#5297a7"
+                                    : index === 3
+                                    ? "#ac5ac7"
+                                    : index === 4
+                                    ? "#5297a7"
+                                    : index === 5
+                                    ? "#6068cd"
                                     : "#5297a7",
                               }}
                               onClick={() => {
@@ -1089,6 +1097,14 @@ export default function Courses() {
                                           ? "#6068cd"
                                           : index === 1
                                           ? "#ac5ac7"
+                                          : index === 2
+                                          ? "#5297a7"
+                                          : index === 3
+                                          ? "#ac5ac7"
+                                          : index === 4
+                                          ? "#5297a7"
+                                          : index === 5
+                                          ? "#6068cd"
                                           : "#5297a7",
                                     }}
                                   >

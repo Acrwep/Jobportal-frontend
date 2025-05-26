@@ -300,7 +300,7 @@ export default function SideMenu() {
   return (
     <Menu
       mode="inline"
-      style={{ backgroundColor: "transparent", padding: "0px 4px" }}
+      className="portallayout_sidemenu"
       selectedKeys={[selectedKey]}
       defaultOpenKeys={["courses"]}
       onClick={handleMenuClick}
