@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import { MdMenuBook } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
+import axios from "axios";
 import InterviewIcon from "../images/login-interview-icon.png";
 
 export default function Register() {
@@ -39,6 +40,56 @@ export default function Register() {
   const [rolesData, setRolesData] = useState([]);
   const [validationTrigger, setValidationTrigger] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [windowSize, setWindowSize] = useState(window.innerWidth);
+
+  const api = axios.create({
+    baseURL: "https://actecrm.com",
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  api.interceptors.request.use(
+    (config) => {
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  const crmEmailValidation = async (payload) => {
+    try {
+      const response = await api.post("/email-validation.php", payload);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const useWindowWidth = () => {
+    const [windowSize, setWindowSize] = useState(window.innerWidth);
+
+    useEffect(() => {
+      const handleResize = () => {
+        setWindowSize(window.innerWidth);
+      };
+
+      window.addEventListener("resize", handleResize);
+
+      // Call initially to sync in case of SSR or rehydration
+      handleResize();
+
+      // Clean up listener on unmount
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return windowSize;
+  };
+
+  const windowWidth = useWindowWidth();
+
+  useEffect(() => {
+    console.log("Window width changed:", windowWidth);
+  }, [windowWidth]);
 
   useEffect(() => {
     getCourseData();
@@ -97,12 +148,39 @@ export default function Register() {
     }
   };
 
+  const handleEmail = async (e) => {
+    setEmail(e.target.value);
+    if (validationTrigger) {
+      const emailValidate = emailValidator(e.target.value);
+      setEmailError(emailValidate);
+
+      const formData = new FormData();
+      formData.append("email", e.target.value);
+      if (emailValidate === "") {
+        setTimeout(async () => {
+          try {
+            const response = await crmEmailValidation(formData);
+            if (response?.data?.message === "Email ID is not exist.") {
+              setEmailError(" is not valid. Contact acte support team.");
+            } else {
+              setEmailError("");
+            }
+            console.log("crm email response", response);
+          } catch (error) {
+            console.log("php email error", error);
+          }
+        }, 300);
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setValidationTrigger(true);
 
     const nameValidate = nameValidator(name);
     const emailValidate = emailValidator(email);
+    let crmEmailValidate = "";
     const passwordValidate = addressValidator(password);
     const courseValidate = selectValidator(course);
     const courseLocationValidate = selectValidator(courseLoation);
@@ -115,9 +193,29 @@ export default function Register() {
     setCourseLoactionError(courseLocationValidate);
     setCoursejoingDateError(coursejoiningValidate);
 
+    const formData = new FormData();
+    formData.append("email", email);
+
+    if (emailValidate === "") {
+      try {
+        const response = await crmEmailValidation(formData);
+        if (response?.data?.message === "Email ID is not exist.") {
+          setEmailError(" is not valid. Contact acte support team.");
+          crmEmailValidate = " is not valid. Contact acte support team.";
+        } else {
+          crmEmailValidate = "";
+          setEmailError("");
+        }
+        console.log("crm email response", response);
+      } catch (error) {
+        console.log("php email error", error);
+      }
+    }
+
     if (
       nameValidate ||
       emailValidate ||
+      crmEmailValidate ||
       passwordValidate ||
       courseValidate ||
       courseLocationValidate ||
@@ -266,16 +364,18 @@ export default function Register() {
                         ? "lmsregister_errorinput"
                         : "lmsregister_input"
                     }
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (validationTrigger) {
-                        setEmailError(emailValidator(e.target.value));
-                      }
-                    }}
+                    onChange={handleEmail}
                     value={email}
                     status={emailError != "" ? "error" : ""}
                   />
                   <p
+                    style={{
+                      padding: windowWidth <= 465 ? "0px 40px 0px 0px" : "0px",
+                      fontSize:
+                        windowWidth <= 465 && emailError.length >= 20
+                          ? "8px"
+                          : "13px",
+                    }}
                     className={
                       emailError != "" && validationTrigger
                         ? "register_errorlabels_visible"
@@ -367,6 +467,10 @@ export default function Register() {
                     }))}
                   />
                   <p
+                    style={{
+                      padding: windowWidth <= 465 ? "0px 20px 0px 0px" : "0px",
+                      fontSize: windowWidth <= 465 ? "10px" : "13px",
+                    }}
                     className={
                       courseLoationError != "" && validationTrigger
                         ? "register_errorlabels_visible"
@@ -395,6 +499,10 @@ export default function Register() {
                     status={coursejoingDateError != "" ? "error" : ""}
                   />
                   <p
+                    style={{
+                      padding: windowWidth <= 465 ? "0px 40px 0px 0px" : "0px",
+                      fontSize: windowWidth <= 465 ? "10px" : "13px",
+                    }}
                     className={
                       coursejoingDateError != "" && validationTrigger
                         ? "register_errorlabels_visible"

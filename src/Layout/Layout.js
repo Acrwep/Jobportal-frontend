@@ -51,6 +51,7 @@ import StudentResult from "../StudentResult/StudentResult";
 import { PiWarningCircleBold } from "react-icons/pi";
 import { FaRegCheckCircle } from "react-icons/fa";
 import Assessments from "../StudentResult/Assessments";
+import ForgotPassword from "../Login/ForgotPassword";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
@@ -173,6 +174,10 @@ const MainSideMenu = () => {
         setShowSideBar(false);
       } else if (location.pathname === "/register") {
         navigate("/register");
+        setShowPages(false);
+        setShowSideBar(false);
+      } else if (location.pathname === "/forgotpassword") {
+        navigate("/forgotpassword");
         setShowPages(false);
         setShowSideBar(false);
       } else if (location.pathname === "/portal") {
@@ -367,6 +372,10 @@ const MainSideMenu = () => {
       ) : location.pathname === "/register" ? (
         <Routes>
           <Route path="/register" element={<Register />} />
+        </Routes>
+      ) : location.pathname === "/forgotpassword" ? (
+        <Routes>
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
         </Routes>
       ) : location.pathname === "/portal" ? (
         <Routes>

@@ -67,9 +67,9 @@ export default function PortalSelectField({
           value: item.id ? item.id : item.name,
           label: item.full_Name
             ? item.full_Name
-            : item.course_name
-            ? item.course_name
-            : item.name,
+            : item.name
+            ? item.name
+            : item.course_name,
         }))}
         value={value}
         error={error}

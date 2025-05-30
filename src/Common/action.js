@@ -103,6 +103,35 @@ export const adminLogin = async (loginPayload) => {
   }
 };
 
+export const sendOTP = async (email) => {
+  try {
+    const response = await api.get(`/api/sendOTP?email=${email}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const validateOTP = async (payload) => {
+  try {
+    const response = await api.get("/api/validateOTP", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const forgotPassword = async (payload) => {
+  try {
+    const response = await api.put("/api/forgotPassword", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const candidateRegistration = async (payload) => {
   try {
     const response = await api.post("/api/registration", payload);
@@ -264,6 +293,15 @@ export const getAllUsers = async (payload) => {
 export const createAdmin = async (payload) => {
   try {
     const response = await api.post("/api/insertAdmin", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateUser = async (payload) => {
+  try {
+    const response = await api.put("/api/updateUser", payload);
     return response;
   } catch (error) {
     throw error;

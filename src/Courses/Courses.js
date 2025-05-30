@@ -213,6 +213,7 @@ export default function Courses() {
       const allUsers = response?.data?.data || [];
       if (allUsers.length >= 1) {
         const allTrainers = allUsers.filter((f) => f.role === "Trainer");
+        console.log("alll trainers", allTrainers);
         setTrainersList(allTrainers);
       } else {
         setTrainersList([]);

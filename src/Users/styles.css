@@ -118,6 +118,15 @@
   font-size: 12px;
   color: #0056b3;
 }
+.user_trainerprofileContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+.user_trainerprofilepic {
+  border-radius: 50%;
+  height: 85px;
+}
 /* candidates styles */
 .candidate_sendrequestbutton {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;

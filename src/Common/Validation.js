@@ -59,8 +59,17 @@ export const selectValidator = (name) => {
 export const passwordValidator = (password) => {
   let error = "";
 
-  if (!password || password.length <= 0) error = "Password is required";
-  else if (password.length < 3) error = " Password is not valid";
+  if (!password || password.length <= 0) error = " is required";
+  else if (password.length < 6) error = " must be atleast 6 characters";
+
+  return error;
+};
+
+export const confirmPasswordValidator = (value, password) => {
+  let error = "";
+
+  if (!value || value.length <= 0) error = " is required";
+  else if (value != password) error = " not match";
 
   return error;
 };

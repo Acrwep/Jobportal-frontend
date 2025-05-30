@@ -267,3 +267,8 @@ button {
 .ant-tabs-tab-btn {
   outline: none !important;
 }
+
+/* antd input styles */
+.ant-input {
+  font-family: "Montserrat", sans-serif !important;
+}

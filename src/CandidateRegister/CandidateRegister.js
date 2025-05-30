@@ -296,7 +296,7 @@ export default function CandidateRegister() {
           try {
             const response = await crmEmailValidation(formData);
             if (response?.data?.message === "Email ID is not exist.") {
-              setEmailError(" is not matching. Contact acte support team.");
+              setEmailError(" is not valid. Contact acte support team.");
             } else {
               setEmailError("");
             }
@@ -474,7 +474,7 @@ export default function CandidateRegister() {
         formData.append("email", email);
         const response = await crmEmailValidation(formData);
         if (response?.data?.message === "Email ID is not exist.") {
-          crmEmailValidate = " is not matching. Contact acte support team.";
+          crmEmailValidate = " is not valid. Contact acte support team.";
         } else {
           crmEmailValidate = "";
         }
@@ -1048,6 +1048,7 @@ export default function CandidateRegister() {
                       value={email}
                       onChange={handleEmail}
                       error={emailError}
+                      errorFontSize={emailError.length <= 20 ? "14px" : "13px"}
                     />
                   </Col>
                 </Row>

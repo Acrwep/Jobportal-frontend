@@ -4,10 +4,11 @@ import {
   getAllUsers,
   getCourses,
   getRoles,
+  updateUser,
 } from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
 import CommonTable from "../Common/CommonTable";
-import { Row, Col, Input, Spin, Upload, Drawer, Button } from "antd";
+import { Row, Col, Input, Spin, Upload, Drawer, Modal } from "antd";
 import { IoMdAdd } from "react-icons/io";
 import PortalInputField from "../Common/PortalInputField";
 import {
@@ -20,10 +21,13 @@ import "./styles.css";
 import PortalSelectField from "../Common/PortalSelectField";
 import { createAction } from "@reduxjs/toolkit";
 import { LoadingOutlined } from "@ant-design/icons";
+import { AiTwotoneEdit } from "react-icons/ai";
+import { PlusOutlined } from "@ant-design/icons";
 const { Search } = Input;
 
 export default function Users() {
   const [open, setOpen] = useState(false);
+  const [userId, setUserId] = useState(null);
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [email, setEmail] = useState("");
@@ -31,34 +35,55 @@ export default function Users() {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [roleOptions, setRoleOptions] = useState([]);
-  const [role, setRole] = useState(null);
-  const [courseOptions, setCourseOptions] = useState([]);
-  const [courseId, setCourseId] = useState(null);
-  const [courseIdError, setCourseIdError] = useState(null);
-  const [experienceOptions, setExperienceOptions] = useState([
+  const [role, setRole] = useState(2);
+  const experienceOptions = [
     { id: "1 year", name: "1 year" },
     { id: "2 year", name: "2 year" },
     { id: "3 year", name: "3 year" },
-    { id: "3 year", name: "3 year" },
     { id: "4 year", name: "4 year" },
     { id: "5+", name: "5+" },
-  ]);
+  ];
   const [experience, setExperience] = useState(null);
   const [experienceError, setExperienceError] = useState("");
   const [roleError, setRoleError] = useState(null);
   const [usersData, setUsersData] = useState([]);
+  const [profilePictureArray, setProfilePictureArray] = useState([]);
+  const [profilePicture, setProfilePicture] = useState("");
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
   const [validationTrigger, setValidationTrigger] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const columns = [
-    { title: "Name", key: "name", dataIndex: "name" },
-    { title: "Email", key: "email", dataIndex: "email" },
-    { title: "Role", key: "role", dataIndex: "role" },
+    { title: "Name", key: "name", dataIndex: "name", width: 240 },
+    { title: "Email", key: "email", dataIndex: "email", width: 280 },
+    { title: "Password", key: "password", dataIndex: "password" },
+    { title: "Role", key: "role", dataIndex: "role", width: 180 },
+    {
+      title: "Edit",
+      key: "action",
+      dataIndex: "action",
+      width: 180,
+      render: (item, record) => {
+        return (
+          <div
+            className="questionupload_table_actionContainer"
+            style={{ marginLeft: "12px" }}
+          >
+            <div>
+              <AiTwotoneEdit
+                size={20}
+                onClick={() => handleEdit(record)}
+                className="questionupload_actionicons"
+              />
+            </div>
+          </div>
+        );
+      },
+    },
   ];
-  const [profilePictureArray, setProfilePictureArray] = useState([]);
-  const [profilePicture, setProfilePicture] = useState("");
-  const [profileName, setProfileName] = useState("");
 
   useEffect(() => {
     getRolesdata();
@@ -83,33 +108,18 @@ export default function Users() {
       );
     } finally {
       setTimeout(() => {
-        getCourseData();
+        getUsersData();
       }, 200);
     }
   };
 
-  const getCourseData = async () => {
-    try {
-      const response = await getCourses();
-      const allCourses = response?.data?.data || [];
-      if (allCourses.length >= 1) {
-        setCourseOptions(allCourses);
-      } else {
-        setCourseOptions([]);
-      }
-    } catch (error) {
-      setCourseOptions([]);
-    } finally {
-      setTimeout(() => {
-        getUsersData();
-      }, 300);
-    }
-  };
-
-  const getUsersData = async () => {
+  const getUsersData = async (search) => {
     setTableLoading(true);
+    const payload = {
+      name: search ? search : null,
+    };
     try {
-      const response = await getAllUsers();
+      const response = await getAllUsers(payload);
       console.log("users response", response);
       const allUsers = response?.data?.data || [];
       if (allUsers.length >= 1) {
@@ -133,29 +143,55 @@ export default function Users() {
     }
   };
 
-  const handleProfileAttachment = (event) => {
-    console.log(event.target.files[0]);
-    const file = event.target.files[0];
+  const handleProfileAttachment = ({ fileList: newFileList }) => {
+    console.log("newww", newFileList);
+    if (newFileList.length <= 0) {
+      setProfilePicture("");
+      setProfilePictureArray([]);
+      return;
+    }
     const isValidType =
-      file.type === "image/png" ||
-      file.type === "image/jpeg" ||
-      file.type === "image/jpg";
+      newFileList[0].type === "image/png" ||
+      newFileList[0].type === "image/jpeg" ||
+      newFileList[0].type === "image/jpg";
 
     if (isValidType) {
-      console.log("fileeeee", file);
-      setProfileName(file?.name || "");
+      console.log("fileeeee", newFileList);
+      setProfilePictureArray(newFileList);
       CommonToaster("Profile uploaded");
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64String = reader.result.split(",")[1]; // Extract Base64 content
-        setProfilePicture(base64String); // Store in state
-      };
     } else {
       CommonToaster("Accept only .png, .jpg and .jpeg");
       setProfilePicture("");
-      setProfileName("");
+      setProfilePictureArray([]);
     }
+  };
+
+  const handlePreview = async (file) => {
+    if (file.url) {
+      setPreviewImage(file.url);
+      setPreviewOpen(true);
+      return;
+    }
+    const rawFile = file.originFileObj || file;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(rawFile);
+    reader.onload = () => {
+      const dataUrl = reader.result; // Full base64 data URL like "data:image/jpeg;base64,..."
+      console.log("urlllll", dataUrl);
+      setPreviewImage(dataUrl); // Show in Modal
+      setProfilePicture(dataUrl.split(",")[1]); // Store Base64 content only
+      setPreviewOpen(true);
+    };
+  };
+
+  const handleRemoveProfile = (fileToRemove) => {
+    const newFileList = profilePictureArray.filter(
+      (file) => file.uid !== fileToRemove.uid
+    );
+    setProfilePictureArray(newFileList);
+    setProfilePicture(""); // clear base64
+    CommonToaster("Profile removed");
   };
 
   const handleSubmit = async (e) => {
@@ -175,12 +211,10 @@ export default function Users() {
 
     if (role === 2) {
       const experienceValidate = selectValidator(experience);
-      const courseValidate = selectValidator(courseId);
 
       setExperienceError(experienceValidate);
-      setCourseIdError(courseValidate);
 
-      if (experienceValidate || courseValidate) {
+      if (experienceValidate) {
         isFormError = true;
       } else {
         isFormError = false;
@@ -198,38 +232,60 @@ export default function Users() {
 
     setButtonLoading(true);
     const payload = {
+      ...(isEdit && { id: userId }),
       name: name,
       email: email,
       password: password,
       role_id: role,
-      course_id: courseId,
+      course_id: null,
       experience: experience,
       profile: profilePicture,
       course_join_date: null,
       location_id: null,
     };
 
-    try {
-      await createAdmin(payload);
-      CommonToaster("User created");
-      setTimeout(() => {
-        formReset();
-        getUsersData();
-      }, 500);
-    } catch (error) {
-      setTimeout(() => {
-        setButtonLoading(false);
-      }, 500);
-      CommonToaster(
-        error?.response?.data?.message ||
-          "Something went wrong. Try again later"
-      );
+    if (isEdit) {
+      try {
+        await updateUser(payload);
+        CommonToaster("User updated");
+        setTimeout(() => {
+          formReset();
+          getUsersData();
+        }, 500);
+      } catch (error) {
+        setTimeout(() => {
+          setButtonLoading(false);
+        }, 500);
+        CommonToaster(
+          error?.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
+      }
+    } else {
+      try {
+        await createAdmin(payload);
+        CommonToaster("User created");
+        setTimeout(() => {
+          formReset();
+          getUsersData();
+        }, 500);
+      } catch (error) {
+        setTimeout(() => {
+          setButtonLoading(false);
+        }, 500);
+        CommonToaster(
+          error?.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
+      }
     }
   };
 
   const formReset = () => {
     setOpen(false);
     setButtonLoading(false);
+    setIsEdit(false);
+    setUserId(null);
     setName("");
     setNameError("");
     setEmail("");
@@ -243,9 +299,32 @@ export default function Users() {
     setExperienceError("");
     setProfilePicture("");
     setProfilePictureArray([]);
-    setProfileName("");
-    setCourseId(null);
-    setCourseIdError("");
+  };
+
+  const handleSearch = (e) => {
+    console.log("search", e.target.value);
+    getUsersData(e.target.value);
+  };
+  const handleEdit = (item) => {
+    console.log("clicked user", item);
+    setIsEdit(true);
+    setUserId(item.id);
+    const base64String = item.profile;
+    const fileObject = {
+      uid: "-1", // any unique id
+      name: "profile.png",
+      status: "done",
+      url: `data:image/png;base64,${base64String}`, // Full Data URL
+    };
+    setProfilePictureArray([fileObject]);
+    setProfilePicture(base64String);
+    setPreviewImage(`data:image/png;base64,${base64String}`);
+    setName(item.name);
+    setEmail(item.email);
+    setPassword(item.password);
+    setRole(item.role === "Trainer" ? 2 : 1);
+    setExperience(item.experience);
+    setOpen(true);
   };
 
   return (
@@ -256,9 +335,11 @@ export default function Users() {
         <Col xs={24} sm={24} md={24} lg={12}>
           <div className="questionupload_filterContainer">
             <Search
-              placeholder="Search by email"
+              placeholder="Search by name"
               enterButton
               style={{ width: "42%" }}
+              allowClear
+              onChange={handleSearch}
             />
           </div>
         </Col>
@@ -304,6 +385,25 @@ export default function Users() {
         footer={false}
       >
         <form>
+          {role === 2 && (
+            <div className="user_trainerprofileContainer">
+              <Upload
+                listType="picture-circle"
+                fileList={profilePictureArray}
+                onPreview={handlePreview}
+                onChange={handleProfileAttachment}
+                onRemove={(file) => handleRemoveProfile(file)}
+                beforeUpload={() => false} // prevent auto upload
+              >
+                {profilePictureArray.length >= 1 ? null : (
+                  <div>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </div>
+                )}
+              </Upload>
+            </div>
+          )}
           <div>
             <PortalInputField
               label="Name"
@@ -375,21 +475,6 @@ export default function Users() {
             <>
               <div style={{ marginTop: "22px" }}>
                 <PortalSelectField
-                  label="Course"
-                  value={courseId}
-                  options={courseOptions}
-                  onChange={(value) => {
-                    setCourseId(value);
-                    if (validationTrigger) {
-                      setCourseIdError(selectValidator(value));
-                    }
-                  }}
-                  error={courseIdError}
-                />
-              </div>
-
-              <div style={{ marginTop: "22px" }}>
-                <PortalSelectField
                   label="Experience"
                   value={experience}
                   options={experienceOptions}
@@ -400,22 +485,6 @@ export default function Users() {
                     }
                   }}
                   error={experienceError}
-                />
-              </div>
-
-              <div
-                style={{
-                  marginTop: "26px",
-                  display: "flex",
-                  gap: "12px",
-                  width: "100%",
-                }}
-              >
-                <p className="userpassword_label">Upload profile</p>
-                <input
-                  type="file"
-                  style={{ width: "70%" }}
-                  onChange={handleProfileAttachment}
                 />
               </div>
             </>
@@ -447,6 +516,14 @@ export default function Users() {
           </div>
         </form>
       </Drawer>
+      <Modal
+        open={previewOpen}
+        title="Preview Profile"
+        footer={null}
+        onCancel={() => setPreviewOpen(false)}
+      >
+        <img alt="preview" style={{ width: "100%" }} src={previewImage} />
+      </Modal>
     </div>
   );
 }

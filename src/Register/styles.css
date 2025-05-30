@@ -3,6 +3,7 @@
   height: 100vh;
   background-color: #f8f9fa;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: auto;
@@ -16,7 +17,6 @@
 }
 .register_largecard {
   width: 70%;
-  /* height: 80%; */
   background-color: #ffffff;
   border-radius: 19px;
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
@@ -248,6 +248,7 @@
   transition: all 0.2s;
   width: 100%;
   font-size: 16px;
+  font-family: "Montserrat", sans-serif !important;
   /* margin-top: 22px; */
 }
 .register_input:hover {
@@ -270,6 +271,7 @@
   transition: all 0.2s;
   width: 100%;
   font-size: 15px;
+  font-family: "Montserrat", sans-serif !important;
   /* margin-top: 22px; */
 }
 .lmsregister_errorinput:hover {
@@ -311,6 +313,7 @@
   transition: all 0.2s;
   width: 100%;
   font-size: 16px;
+  font-family: "Montserrat", sans-serif !important;
   /* margin-top: 22px; */
 }
 .register_errorinput:hover {

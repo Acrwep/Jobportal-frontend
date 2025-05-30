@@ -205,7 +205,7 @@ export default function LmsLogin() {
                     {"Email" + " " + emailError}
                   </p>
                 </div>
-                <div style={{ marginTop: "26px", marginBottom: "10px" }}>
+                <div style={{ marginTop: "26px" }}>
                   <p className="register_inputlabel">Password</p>
                   <Input.Password
                     className={
@@ -233,10 +233,19 @@ export default function LmsLogin() {
                   </p>
                 </div>
 
+                <div className="lmslogin_forgotpasswordContainer">
+                  <p
+                    className="lmslogin_forgotpassword"
+                    onClick={() => navigate("/forgotpassword")}
+                  >
+                    Forgot password?
+                  </p>
+                </div>
+
                 {loading ? (
                   <button
                     className="register_disablesubmitbutton"
-                    style={{ marginTop: "30px" }}
+                    style={{ marginTop: "36px" }}
                     onClick={(e) => e.preventDefault()}
                   >
                     <>
@@ -255,7 +264,7 @@ export default function LmsLogin() {
                 ) : (
                   <button
                     className="register_submitbutton"
-                    style={{ marginTop: "30px" }}
+                    style={{ marginTop: "36px" }}
                     onClick={handleSubmit}
                     type="submit"
                   >

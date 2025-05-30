@@ -9,6 +9,7 @@ const CommonInputField = ({
   name,
   value,
   error,
+  errorFontSize,
   maxLength,
   mandatory,
   style,
@@ -55,7 +56,10 @@ const CommonInputField = ({
             : "commoninput_errormessagediv"
         }
       >
-        <p className="commonfield_errortext">
+        <p
+          className="commonfield_errortext"
+          style={{ fontSize: errorFontSize ? errorFontSize : "14px" }}
+        >
           {label === "College Department"
             ? "Department" + error
             : label + error}

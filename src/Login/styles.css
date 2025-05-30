@@ -149,7 +149,7 @@
 .lmslogin_rightContainer {
   background: #ffffff;
   border-radius: 22px;
-  padding: 40px 40px 70px 40px;
+  padding: 40px 40px 52px 40px;
   z-index: 1;
   position: relative;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
@@ -209,4 +209,197 @@
     border-radius: 30%;
     z-index: 0;
   }
+}
+.lmslogin_forgotpasswordContainer {
+  margin-top: 6px !important;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0056b3;
+}
+.lmslogin_forgotpassword {
+  width: max-content;
+  cursor: pointer;
+}
+
+/* forgotpassword styles */
+.forgotpassword_maincontainer {
+  position: relative;
+  height: 100vh;
+  background-color: #71aceb1e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.forgotpassword_innercontainer {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+}
+.forgotpassword_iconContainer {
+  background-color: #0057b338;
+  color: #0056b3;
+  border-radius: 50%;
+  padding: 12px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.forgotpassword_heading {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 12px !important;
+  text-align: center;
+}
+.forgotpassword_subheading {
+  color: gray;
+  margin-top: 6px !important;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+.forgotpassword_emailinputlabel {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px !important;
+}
+.forgotpassword_emailinputContainer {
+  position: relative;
+  margin-top: 30px;
+  font-family: "Montserrat", sans-serif !important;
+}
+.forgotpassword_emailinputfield {
+  height: 38px;
+  background-color: transparent;
+  background-image: none;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #cdc8c8;
+  border-radius: 6px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 16px;
+}
+.forgotpassword_emailinputfield:hover {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+}
+.forgotpassword_emailinputfield:focus-within {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #0057b31c;
+}
+.forgotpassword_emailerrorinputfield {
+  height: 38px;
+  background-color: transparent;
+  background-image: none;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ff4d4f;
+  border-radius: 6px;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 16px;
+  font-family: "Montserrat", sans-serif !important;
+}
+.forgotpassword_emailerrorinputfield:hover {
+  border-color: #ff4d4f !important;
+  background-color: transparent;
+}
+.forgotpassword_emailerrorinputfield:focus-within {
+  border-color: #ff4d4f !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #ff4d501c !important;
+}
+.forgotpassword_emailerrorhide {
+  position: absolute;
+  color: red;
+  font-size: 14px;
+  transform: translateX(-20px);
+  opacity: 0;
+  bottom: -25px;
+  transition: all 0.3s ease-in-out;
+}
+.forgotpassword_emailerror {
+  position: absolute;
+  color: red;
+  font-size: 14px;
+  bottom: -25px;
+  transform: translateX(0px);
+  opacity: 1;
+  transition: all 0.3s ease-in-out;
+}
+.forgotpassword_buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+.forgotpassword_button {
+  width: 100%;
+  background-color: #0056b3;
+  border: none;
+  height: 40px;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.forgotpassword_button:hover {
+  opacity: 0.7;
+}
+.forgotpassword_button:active {
+  transform: translateY(2px);
+}
+.forgotpassword_backbuttonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  color: gray;
+  margin-top: 24px !important;
+  cursor: pointer;
+}
+.forgotpassword_backbutton {
+  font-size: 14px;
+  text-align: center;
+  font-weight: 500;
+}
+.forgotpassword_disablebutton {
+  width: 100%;
+  background-color: #0056b3;
+  border: none;
+  height: 40px;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: default;
+  opacity: 0.7;
+}
+.forgotpassword_otpinputfieldContainer {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+.forgotpassword_otpinputfieldContainer .ant-input {
+  height: 45px !important;
+  width: 45px !important;
+  background-color: transparent !important;
+  border-color: #cdc8c8 !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: #0056b3 !important;
+  font-family: "Montserrat", sans-serif !important;
+  outline: none !important;
+}
+.forgotpassword_otpinputfieldContainer .ant-input:focus {
+  border-color: #0056b3 !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px #0057b31c;
+  outline: none !important;
+}
+.forgotpassword_otpinputfieldContainer .ant-otp {
+  column-gap: 22px !important;
 }
