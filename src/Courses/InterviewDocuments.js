@@ -28,6 +28,7 @@ export default function InterviewDocuments({ roleId, companyLoading }) {
   const containerRef = useRef(null);
   const companyId = useSelector((state) => state.companyid);
   const companyDocuments = useSelector((state) => state.companydocuments);
+  const API_URL = process.env.REACT_APP_API_URL;
 
   // Track page numbers and total pages for each PDF
   const [pageNumbers, setPageNumbers] = useState({});
@@ -146,10 +147,10 @@ export default function InterviewDocuments({ roleId, companyLoading }) {
         <Row gutter={16} style={{ marginBottom: "20px" }}>
           {companyDocuments.length >= 1 ? (
             companyDocuments.map((item, index) => {
-              const pdfDataUrl = `data:application/pdf;base64,${item.content_data}`;
+              const fileUrl = `${API_URL + item.file_path}`;
               return (
                 <>
-                  {item.content_data && (
+                  {item.content_type === "document" && (
                     <Col
                       xs={24}
                       sm={24}
@@ -165,7 +166,7 @@ export default function InterviewDocuments({ roleId, companyLoading }) {
                           className="courses_documentcard"
                         >
                           <Document
-                            file={pdfDataUrl}
+                            file={fileUrl}
                             onLoadSuccess={() => {
                               const canvases = document.querySelectorAll(
                                 ".courses_documentcard canvas"

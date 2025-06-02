@@ -336,10 +336,11 @@ export default function Courses() {
       const videos = response?.data?.videos || [];
       if (videos.length >= 1) {
         const filterCourseVideos = videos.filter(
-          (f) => f.content_data === null
+          (f) => f.content_type != "document"
         );
+        console.log("all videos", filterCourseVideos);
         const filterCourseDocuments = videos.filter(
-          (f) => f.content_data != null
+          (f) => f.content_type === "document"
         );
         console.log("course documents", filterCourseDocuments);
         dispatch(storeCourseVideos(filterCourseVideos));
@@ -375,12 +376,13 @@ export default function Courses() {
       const videos = response?.data?.videos || [];
       if (videos.length >= 1) {
         const filterCourseVideos = videos.filter(
-          (f) => f.content_data === null
+          (f) => f.content_type != "document"
         );
+        console.log("all videos", filterCourseVideos);
         const filterCourseDocuments = videos.filter(
-          (f) => f.content_data != null
+          (f) => f.content_type === "document"
         );
-
+        console.log("all docs", filterCourseDocuments);
         dispatch(storeCompanyVideos(filterCourseVideos));
         dispatch(storeCompanyDocuments(filterCourseDocuments));
       } else {
@@ -658,7 +660,7 @@ export default function Courses() {
         formData.append("content_url", youtubeLink);
       } else {
         formData.append("content_type", "video");
-        formData.append("video", courseVideo);
+        formData.append("content", courseVideo);
       }
       console.log("successs", formData);
       let response;
@@ -689,6 +691,7 @@ export default function Courses() {
         );
       }
     } else {
+      console.log("pdf array", pdfArray[0]);
       //document upload handling
       setButtonLoader(true);
       const formData = new FormData();
@@ -702,7 +705,7 @@ export default function Courses() {
       }
       formData.append("title", contentTitle);
       formData.append("content_type", "document");
-      formData.append("document_content", pdfFile);
+      formData.append("content", pdfArray[0]);
       let response;
       try {
         if (clickedCompanyId) {
@@ -853,6 +856,9 @@ export default function Courses() {
     setCompanyId(item.id);
     setCompanyName(item.company_name);
     setCompanyLogo(item.logo);
+    const logo = `data:image/jpeg;base64,${item.logo}`;
+    const getLogoType = logo.match(/^data:image\/(\w+);base64,/);
+    setCompanyLogoType(getLogoType ? `image/${getLogoType[1]}` : null);
     setCompanyModal(true);
     setCompanyEdit(true);
   };
@@ -1011,20 +1017,21 @@ export default function Courses() {
             </>
           ) : (
             <>
-              {roleId === 1 ||
-                (roleId === 2 && (
-                  <button
-                    className="courses_addtopic_button"
-                    onClick={() => setContentDrawer(true)}
-                  >
-                    <HiOutlineDocumentAdd
-                      size={18}
-                      color="#fff"
-                      style={{ marginRight: "6px" }}
-                    />{" "}
-                    Add Content
-                  </button>
-                ))}
+              {roleId === 1 || roleId === 2 ? (
+                <button
+                  className="courses_addtopic_button"
+                  onClick={() => setContentDrawer(true)}
+                >
+                  <HiOutlineDocumentAdd
+                    size={18}
+                    color="#fff"
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Add Content
+                </button>
+              ) : (
+                ""
+              )}
             </>
           )}
         </div>

@@ -13,6 +13,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { MdMenuBook } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import InterviewIcon from "../images/login-interview-icon.png";
+import Image from "../images/banner-girl.png";
 
 export default function LmsLogin() {
   const navigate = useNavigate();
@@ -113,6 +114,7 @@ export default function LmsLogin() {
             md={24}
             lg={12}
             className="register_left-Col-Container"
+            style={{ position: "relative" }}
           >
             <div className="register_leftContainer">
               <p className="register_heading">
@@ -121,41 +123,64 @@ export default function LmsLogin() {
                 Access 3 Portals.
               </p>
 
-              <div className="register_points">
-                <div className="lmsregister_subheadingContainer">
-                  <MdMenuBook color="#ffffff" size={20} />
+              {/* <div className="register_points">
+                    <div className="lmsregister_subheadingContainer">
+                      <MdMenuBook color="#ffffff" size={20} />
+                      <h3>LMS</h3>
+                    </div>
+
+                    <ul>
+                      <li>Watch top trainers' videos and docs</li>
+                      <li>Learn anytime with videos and documents.</li>
+                      <li>
+                        Quickly find topics with organized learning materials.
+                      </li>
+                    </ul>
+
+                    <div className="lmsregister_subheadingContainer">
+                      <img src={InterviewIcon} style={{ width: "20px" }} />
+                      <h3>Interview</h3>
+                    </div>
+
+                    <ul>
+                      <li>Practice company-based interview questions.</li>
+                      <li>Take online assessment tests to crack interviews</li>
+                      <li>Prepare effectively with real-world questions.</li>
+                    </ul>
+
+                    <div className="lmsregister_subheadingContainer">
+                      <FaUsers color="#ffffff" size={20} />
+                      <h3>Placement</h3>
+                    </div>
+                    <ul>
+                      <li>
+                        Upload your updated resume to the placement portal
+                      </li>
+                      <li>Mention ACTE course in your resume for placement</li>
+                      <li>Stay confident—your dream job awaits!</li>
+                    </ul>
+                  </div> */}
+              <div style={{ marginTop: "20px", display: "flex", gap: "30px" }}>
+                <div className="register_portalcards">
+                  <MdMenuBook color="#ffffff" size={22} />
                   <h3>LMS</h3>
                 </div>
-
-                <ul>
-                  <li>Watch top trainers' videos and docs</li>
-                  <li>Learn anytime with videos and documents.</li>
-                  <li>
-                    Quickly find topics with organized learning materials.
-                  </li>
-                </ul>
-
-                <div className="lmsregister_subheadingContainer">
-                  <img src={InterviewIcon} style={{ width: "20px" }} />
+                <div className="register_portalcards">
+                  <img src={InterviewIcon} style={{ width: "22px" }} />
                   <h3>Interview</h3>
                 </div>
-
-                <ul>
-                  <li>Practice company-based interview questions.</li>
-                  <li>Take online assessment tests to crack interviews</li>
-                  <li>Prepare effectively with real-world questions.</li>
-                </ul>
-
-                <div className="lmsregister_subheadingContainer">
-                  <FaUsers color="#ffffff" size={20} />
-                  <h3>Placement</h3>
-                </div>
-                <ul>
-                  <li>Upload your updated resume to the placement portal</li>
-                  <li>Mention ACTE course in your resume for placement</li>
-                  <li>Stay confident—your dream job awaits!</li>
-                </ul>
               </div>
+
+              <div
+                className="register_portalcards"
+                style={{ marginTop: "20px" }}
+              >
+                <FaUsers color="#ffffff" size={20} />
+                <h3>Placement</h3>
+              </div>
+            </div>
+            <div className="register_bannergirlContainer">
+              <img src={Image} />
             </div>
           </Col>
 

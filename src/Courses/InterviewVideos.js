@@ -38,7 +38,7 @@ export default function InterviewVideos({ roleId, companyLoading }) {
 
       if (videos.length >= 1) {
         const filterCourseVideos = videos.filter(
-          (f) => f.content_data === null
+          (f) => f.content_type != "document"
         );
         dispatch(storeCompanyVideos(filterCourseVideos));
       } else {

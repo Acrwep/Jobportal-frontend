@@ -8,12 +8,16 @@
   align-items: center;
   overflow: auto;
   position: relative;
-  background-color: #71aceb1e;
+  /* background-color: #71aceb1e; */
+  background: linear-gradient(#2b87eb1e, rgba(222, 55, 0, 0.14) 130%);
 }
 @media (min-width: 320px) and (max-width: 1023px) {
   .register_mainContainer {
     height: 100%;
   }
+}
+.register_girlimage {
+  width: 350px;
 }
 .register_largecard {
   width: 70%;
@@ -23,6 +27,7 @@
   position: relative;
   overflow: hidden;
   padding: 40px;
+  /* height: 500px; */
 }
 @media (min-width: 320px) and (max-width: 1023px) {
   .register_largecard {
@@ -379,4 +384,26 @@
   font-weight: 600;
   cursor: default;
   opacity: 0.7;
+}
+
+.register_portalcards {
+  background-color: #aa9fe6;
+  padding: 24px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 17px;
+  border-radius: 22px;
+  width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 0 0.25em #43475545, 0 0.25em 1em #5a7dbc0d;
+  /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
+}
+.register_bannergirlContainer {
+  position: absolute;
+  width: 400px;
+  bottom: -160px;
+  right: -30px;
 }

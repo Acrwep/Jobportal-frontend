@@ -42,10 +42,11 @@ export default function CourseVideos({ courseId, topicid, roleId, loading }) {
       const videos = response?.data?.videos || [];
       if (videos.length >= 1) {
         const filterCourseVideos = videos.filter(
-          (f) => f.content_data === null
+          (f) => f.content_type != "document"
         );
+        console.log("all videos", filterCourseVideos);
         const filterCourseDocuments = videos.filter(
-          (f) => f.content_data != null
+          (f) => f.content_type === "document"
         );
 
         dispatch(storeCourseVideos(filterCourseVideos));

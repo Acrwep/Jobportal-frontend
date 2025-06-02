@@ -154,6 +154,7 @@
 .courses_videotitle {
   font-weight: 600;
   font-size: 14px;
+  width: 100%;
 }
 .courses_videodelete_icon {
   opacity: 0;

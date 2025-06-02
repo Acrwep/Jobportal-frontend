@@ -36,6 +36,7 @@ export default function CourseDocuments({
   const containerRef = useRef(null);
   const courseDocuments = useSelector((state) => state.coursedocuments);
   const trainerId = useSelector((state) => state.trainerid);
+  const API_URL = process.env.REACT_APP_API_URL;
 
   // Track page numbers and total pages for each PDF
   const [pageNumbers, setPageNumbers] = useState({});
@@ -83,10 +84,11 @@ export default function CourseDocuments({
       const videos = response?.data?.videos || [];
       if (videos.length >= 1) {
         const filterCourseVideos = videos.filter(
-          (f) => f.content_data === null
+          (f) => f.content_type != "document"
         );
+        console.log("all videos", filterCourseVideos);
         const filterCourseDocuments = videos.filter(
-          (f) => f.content_data != null
+          (f) => f.content_type === "document"
         );
 
         dispatch(storeCourseVideos(filterCourseVideos));
@@ -152,6 +154,31 @@ export default function CourseDocuments({
     }
   };
 
+  const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
+
+  useEffect(() => {
+    const testPDF = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/uploads/course-videos/document-1748839628591-49715488.pdf"
+        );
+
+        if (!response.ok) throw new Error("Fetch failed");
+
+        const contentType = response.headers.get("Content-Type");
+        console.log("PDF content type:", contentType); // Should be 'application/pdf'
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        setPdfBlobUrl(url);
+      } catch (error) {
+        console.error("Fetch failed", error);
+      }
+    };
+
+    testPDF();
+  }, []);
+
   return (
     <div>
       {loading || documentLoading ? (
@@ -161,10 +188,10 @@ export default function CourseDocuments({
           {courseDocuments.length >= 1 ? (
             courseDocuments.map((item, index) => {
               console.log("documentss", item);
-              const pdfDataUrl = `data:application/pdf;base64,${item.content_data}`;
+              const fileUrl = `${API_URL + item.file_path}`;
               return (
                 <>
-                  {item.content_data && (
+                  {item.content_type === "document" && (
                     <Col
                       xs={24}
                       sm={24}
@@ -179,7 +206,12 @@ export default function CourseDocuments({
                           ref={containerRef}
                           className="courses_documentcard"
                         >
-                          <Document file={pdfDataUrl}>
+                          <Document
+                            file={fileUrl}
+                            onLoadError={(error) =>
+                              console.error("PDF load error:", error)
+                            }
+                          >
                             <Page
                               pageNumber={pageNumbers[index] || 1}
                               width={containerWidth}
@@ -192,7 +224,9 @@ export default function CourseDocuments({
                             size={20}
                             style={{ cursor: "pointer", marginRight: "12px" }}
                             onClick={() => {
-                              setSelectedDocument(item.content_data);
+                              setSelectedDocument(
+                                `${API_URL + item.file_path}`
+                              );
                               setSelectedDocumentName(item.title);
                               setIsOpen(true);
                             }}
@@ -232,7 +266,7 @@ export default function CourseDocuments({
       >
         <div className="admin_resumemodal_resumeview">
           <Document
-            file={`data:application/pdf;base64,${selectedDocument}`}
+            file={selectedDocument}
             onLoadSuccess={onDocumentLoadSuccess}
           >
             <Page pageNumber={pageNumber} />
