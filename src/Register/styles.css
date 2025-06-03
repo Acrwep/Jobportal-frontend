@@ -37,26 +37,26 @@
     margin-bottom: 20px;
   }
 }
-/* #0056b3 */
-/* rgb(29, 80, 248) */
-/* rgb(15, 70, 248), */
-/* rgb(38 78 207) */
-/* 5597df  */
-/* c26fff */
 .register_blurBackground {
   position: absolute;
   top: 50%;
   left: 30%;
   width: 700px;
-  height: 700px;
-  background: radial-gradient(
+  height: 730px;
+  /* background: radial-gradient(
     circle at center,
     rgba(63, 99, 255, 0.7) 10%,
     rgb(49 46 105 / 85%),
     transparent
+  ); */
+  background: radial-gradient(
+    circle at center,
+    rgb(0 48 255 / 70%) 10%,
+    rgba(49, 46, 105, 0.918),
+    transparent
   );
-  transform: translate(-60%, -50%);
-  filter: blur(100px);
+  transform: translate(-60%, -48%);
+  filter: blur(80px);
   border-radius: 50%;
   z-index: 0;
 }
@@ -70,8 +70,8 @@
     height: 1120px;
     background: radial-gradient(
       circle at center,
-      rgba(63, 99, 255, 0.7) 10%,
-      rgb(49 46 105 / 85%),
+      rgb(0 48 255 / 70%) 10%,
+      rgba(49, 46, 105, 0.918),
       transparent
     );
     transform: translate(-54%, -65%);
@@ -90,8 +90,8 @@
     height: 800px;
     background: radial-gradient(
       circle at center,
-      rgba(63, 99, 255, 0.7) 10%,
-      rgb(49 46 105 / 85%),
+      rgb(0 48 255 / 70%) 10%,
+      rgba(49, 46, 105, 0.918),
       transparent
     );
     transform: translate(-46%, -63%);
@@ -133,7 +133,7 @@
 }
 .register_points ul {
   padding: 0px 0px 0px 24px;
-  color: #e6e6e6;
+  color: #fff;
 }
 .register_points li {
   line-height: 24px;
@@ -392,7 +392,7 @@
   color: #fff;
   font-weight: 600;
   font-size: 17px;
-  border-radius: 22px;
+  border-radius: 16px;
   width: 180px;
   display: flex;
   align-items: center;

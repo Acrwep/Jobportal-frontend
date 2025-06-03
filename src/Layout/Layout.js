@@ -89,10 +89,20 @@ const MainSideMenu = () => {
 
     if (accessToken) {
       setShowSideBar(true);
-      if (location.pathname === "/") {
-        navigate("/question-upload");
+      if (loginDetailsJson.role_id === 1 && location.pathname === "/") {
+        navigate("/trainers");
         setShowPages(false);
         setShowSideBar(true);
+      } else if (
+        (loginDetailsJson.role_id === 2 || loginDetailsJson.role_id === 3) &&
+        location.pathname === "/"
+      ) {
+        const defaultCourseName = localStorage.getItem("defaultCourseName");
+        localStorage.setItem("selectedCourseName", defaultCourseName);
+
+        const defaultCourseId = localStorage.getItem("defaultCourseId");
+        localStorage.setItem("selectedCourseId", defaultCourseId);
+        navigate(`/courses`);
       }
 
       if (location.pathname === "/search") {
@@ -137,8 +147,8 @@ const MainSideMenu = () => {
         setShowSideBar(true);
       }
 
-      if (location.pathname === "/users") {
-        navigate("/users");
+      if (location.pathname === "/trainers") {
+        navigate("/trainers");
         setShowPages(false);
         setShowSideBar(true);
       }
@@ -327,10 +337,19 @@ const MainSideMenu = () => {
       const defaultCourseId = localStorage.getItem("defaultCourseId");
       localStorage.setItem("selectedCourseId", defaultCourseId);
       navigate(`/courses`);
+    } else if (roleId === 2) {
+      setShowPages(false);
+      setShowSideBar(true);
+      const defaultCourseName = localStorage.getItem("defaultCourseName");
+      localStorage.setItem("selectedCourseName", defaultCourseName);
+
+      const defaultCourseId = localStorage.getItem("defaultCourseId");
+      localStorage.setItem("selectedCourseId", defaultCourseId);
+      navigate(`/courses`);
     } else {
       setShowPages(false);
       setShowSideBar(true);
-      navigate("/question-upload");
+      navigate("/trainers");
     }
   };
 
@@ -645,7 +664,7 @@ const MainSideMenu = () => {
                       element={<QuestionUpload />}
                       path="/question-upload"
                     />
-                    <Route element={<Users />} path="/users" />
+                    <Route element={<Users />} path="/trainers" />
                     <Route element={<Candidates />} path="/candidates" />
                     <Route element={<Courses />} path="/courses/:courseName" />
                     <Route element={<Assessments />} path="/assessments" />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./styles.css";
-import { Button, Col, Drawer, Modal, Row, Spin } from "antd";
+import { Button, Col, Drawer, Modal, Row, Spin, Upload } from "antd";
 import CommonInputField from "../Common/CommonInputField";
 import PortalInputField from "../Common/PortalInputField";
 import { MdFileUpload } from "react-icons/md";
@@ -12,19 +12,31 @@ import {
   getCourses,
   getQuestions,
   getSections,
+  questionsBulkUpload,
   updateQuestion,
 } from "../Common/action";
 import PortalSelectField from "../Common/PortalSelectField";
-import { addressValidator, selectValidator } from "../Common/Validation";
+import {
+  addressValidator,
+  mobileValidator,
+  selectValidator,
+} from "../Common/Validation";
 import { CommonToaster } from "../Common/CommonToaster";
 import { LoadingOutlined } from "@ant-design/icons";
 import { AiTwotoneEdit } from "react-icons/ai";
 import CommonTable from "../Common/CommonTable";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
+import ExcelLogo from "../images/excel_logo.png";
+import { IoCloseCircleOutline } from "react-icons/io5";
+import * as XLSX from "xlsx";
+
+const { Dragger } = Upload;
 
 export default function QuestionUpload() {
   const [open, setOpen] = useState(false);
+  const [bulkUploadModal, setBulkUploadModal] = useState(false);
+  const [bulkUploadErrorModal, setBulkUploadErrorModal] = useState(false);
   const [questionsData, setQuestionsData] = useState([]);
   const [question, setQuestion] = useState("");
   const [questionId, setQuestionId] = useState(null);
@@ -51,6 +63,9 @@ export default function QuestionUpload() {
   const [validationTrigger, setValidationTrigger] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [xlsxArray, setXlsxArray] = useState([]);
+  const [excelData, setExcelData] = useState([]);
+  const [excelErrors, setExcelErrors] = useState([]);
   const [tableLoading, setTableLoading] = useState(true);
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -370,6 +385,313 @@ export default function QuestionUpload() {
     }
   };
 
+  const handleXlsx = ({ file }) => {
+    console.log("fileee", file);
+    const allowedTypes = [
+      "application/vnd.ms-excel", // .xls
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+      "text/csv", // .csv
+    ];
+
+    const isValidExcel =
+      allowedTypes.includes(file.type) || /\.(xls|xlsx|csv)$/i.test(file.name);
+
+    if (file.status === "uploading" || file.status === "removed") {
+      setXlsxArray([]);
+      return;
+    }
+
+    if (isValidExcel) {
+      CommonToaster("File uploaded");
+      const reader = new FileReader();
+
+      reader.onload = (evt) => {
+        const arrayBuffer = evt.target.result;
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+
+        const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        const data = rawData.filter(
+          (row) =>
+            Array.isArray(row) &&
+            row.some(
+              (cell) => cell !== undefined && cell !== null && cell !== ""
+            )
+        );
+        console.log("shetttt", data);
+        setExcelData(data);
+      };
+      reader.readAsArrayBuffer(file);
+      setXlsxArray([file]);
+    } else {
+      setXlsxArray([]);
+      CommonToaster("Only .xls, .xlsx, or .csv files are accepted");
+    }
+  };
+
+  const handleBulkUploadSubmit = async () => {
+    const header = excelData[0];
+    let updateExcelData = [...excelData];
+    let error = [];
+    const questionIndex = header.indexOf("Question");
+    const option1Index = header.indexOf("Option 1");
+    const option2Index = header.indexOf("Option 2");
+    const option3Index = header.indexOf("Option 3");
+    const option4Index = header.indexOf("Option 4");
+    const correctAnswerIndex = header.indexOf("Correct Answer");
+    const sectionIndex = header.indexOf("Section");
+    const courseIndex = header.indexOf("Course");
+
+    if (questionIndex === -1) {
+      error.push({ error: "Question column is required" });
+    } else {
+      excelData.slice(1).map((row, rowIndex) => {
+        const qustion = row[questionIndex];
+
+        if (qustion) {
+          let firstNameValidate = addressValidator(qustion);
+          updateExcelData[rowIndex + 1].question = qustion;
+          if (firstNameValidate) {
+            error.push({ error: firstNameValidate, column: rowIndex + 2 });
+          }
+        }
+      });
+    }
+
+    if (option1Index === -1) {
+      error.push({ error: "Option 1 column is required" });
+    } else {
+      excelData.slice(1).map((row, rowIndex) => {
+        const option1 = row[option1Index];
+
+        if (option1) {
+          let option1Validate = addressValidator(option1);
+          updateExcelData[rowIndex + 1].option_a = option1;
+          if (option1Validate) {
+            error.push({
+              error: `Option 1${option1Validate}`,
+              column: rowIndex + 2,
+            });
+          }
+        }
+      });
+    }
+
+    if (option2Index === -1) {
+      error.push({ error: "Option 2 column is required" });
+    } else {
+      excelData.slice(1).map((row, rowIndex) => {
+        const option2 = row[option2Index];
+
+        if (option2) {
+          let option2Validate = addressValidator(option2);
+          updateExcelData[rowIndex + 1].option_b = option2;
+          if (option2Validate) {
+            error.push({
+              error: `Option 2${option2Validate}`,
+              column: rowIndex + 2,
+            });
+          }
+        }
+      });
+    }
+
+    if (option3Index === -1) {
+      error.push({ error: "Option 3 column is required" });
+    } else {
+      excelData.slice(1).map((row, rowIndex) => {
+        const option3 = row[option3Index];
+
+        if (option3) {
+          let option3Validate = addressValidator(option3);
+          updateExcelData[rowIndex + 1].option_c = option3;
+          if (option3Validate) {
+            error.push({
+              error: `Option 3${option3Validate}`,
+              column: rowIndex + 2,
+            });
+          }
+        }
+      });
+    }
+
+    if (option4Index === -1) {
+      error.push({ error: "Option 4 column is required" });
+    } else {
+      excelData.slice(1).map((row, rowIndex) => {
+        const option4 = row[option4Index];
+
+        if (option4) {
+          let option4Validate = addressValidator(option4);
+          updateExcelData[rowIndex + 1].option_d = option4;
+          if (option4Validate) {
+            error.push({
+              error: `Option 4${option4Validate}`,
+              column: rowIndex + 2,
+            });
+          }
+        }
+      });
+    }
+
+    if (correctAnswerIndex === -1) {
+      error.push({ error: "Correct Answer column is required" });
+    } else {
+      excelData.slice(1).map((row, rowIndex) => {
+        updateExcelData[rowIndex + 1].correct_answer = row[correctAnswerIndex];
+        if (
+          row[correctAnswerIndex] !== row[option1Index] &&
+          row[correctAnswerIndex] !== row[option2Index] &&
+          row[correctAnswerIndex] !== row[option3Index] &&
+          row[correctAnswerIndex] !== row[option4Index]
+        ) {
+          error.push({
+            error: "Correct answer must be within the options",
+            column: rowIndex + 2,
+          });
+        }
+      });
+    }
+
+    if (sectionIndex === -1) {
+      error.push({ error: "Section column is required" });
+    } else {
+      excelData.slice(1).map((row, rowIndex) => {
+        const sec = row[sectionIndex];
+        let validateSection;
+        if (sec) {
+          validateSection = sectionData.filter((f) => f.name.includes(sec));
+          console.log("secc validate", validateSection);
+          if (validateSection.length <= 0) {
+            error.push({
+              error: `Section is not valid`,
+              column: rowIndex + 2,
+            });
+          } else {
+            updateExcelData[rowIndex + 1].section_id = validateSection[0].id;
+          }
+        }
+      });
+    }
+
+    if (courseIndex === -1) {
+      error.push({ error: "Course column is required" });
+    } else {
+      excelData.slice(1).map((row, rowIndex) => {
+        const corse = row[courseIndex];
+        let validateCourse;
+
+        if (corse) {
+          validateCourse = courseData.filter((f) =>
+            f.name.toLowerCase().includes(corse.toLowerCase())
+          );
+          console.log("course validate", validateCourse);
+          if (validateCourse.length <= 0) {
+            error.push({
+              error: `Course is not valid`,
+              column: rowIndex + 2,
+            });
+          } else {
+            updateExcelData[rowIndex + 1].course_id = validateCourse[0].id;
+          }
+        }
+      });
+    }
+
+    console.log("errrrrr", error);
+    console.log("resultttt", updateExcelData);
+    setExcelErrors(error);
+
+    if (error.length >= 1) {
+      setBulkUploadErrorModal(true);
+    } else {
+      setBulkUploadErrorModal(false);
+      const payload = convertExcelToQuestions(updateExcelData);
+
+      console.log("bulk upload payloadd", payload);
+      try {
+        await questionsBulkUpload(payload);
+        CommonToaster("Questions uploaded");
+        formReset();
+        getQuestionsData(sectionFilterId, courseFilterId, courseData);
+      } catch (error) {
+        CommonToaster(
+          error?.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
+      }
+    }
+  };
+
+  const convertExcelToQuestions = (excelData) => {
+    const rows = excelData.slice(1);
+
+    const questions = rows.map((row) => {
+      return {
+        question: row[0] || row.question,
+        option_a: row[1] || row.option_a,
+        option_b: row[2] || row.option_b,
+        option_c: row[3] || row.option_c,
+        option_d: row[4] || row.option_d,
+        correct_answer: row[5] || row.correct_answer,
+        section_id: row.section_id,
+        course_id: row.course_id,
+      };
+    });
+
+    return { questions };
+  };
+
+  const downloadCSV = () => {
+    // Step 1: Define data
+    const data = [
+      [
+        "Question",
+        "Option 1",
+        "Option 2",
+        "Option 3",
+        "Option 4",
+        "Correct Answer",
+        "Section",
+        "Course",
+      ],
+      [
+        "xxx",
+        "xxx",
+        "xxx",
+        "xxx",
+        "xxx",
+        "xxx",
+        "Section A",
+        "Fullstack Development",
+      ],
+    ];
+
+    // Step 2: Create worksheet
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+
+    // Step 3: Apply bold style to header row
+    const headerCells = ["A1", "B1"];
+    headerCells.forEach((cell) => {
+      if (!worksheet[cell]) return;
+      worksheet[cell].s = {
+        font: { bold: true },
+      };
+    });
+
+    // Step 4: Create workbook and append the styled sheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    // Step 5: Write file with styles
+    XLSX.writeFile(workbook, "Questions.xlsx", {
+      bookType: "xlsx",
+      cellStyles: true,
+    });
+  };
+
   //handle delete
   const handleDelete = async () => {
     try {
@@ -394,6 +716,7 @@ export default function QuestionUpload() {
   const formReset = () => {
     setButtonLoading(false);
     setOpen(false);
+    setBulkUploadModal(false);
     setDeleteModal(false);
     setEdit(false);
     setValidationTrigger(false);
@@ -415,6 +738,8 @@ export default function QuestionUpload() {
     setCourseId(null);
     setCourseIdError("");
     setDisableCourse(false);
+    setXlsxArray([]);
+    setExcelData([]);
   };
 
   return (
@@ -453,6 +778,7 @@ export default function QuestionUpload() {
             display: "flex",
             justifyContent: "flex-end",
             alignItems: "center",
+            gap: "16px",
           }}
         >
           <button
@@ -461,6 +787,13 @@ export default function QuestionUpload() {
           >
             <MdFileUpload size={19} style={{ marginRight: "5px" }} />
             Upload
+          </button>
+          <button
+            className="questionupload_button"
+            onClick={() => setBulkUploadModal(true)}
+          >
+            <MdFileUpload size={19} style={{ marginRight: "5px" }} />
+            Bulk Upload
           </button>
         </Col>
       </Row>
@@ -656,6 +989,67 @@ export default function QuestionUpload() {
         </form>
       </Drawer>
 
+      {/* bulk upload modal */}
+      <Modal
+        title="Upload file"
+        open={bulkUploadModal}
+        onCancel={formReset}
+        footer={[
+          <div className="questionupload_bulkmodal_footerContainer">
+            <Button
+              className="questionupload_bulkmodal_footercancel_button"
+              onClick={formReset}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="questionupload_bulkmodal_footerimport_button"
+              onClick={handleBulkUploadSubmit}
+            >
+              Import
+            </Button>
+          </div>,
+        ]}
+      >
+        <Dragger
+          multiple={false}
+          className="questionupload_bulkmodal_upload"
+          beforeUpload={(file) => {
+            console.log(file);
+            return false; // Prevent auto-upload
+          }}
+          maxCount={1}
+          onChange={handleXlsx}
+          fileList={xlsxArray}
+        >
+          <img src={ExcelLogo} className="questionupload_excelicon" />
+          <p className="questionupload_bulkmodal_dragtext">
+            Drag&Drop file here or{" "}
+            <span className="questionupload_bulkmodal_choosefile">
+              Choose file
+            </span>
+          </p>
+        </Dragger>
+        <div className="questionupload_excelsupportContainer">
+          <p>Supported format: XLS,XLSX,CSV</p>
+          <p>Maximum size: 25MB</p>
+        </div>
+        <div className="questionupload_bulkupload_templateContainer">
+          <img src={ExcelLogo} style={{ width: "30px" }} />
+          <p className="questionupload_templateheading">Template</p>
+          <p className="questionupload_templatetext">
+            you can download template as starting point for your own file.
+          </p>
+          <button
+            className="questionupload_templatedownload_button"
+            onClick={downloadCSV}
+          >
+            Download
+          </button>
+        </div>
+      </Modal>
+
+      {/* delete modal */}
       <Modal
         open={deleteModal}
         onCancel={() => {
@@ -696,6 +1090,32 @@ export default function QuestionUpload() {
             </Button>
           </div>
         </div>
+      </Modal>
+
+      {/* bulk upload error modal */}
+      <Modal
+        open={bulkUploadErrorModal}
+        onCancel={() => {
+          setBulkUploadErrorModal(false);
+        }}
+        footer={false}
+        title="Error"
+      >
+        {excelErrors.map((item, index) => {
+          return (
+            <React.Fragment key={index}>
+              <div className="questionupload_bulkerrorContainer">
+                <IoCloseCircleOutline size={20} color="red" />
+                <p>
+                  {item.error}{" "}
+                  <span
+                    style={{ color: "#0056b3", fontWeight: 600 }}
+                  >{`[column: ${item.column}]`}</span>
+                </p>
+              </div>
+            </React.Fragment>
+          );
+        })}
       </Modal>
     </div>
   );

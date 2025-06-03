@@ -159,7 +159,7 @@
   top: 50%;
   left: 40%;
   width: 700px;
-  height: 650px;
+  height: 680px;
   /* background: radial-gradient(
     circle at center,
     rgba(63, 99, 255, 0.7) 10%,
@@ -169,11 +169,11 @@
   background: radial-gradient(
     circle at center,
     rgb(0 48 255 / 70%) 10%,
-    rgb(49 46 105 / 85%),
+    rgba(49, 46, 105, 0.918),
     transparent
   );
-  transform: translate(-74%, -48%);
-  filter: blur(90px);
+  transform: translate(-74%, -46%);
+  filter: blur(80px);
   border-radius: 30%;
   z-index: 0;
 }
@@ -183,14 +183,14 @@
     top: 50%;
     left: 40%;
     width: 500px;
-    height: 1120px;
+    height: 1150px;
     background: radial-gradient(
       circle at center,
-      rgba(63, 99, 255, 0.7) 10%,
-      rgb(49 46 105 / 85%),
+      rgb(0 48 255 / 70%) 10%,
+      rgba(49, 46, 105, 0.918),
       transparent
     );
-    transform: translate(-54%, -65%);
+    transform: translate(-54%, -70%);
     filter: blur(90px);
     border-radius: 30%;
     z-index: 0;
@@ -206,8 +206,8 @@
     height: 800px;
     background: radial-gradient(
       circle at center,
-      rgba(63, 99, 255, 0.7) 10%,
-      rgb(49 46 105 / 85%),
+      rgb(0 48 255 / 70%) 10%,
+      rgba(49, 46, 105, 0.918),
       transparent
     );
     transform: translate(-46%, -63%);

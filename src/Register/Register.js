@@ -19,7 +19,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { MdMenuBook } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import axios from "axios";
-import InterviewIcon from "../images/login-interview-icon.png";
+import InterviewIcon from "../images/login-interview.png";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -288,8 +288,8 @@ export default function Register() {
                   </li>
                 </ul>
                 <div className="lmsregister_subheadingContainer">
-                  <img src={InterviewIcon} style={{ width: "20px" }} />
-                  <h3>Interview</h3>
+                  <img src={InterviewIcon} style={{ width: "22px" }} />
+                  <h3>Interview preparation powered by ai</h3>
                 </div>
                 <ul>
                   <li>Practice company-based interview questions.</li>

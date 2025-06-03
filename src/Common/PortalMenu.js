@@ -73,8 +73,15 @@ export default function PortalMenu() {
       const defaultCourseId = localStorage.getItem("defaultCourseId");
       localStorage.setItem("selectedCourseId", defaultCourseId);
       navigate(`/courses`);
+    } else if (roleId === 2) {
+      const defaultCourseName = localStorage.getItem("defaultCourseName");
+      localStorage.setItem("selectedCourseName", defaultCourseName);
+
+      const defaultCourseId = localStorage.getItem("defaultCourseId");
+      localStorage.setItem("selectedCourseId", defaultCourseId);
+      navigate(`/courses`);
     } else {
-      navigate("/question-upload");
+      navigate("/trainers");
     }
   };
 
@@ -85,7 +92,7 @@ export default function PortalMenu() {
     if (roleId === 3) {
       navigate(`/assessments`);
     } else {
-      navigate("/question-upload");
+      navigate("/trainers");
     }
   };
 

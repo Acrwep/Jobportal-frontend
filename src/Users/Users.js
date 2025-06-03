@@ -34,8 +34,6 @@ export default function Users() {
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [roleOptions, setRoleOptions] = useState([]);
-  const [role, setRole] = useState(2);
   const experienceOptions = [
     { id: "1 year", name: "1 year" },
     { id: "2 year", name: "2 year" },
@@ -45,7 +43,6 @@ export default function Users() {
   ];
   const [experience, setExperience] = useState(null);
   const [experienceError, setExperienceError] = useState("");
-  const [roleError, setRoleError] = useState(null);
   const [usersData, setUsersData] = useState([]);
   const [profilePictureArray, setProfilePictureArray] = useState([]);
   const [profilePicture, setProfilePicture] = useState("");
@@ -86,32 +83,8 @@ export default function Users() {
   ];
 
   useEffect(() => {
-    getRolesdata();
+    getUsersData();
   }, []);
-
-  const getRolesdata = async () => {
-    try {
-      const response = await getRoles();
-      console.log("role response", response);
-      const roles = response?.data?.data || [];
-      if (roles.length >= 1) {
-        const filterExceptStudents = roles.filter((f) => f.id != 3);
-        setRoleOptions(filterExceptStudents);
-      } else {
-        setRoleOptions([]);
-      }
-    } catch (error) {
-      setRoleOptions([]);
-      CommonToaster(
-        error?.response?.data?.message ||
-          "Something went wrong. Try again later"
-      );
-    } finally {
-      setTimeout(() => {
-        getUsersData();
-      }, 200);
-    }
-  };
 
   const getUsersData = async (search) => {
     setTableLoading(true);
@@ -124,7 +97,7 @@ export default function Users() {
       const allUsers = response?.data?.data || [];
       if (allUsers.length >= 1) {
         const filterExceptStudents = allUsers.filter(
-          (f) => f.role === "Admin" || f.role === "Trainer"
+          (f) => f.role === "Trainer"
         );
         console.log("except students", filterExceptStudents);
         setUsersData(filterExceptStudents);
@@ -201,33 +174,23 @@ export default function Users() {
     const nameValidate = nameValidator(name);
     const emailValidate = emailValidator(email);
     const passwordValidate = addressValidator(password);
-    const roleValidate = selectValidator(role);
     let isFormError = false;
 
     setNameError(nameValidate);
     setEmailError(emailValidate);
     setPasswordError(passwordValidate);
-    setRoleError(roleValidate);
 
-    if (role === 2) {
-      const experienceValidate = selectValidator(experience);
+    const experienceValidate = selectValidator(experience);
 
-      setExperienceError(experienceValidate);
+    setExperienceError(experienceValidate);
 
-      if (experienceValidate) {
-        isFormError = true;
-      } else {
-        isFormError = false;
-      }
+    if (experienceValidate) {
+      isFormError = true;
+    } else {
+      isFormError = false;
     }
 
-    if (
-      nameValidate ||
-      emailValidate ||
-      passwordValidate ||
-      roleValidate ||
-      isFormError
-    )
+    if (nameValidate || emailValidate || passwordValidate || isFormError)
       return;
 
     setButtonLoading(true);
@@ -236,7 +199,7 @@ export default function Users() {
       name: name,
       email: email,
       password: password,
-      role_id: role,
+      role_id: 2,
       course_id: null,
       experience: experience,
       profile: profilePicture,
@@ -292,8 +255,6 @@ export default function Users() {
     setEmailError("");
     setPassword("");
     setPasswordError("");
-    setRole(null);
-    setRoleError("");
     setValidationTrigger(false);
     setExperience("");
     setExperienceError("");
@@ -322,14 +283,13 @@ export default function Users() {
     setName(item.name);
     setEmail(item.email);
     setPassword(item.password);
-    setRole(item.role === "Trainer" ? 2 : 1);
     setExperience(item.experience);
     setOpen(true);
   };
 
   return (
     <div>
-      <p className="portal_mainheadings">Users</p>
+      <p className="portal_mainheadings">Trainers</p>
 
       <Row style={{ marginTop: "22px" }}>
         <Col xs={24} sm={24} md={24} lg={12}>
@@ -358,7 +318,7 @@ export default function Users() {
             className="questionupload_button"
             onClick={() => setOpen(true)}
           >
-            <IoMdAdd size={19} style={{ marginRight: "6px" }} /> Add User
+            <IoMdAdd size={19} style={{ marginRight: "6px" }} /> Add Trainer
           </button>
         </Col>
       </Row>
@@ -385,25 +345,24 @@ export default function Users() {
         footer={false}
       >
         <form>
-          {role === 2 && (
-            <div className="user_trainerprofileContainer">
-              <Upload
-                listType="picture-circle"
-                fileList={profilePictureArray}
-                onPreview={handlePreview}
-                onChange={handleProfileAttachment}
-                onRemove={(file) => handleRemoveProfile(file)}
-                beforeUpload={() => false} // prevent auto upload
-              >
-                {profilePictureArray.length >= 1 ? null : (
-                  <div>
-                    <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Upload</div>
-                  </div>
-                )}
-              </Upload>
-            </div>
-          )}
+          <div className="user_trainerprofileContainer">
+            <Upload
+              listType="picture-circle"
+              fileList={profilePictureArray}
+              onPreview={handlePreview}
+              onChange={handleProfileAttachment}
+              onRemove={(file) => handleRemoveProfile(file)}
+              beforeUpload={() => false} // prevent auto upload
+            >
+              {profilePictureArray.length >= 1 ? null : (
+                <div>
+                  <PlusOutlined />
+                  <div style={{ marginTop: 8 }}>Upload</div>
+                </div>
+              )}
+            </Upload>
+          </div>
+
           <div>
             <PortalInputField
               label="Name"
@@ -458,37 +417,18 @@ export default function Users() {
 
           <div style={{ marginTop: "22px" }}>
             <PortalSelectField
-              label="Role"
-              value={role}
-              options={roleOptions}
+              label="Experience"
+              value={experience}
+              options={experienceOptions}
               onChange={(value) => {
-                setRole(value);
+                setExperience(value);
                 if (validationTrigger) {
-                  setRoleError(selectValidator(value));
+                  setExperienceError(selectValidator(value));
                 }
               }}
-              error={roleError}
+              error={experienceError}
             />
           </div>
-
-          {role === 2 && (
-            <>
-              <div style={{ marginTop: "22px" }}>
-                <PortalSelectField
-                  label="Experience"
-                  value={experience}
-                  options={experienceOptions}
-                  onChange={(value) => {
-                    setExperience(value);
-                    if (validationTrigger) {
-                      setExperienceError(selectValidator(value));
-                    }
-                  }}
-                  error={experienceError}
-                />
-              </div>
-            </>
-          )}
 
           <div className="user_formbuttonContainer">
             {buttonLoading ? (

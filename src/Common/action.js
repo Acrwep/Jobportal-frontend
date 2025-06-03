@@ -374,6 +374,15 @@ export const createQuestion = async (payload) => {
   }
 };
 
+export const questionsBulkUpload = async (payload) => {
+  try {
+    const response = await api.post("/api/bulkInsertQuestions", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const updateQuestion = async (payload) => {
   try {
     const response = await api.post("/api/updateQuestions", payload);

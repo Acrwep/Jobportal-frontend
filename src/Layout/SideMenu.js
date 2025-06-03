@@ -15,14 +15,14 @@ import { CiBullhorn } from "react-icons/ci";
 import { GrNotes } from "react-icons/gr";
 import { getCourseByTrainers, getCourses } from "../Common/action";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 export default function SideMenu() {
   const location = useLocation();
   const navigate = useNavigate();
+  const currentPortalName = useSelector((state) => state.currentportalname);
   const [selectedKey, setSelectedKey] = useState("");
   const [menuItems, setMenuItems] = useState([]);
-  const [isInterviewPortal, setIsInterviewPortal] = useState(false);
-  const [interviewPortalMenu, setInterviewPortalMenu] = useState([]);
 
   useEffect(() => {
     const pathName = location.pathname.split("/")[1];
@@ -38,25 +38,25 @@ export default function SideMenu() {
       7: "digitalmarketing",
     };
 
-    if (pathName === "assessments" || pathName === "assessment-results") {
-      setIsInterviewPortal(true);
-      setSelectedKey(pathName);
-      setInterviewPortalMenu([
-        {
-          key: "assessments",
-          icon: <FaExternalLinkAlt size={17} />,
-          label: "Assessments",
-        },
-        {
-          key: "assessment-results",
-          icon: <GrNotes size={17} />,
-          label: "Result",
-        },
-      ]);
-      return;
-    }
-    setIsInterviewPortal(false);
-    setInterviewPortalMenu([]);
+    // if (pathName === "assessments" || pathName === "assessment-results") {
+    //   setIsInterviewPortal(true);
+    //   setSelectedKey(pathName);
+    //   setInterviewPortalMenu([
+    //     {
+    //       key: "assessments",
+    //       icon: <FaExternalLinkAlt size={17} />,
+    //       label: "Assessments",
+    //     },
+    //     {
+    //       key: "assessment-results",
+    //       icon: <GrNotes size={17} />,
+    //       label: "Result",
+    //     },
+    //   ]);
+    //   return;
+    // }
+    // setIsInterviewPortal(false);
+    // setInterviewPortalMenu([]);
     if (pathName === "") {
       setSelectedKey("question-upload");
     }
@@ -69,7 +69,7 @@ export default function SideMenu() {
 
   useEffect(() => {
     initMenu();
-  }, []);
+  }, [currentPortalName]);
 
   const initMenu = async () => {
     let defaultItems;
@@ -81,100 +81,201 @@ export default function SideMenu() {
     // role 3=student
 
     if (roleId == 1) {
-      defaultItems = [
-        {
-          key: "question-upload",
-          icon: <MdQuestionAnswer size={17} />,
-          label: "Questions",
-        },
-        {
-          key: "users",
-          icon: <FaUsers size={17} />,
-          label: "Users",
-        },
-        {
-          key: "candidates",
-          icon: <PiStudentFill size={17} />,
-          label: "Candidates",
-        },
-      ];
-    } else if (roleId == 2) {
-      defaultItems = [
-        {
-          key: "question-upload",
-          icon: <MdQuestionAnswer size={17} />,
-          label: "Questions",
-        },
-        {
-          key: "candidates",
-          icon: <PiStudentFill size={17} />,
-          label: "Candidates",
-        },
-      ];
-    } else {
-      defaultItems = [];
+      if (currentPortalName === "lms") {
+        defaultItems = [
+          {
+            key: "trainers",
+            icon: <FaUsers size={17} />,
+            label: "Trainers",
+          },
+        ];
+      } else if (currentPortalName === "interview") {
+        defaultItems = [
+          {
+            key: "question-upload",
+            icon: <MdQuestionAnswer size={17} />,
+            label: "Questions",
+          },
+          {
+            key: "candidates",
+            icon: <PiStudentFill size={17} />,
+            label: "Candidates",
+          },
+        ];
+      } else {
+        defaultItems = [];
+      }
     }
 
-    if (roleId == 1 || roleId == 3) {
-      try {
-        const response = await getCourses();
-        const allCourses = response?.data?.data || [];
+    if (roleId == 2) {
+      if (currentPortalName === "interview") {
+        defaultItems = [
+          {
+            key: "question-upload",
+            icon: <MdQuestionAnswer size={17} />,
+            label: "Questions",
+          },
+          {
+            key: "candidates",
+            icon: <PiStudentFill size={17} />,
+            label: "Candidates",
+          },
+        ];
+      } else {
+        defaultItems = [];
+      }
+    }
 
-        if (allCourses.length > 0) {
-          const courseSubItems = allCourses.map((course) => {
-            let courseKey = "";
-            let courseIcon = null;
+    if (roleId == 3) {
+      if (currentPortalName === "interview") {
+        defaultItems = [
+          {
+            key: "assessments",
+            icon: <FaExternalLinkAlt size={17} />,
+            label: "Assessments",
+          },
+          {
+            key: "assessment-results",
+            icon: <GrNotes size={17} />,
+            label: "Result",
+          },
+        ];
+      } else {
+        defaultItems = [];
+      }
+    }
 
-            switch (course.name) {
-              case "Fullstack Development":
-                courseKey = "fullstack";
-                courseIcon = <FaCode size={17} />;
-                break;
-              case "Software Testing":
-                courseKey = "softwaretesting";
-                courseIcon = <SlMagnifier size={17} />;
-                break;
-              case "Data Science":
-                courseKey = "datascience";
-                courseIcon = <GiMaterialsScience size={17} />;
-                break;
-              case "Data Analytics":
-                courseKey = "dataanalytics";
-                courseIcon = <BsBarChartLine size={17} />;
-                break;
-              case "Cloud Computing":
-                courseKey = "cloudcomputing";
-                courseIcon = <BsCloudArrowDown size={17} />;
-                break;
-              case "UI-UX":
-                courseKey = "uiux";
-                courseIcon = <MdScreenshotMonitor size={17} />;
-                break;
-              case "Digital Marketing":
-                courseKey = "digitalmarketing";
-                courseIcon = <CiBullhorn size={17} />;
-                break;
-              default:
-                courseKey = course.name.toLowerCase().replace(/\s+/g, "-");
-            }
+    if (currentPortalName === "lms") {
+      if (roleId == 1 || roleId == 3) {
+        try {
+          const response = await getCourses();
+          const allCourses = response?.data?.data || [];
 
-            return {
-              key: courseKey,
-              label: course.name,
-              icon: courseIcon,
-              courseId: course.id,
-              path: "courses",
-            };
-          });
+          if (allCourses.length > 0) {
+            const courseSubItems = allCourses.map((course) => {
+              let courseKey = "";
+              let courseIcon = null;
 
-          if (roleId == 1) {
-            defaultItems.push({
-              key: "courses",
-              label: "Courses",
-              icon: <MdMenuBook size={17} />,
-              children: courseSubItems,
+              switch (course.name) {
+                case "Fullstack Development":
+                  courseKey = "fullstack";
+                  courseIcon = <FaCode size={17} />;
+                  break;
+                case "Software Testing":
+                  courseKey = "softwaretesting";
+                  courseIcon = <SlMagnifier size={17} />;
+                  break;
+                case "Data Science":
+                  courseKey = "datascience";
+                  courseIcon = <GiMaterialsScience size={17} />;
+                  break;
+                case "Data Analytics":
+                  courseKey = "dataanalytics";
+                  courseIcon = <BsBarChartLine size={17} />;
+                  break;
+                case "Cloud Computing":
+                  courseKey = "cloudcomputing";
+                  courseIcon = <BsCloudArrowDown size={17} />;
+                  break;
+                case "UI-UX":
+                  courseKey = "uiux";
+                  courseIcon = <MdScreenshotMonitor size={17} />;
+                  break;
+                case "Digital Marketing":
+                  courseKey = "digitalmarketing";
+                  courseIcon = <CiBullhorn size={17} />;
+                  break;
+                default:
+                  courseKey = course.name.toLowerCase().replace(/\s+/g, "-");
+              }
+
+              return {
+                key: courseKey,
+                label: course.name,
+                icon: courseIcon,
+                courseId: course.id,
+                path: "courses",
+              };
             });
-          } else {
+
+            if (roleId == 1) {
+              defaultItems.push({
+                key: "courses",
+                label: "Courses",
+                icon: <MdMenuBook size={17} />,
+                children: courseSubItems,
+              });
+            } else {
+              defaultItems.push({
+                key: "courses",
+                label: "Courses",
+                icon: <MdMenuBook size={17} />,
+                children: courseSubItems,
+              });
+            }
+          }
+
+          setMenuItems(defaultItems);
+        } catch (error) {
+          console.error("get course error", error);
+          setMenuItems(defaultItems); // fallback to default menu only
+        }
+      } else {
+        try {
+          const response = await getCourseByTrainers(loginUserId);
+          console.log("getCourseByTrainers", response);
+
+          const allCourses = response?.data?.courses || [];
+          console.log("mapping courses", allCourses);
+          if (allCourses.length > 0) {
+            const courseSubItems = allCourses.map((course) => {
+              let courseKey = "";
+              let courseIcon = null;
+
+              switch (course.course_name) {
+                case "Fullstack Development":
+                  courseKey = "fullstack";
+                  courseIcon = <FaCode size={17} />;
+                  break;
+                case "Software Testing":
+                  courseKey = "softwaretesting";
+                  courseIcon = <SlMagnifier size={17} />;
+                  break;
+                case "Data Science":
+                  courseKey = "datascience";
+                  courseIcon = <GiMaterialsScience size={17} />;
+                  break;
+                case "Data Analytics":
+                  courseKey = "dataanalytics";
+                  courseIcon = <BsBarChartLine size={17} />;
+                  break;
+                case "Cloud Computing":
+                  courseKey = "cloudcomputing";
+                  courseIcon = <BsCloudArrowDown size={17} />;
+                  break;
+                case "UI-UX":
+                  courseKey = "uiux";
+                  courseIcon = <MdScreenshotMonitor size={17} />;
+                  break;
+                case "Digital Marketing":
+                  courseKey = "digitalmarketing";
+                  courseIcon = <CiBullhorn size={17} />;
+                  break;
+                default:
+                  courseKey = course.course_name
+                    .toLowerCase()
+                    .replace(/\s+/g, "-");
+              }
+
+              return {
+                key: courseKey,
+                label: course.course_name,
+                icon: courseIcon,
+                courseId: course.id,
+                path: "courses",
+              };
+            });
+
             defaultItems.push({
               key: "courses",
               label: "Courses",
@@ -182,91 +283,19 @@ export default function SideMenu() {
               children: courseSubItems,
             });
           }
-        }
 
-        setMenuItems(defaultItems);
-      } catch (error) {
-        console.error("get course error", error);
-        setMenuItems(defaultItems); // fallback to default menu only
+          setMenuItems(defaultItems);
+        } catch (error) {
+          console.error("get course error", error);
+          setMenuItems(defaultItems); // fallback to default menu only
+        }
       }
     } else {
-      try {
-        const response = await getCourseByTrainers(loginUserId);
-        console.log("getCourseByTrainers", response);
-
-        const allCourses = response?.data?.courses || [];
-        console.log("mapping courses", allCourses);
-        if (allCourses.length > 0) {
-          const courseSubItems = allCourses.map((course) => {
-            let courseKey = "";
-            let courseIcon = null;
-
-            switch (course.course_name) {
-              case "Fullstack Development":
-                courseKey = "fullstack";
-                courseIcon = <FaCode size={17} />;
-                break;
-              case "Software Testing":
-                courseKey = "softwaretesting";
-                courseIcon = <SlMagnifier size={17} />;
-                break;
-              case "Data Science":
-                courseKey = "datascience";
-                courseIcon = <GiMaterialsScience size={17} />;
-                break;
-              case "Data Analytics":
-                courseKey = "dataanalytics";
-                courseIcon = <BsBarChartLine size={17} />;
-                break;
-              case "Cloud Computing":
-                courseKey = "cloudcomputing";
-                courseIcon = <BsCloudArrowDown size={17} />;
-                break;
-              case "UI-UX":
-                courseKey = "uiux";
-                courseIcon = <MdScreenshotMonitor size={17} />;
-                break;
-              case "Digital Marketing":
-                courseKey = "digitalmarketing";
-                courseIcon = <CiBullhorn size={17} />;
-                break;
-              default:
-                courseKey = course.course_name
-                  .toLowerCase()
-                  .replace(/\s+/g, "-");
-            }
-
-            return {
-              key: courseKey,
-              label: course.course_name,
-              icon: courseIcon,
-              courseId: course.id,
-              path: "courses",
-            };
-          });
-
-          defaultItems.push({
-            key: "courses",
-            label: "Courses",
-            icon: <MdMenuBook size={17} />,
-            children: courseSubItems,
-          });
-        }
-
-        setMenuItems(defaultItems);
-      } catch (error) {
-        console.error("get course error", error);
-        setMenuItems(defaultItems); // fallback to default menu only
-      }
+      setMenuItems(defaultItems);
     }
   };
 
   const handleMenuClick = ({ key }) => {
-    if (isInterviewPortal) {
-      setSelectedKey(key);
-      navigate(`/${key}`);
-      return;
-    }
     const findItem = (items) => {
       for (let item of items) {
         if (item.key === key) return item;
@@ -304,7 +333,7 @@ export default function SideMenu() {
       selectedKeys={[selectedKey]}
       defaultOpenKeys={["courses"]}
       onClick={handleMenuClick}
-      items={isInterviewPortal ? interviewPortalMenu : menuItems}
+      items={menuItems}
     />
   );
 }

@@ -8,15 +8,18 @@ import {
   nameValidator,
 } from "../Common/Validation";
 import { CommonToaster } from "../Common/CommonToaster";
-import { adminLogin, getCourses } from "../Common/action";
+import { adminLogin, getCourseByTrainers, getCourses } from "../Common/action";
 import { LoadingOutlined } from "@ant-design/icons";
 import { MdMenuBook } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
-import InterviewIcon from "../images/login-interview-icon.png";
+import InterviewIcon from "../images/login-interview.png";
 import Image from "../images/banner-girl.png";
+import { useDispatch } from "react-redux";
+import { storeCurrentPortalName } from "../Redux/slice";
 
 export default function LmsLogin() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
@@ -63,8 +66,12 @@ export default function LmsLogin() {
 
       setTimeout(() => {
         setLoading(false);
-        if (loginDetails.role_id === 1 || loginDetails.role_id === 2) {
-          navigate("/question-upload");
+        dispatch(storeCurrentPortalName("lms"));
+        if (loginDetails.role_id === 1) {
+          navigate("/trainers");
+        } else if (loginDetails.role_id === 2) {
+          // navigate("/courses");
+          getCoursesByTrainersData(loginDetails.id);
         } else {
           getCourseData(loginDetails.course_id);
         }
@@ -73,6 +80,26 @@ export default function LmsLogin() {
       console.log("login error", error);
       setLoading(false);
       CommonToaster(error?.response?.data?.message || "Internal server error.");
+    }
+  };
+
+  const getCoursesByTrainersData = async (trainerid) => {
+    try {
+      const response = await getCourseByTrainers(trainerid);
+      console.log("getCourseByTrainers", response);
+      const allCourses = response?.data?.courses || [];
+      if (allCourses.length >= 1) {
+        const courseName = allCourses[0].course_name;
+        const courseId = allCourses[0].id;
+        localStorage.setItem("selectedCourseName", courseName);
+        localStorage.setItem("selectedCourseId", courseId);
+
+        localStorage.setItem("defaultCourseName", courseName);
+        localStorage.setItem("defaultCourseId", courseId);
+        navigate(`/courses`);
+      }
+    } catch (error) {
+      console.log("trainer course error", error);
     }
   };
 
@@ -123,65 +150,63 @@ export default function LmsLogin() {
                 Access 3 Portals.
               </p>
 
-              {/* <div className="register_points">
-                    <div className="lmsregister_subheadingContainer">
-                      <MdMenuBook color="#ffffff" size={20} />
-                      <h3>LMS</h3>
-                    </div>
+              <div className="register_points">
+                <div className="lmsregister_subheadingContainer">
+                  <MdMenuBook color="#ffffff" size={20} />
+                  <h3>LMS</h3>
+                </div>
 
-                    <ul>
-                      <li>Watch top trainers' videos and docs</li>
-                      <li>Learn anytime with videos and documents.</li>
-                      <li>
-                        Quickly find topics with organized learning materials.
-                      </li>
-                    </ul>
+                <ul>
+                  <li>Watch top trainers' videos and docs</li>
+                  <li>Learn anytime with videos and documents.</li>
+                  <li>
+                    Quickly find topics with organized learning materials.
+                  </li>
+                </ul>
 
-                    <div className="lmsregister_subheadingContainer">
-                      <img src={InterviewIcon} style={{ width: "20px" }} />
-                      <h3>Interview</h3>
-                    </div>
+                <div className="lmsregister_subheadingContainer">
+                  <img src={InterviewIcon} style={{ width: "22px" }} />
+                  <h3>Interview preparation powered by ai</h3>
+                </div>
 
-                    <ul>
-                      <li>Practice company-based interview questions.</li>
-                      <li>Take online assessment tests to crack interviews</li>
-                      <li>Prepare effectively with real-world questions.</li>
-                    </ul>
+                <ul>
+                  <li>Practice company-based interview questions.</li>
+                  <li>Take online assessment tests to crack interviews</li>
+                  <li>Prepare effectively with real-world questions.</li>
+                </ul>
 
-                    <div className="lmsregister_subheadingContainer">
-                      <FaUsers color="#ffffff" size={20} />
-                      <h3>Placement</h3>
-                    </div>
-                    <ul>
-                      <li>
-                        Upload your updated resume to the placement portal
-                      </li>
-                      <li>Mention ACTE course in your resume for placement</li>
-                      <li>Stay confident—your dream job awaits!</li>
-                    </ul>
-                  </div> */}
-              <div style={{ marginTop: "20px", display: "flex", gap: "30px" }}>
+                <div className="lmsregister_subheadingContainer">
+                  <FaUsers color="#ffffff" size={20} />
+                  <h3>Placement</h3>
+                </div>
+                <ul>
+                  <li>Upload your updated resume to the placement portal</li>
+                  <li>Mention ACTE course in your resume for placement</li>
+                  <li>Stay confident—your dream job awaits!</li>
+                </ul>
+              </div>
+              {/* <div style={{ marginTop: "20px", display: "flex", gap: "30px" }}>
                 <div className="register_portalcards">
-                  <MdMenuBook color="#ffffff" size={22} />
+                  <MdMenuBook color="#ffffff" size={24} />
                   <h3>LMS</h3>
                 </div>
                 <div className="register_portalcards">
-                  <img src={InterviewIcon} style={{ width: "22px" }} />
+                  <img src={InterviewIcon} style={{ width: "26px" }} />
                   <h3>Interview</h3>
                 </div>
-              </div>
+              </div> */}
 
-              <div
+              {/* <div
                 className="register_portalcards"
                 style={{ marginTop: "20px" }}
               >
-                <FaUsers color="#ffffff" size={20} />
+                <FaUsers color="#ffffff" size={24} />
                 <h3>Placement</h3>
-              </div>
+              </div> */}
             </div>
-            <div className="register_bannergirlContainer">
+            {/* <div className="register_bannergirlContainer">
               <img src={Image} />
-            </div>
+            </div> */}
           </Col>
 
           <Col xs={24} sm={24} md={24} lg={12} style={{ marginTop: "20px" }}>
