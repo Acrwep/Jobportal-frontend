@@ -6,7 +6,6 @@ import {
   useNavigate,
   Navigate,
 } from "react-router-dom";
-import Login from "../Login/Login";
 import Admin from "../Admin/Admin";
 import FolderManagement from "../FolderManagement/FolderManagement";
 import CandidateRegister from "../CandidateRegister/CandidateRegister";

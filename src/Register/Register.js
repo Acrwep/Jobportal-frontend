@@ -18,6 +18,9 @@ import { useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import { MdMenuBook } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
+import { TbArrowBadgeRight } from "react-icons/tb";
+import ActeLogo from "../images/old-acte-logo.png";
+import StudentImage from "../images/banner-girl.png";
 import axios from "axios";
 import InterviewIcon from "../images/login-interview.png";
 
@@ -64,32 +67,6 @@ export default function Register() {
       throw error;
     }
   };
-
-  const useWindowWidth = () => {
-    const [windowSize, setWindowSize] = useState(window.innerWidth);
-
-    useEffect(() => {
-      const handleResize = () => {
-        setWindowSize(window.innerWidth);
-      };
-
-      window.addEventListener("resize", handleResize);
-
-      // Call initially to sync in case of SSR or rehydration
-      handleResize();
-
-      // Clean up listener on unmount
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
-    return windowSize;
-  };
-
-  const windowWidth = useWindowWidth();
-
-  useEffect(() => {
-    console.log("Window width changed:", windowWidth);
-  }, [windowWidth]);
 
   useEffect(() => {
     getCourseData();
@@ -256,266 +233,366 @@ export default function Register() {
   };
 
   return (
-    <div className="register_mainContainer">
-      <div className="register_largecard">
-        <div className="register_blurBackground"></div>
+    <div className="loginpage_maincontainer">
+      <Row style={{ height: "100%" }}>
+        <Col
+          xs={24}
+          sm={24}
+          md={24}
+          lg={12}
+          style={{ backgroundColor: "#555ca3", position: "relative" }}
+        >
+          <div className="loginpage_leftContainer">
+            <p className="loginpage_leftheading">
+              Login Once.
+              <br />
+              Access 3 Portals.
+            </p>
 
-        <Row gutter={0}>
-          <Col
-            xs={24}
-            sm={24}
-            md={24}
-            lg={12}
-            className="register_left-Col-Container"
-          >
-            <div className="register_leftContainer">
-              <p className="register_heading">
-                Register Once.
-                <br />
-                Access 3 Portals.
-              </p>
-
-              <div className="register_points">
-                <div className="lmsregister_subheadingContainer">
-                  <MdMenuBook color="#ffffff" size={20} />
-                  <h3>LMS</h3>
-                </div>
-                <ul>
-                  <li>Watch top trainers' videos and docs</li>
-                  <li>Learn anytime with videos and documents.</li>
-                  <li>
-                    Quickly find topics with organized learning materials.
-                  </li>
-                </ul>
-                <div className="lmsregister_subheadingContainer">
-                  <img src={InterviewIcon} style={{ width: "22px" }} />
-                  <h3>Interview preparation powered by ai</h3>
-                </div>
-                <ul>
-                  <li>Practice company-based interview questions.</li>
-                  <li>Take online assessment tests to crack interviews</li>
-                  <li>Prepare effectively with real-world questions.</li>
-                </ul>
-                <div className="lmsregister_subheadingContainer">
-                  <FaUsers color="#ffffff" size={20} />
-                  <h3>Placement</h3>
-                </div>{" "}
-                <ul>
-                  <li>Upload your updated resume to the placement portal</li>
-                  <li>Mention ACTE course in your resume for placement</li>
-                  <li>Stay confident—your dream job awaits!</li>
-                </ul>
+            <div className="loginpage_points">
+              <div className="loginpage_subheadingContainer">
+                <MdMenuBook color="#ffffff" size={20} />
+                <h3>LMS</h3>
               </div>
+
+              <ul>
+                <li>
+                  <TbArrowBadgeRight size={18} style={{ marginRight: "6px" }} />{" "}
+                  Watch top trainers' videos and docs
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Learn anytime with videos and documents.
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Quickly find topics with organized learning materials.
+                </li>
+              </ul>
+
+              <div className="loginpage_subheadingContainer">
+                <img src={InterviewIcon} style={{ width: "22px" }} />
+                <h3>Interview preparation powered by ai</h3>
+              </div>
+
+              <ul>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Practice company-based interview questions.
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Take online assessment tests to crack interviews
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Prepare effectively with real-world questions.
+                </li>
+              </ul>
+
+              <div className="loginpage_subheadingContainer">
+                <FaUsers color="#ffffff" size={20} />
+                <h3>Placement</h3>
+              </div>
+              <ul>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Upload your updated resume to the placement portal
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Mention ACTE course in your resume for placement
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Stay confident—your dream job awaits!
+                </li>
+              </ul>
             </div>
-          </Col>
+          </div>
 
-          <Col xs={24} sm={24} md={24} lg={12}>
-            <div className="lmsregister_rightContainer">
-              <p className="register_createaccount_heading">
-                Create an account.
-              </p>
-              <p className="register_smalltext">
-                Already have an account?{" "}
-                <span
-                  style={{
-                    color: "#0056b3",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                  onClick={() => navigate("/login")}
+          <div className="loginpage_leftbuttonContainer">
+            <div
+              className="loginpage_leftinactive_button"
+              style={{ marginBottom: "16px" }}
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </div>
+            <div className="loginpage_leftactive_button">Sign up</div>
+          </div>
+
+          <div className="loginpage_leftbackground_imageContainer">
+            <img
+              src={StudentImage}
+              className="loginpage_leftbackground_image"
+            />
+          </div>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={12}>
+          <div className="loginpage_rightContainer">
+            <img src={ActeLogo} className="loginpage_logo" />
+            <p className="register_smalltext">
+              Already have an account?{" "}
+              <span
+                style={{
+                  color: "#0056b3",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/login")}
+              >
+                Sign in
+              </span>
+            </p>
+            <form style={{ width: "90%" }}>
+              <Row gutter={16} style={{ marginTop: "20px" }}>
+                <Col xs={24} sm={24} md={12} lg={12}>
+                  <div style={{ position: "relative" }}>
+                    <p className="register_inputlabel">Full Name</p>
+                    <Input
+                      className={
+                        nameError != "" && validationTrigger
+                          ? "lmsregister_errorinput"
+                          : "lmsregister_input"
+                      }
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        if (validationTrigger) {
+                          setNameError(nameValidator(e.target.value));
+                        }
+                      }}
+                      value={name}
+                      status={nameError != "" ? "error" : ""}
+                    />
+                    <p
+                      className={
+                        nameError != "" && validationTrigger
+                          ? "register_errorlabels_visible"
+                          : "register_errorlabels_hide"
+                      }
+                    >
+                      {"Name" + " " + nameError}
+                    </p>
+                  </div>
+                </Col>
+                <Col
+                  xs={24}
+                  sm={24}
+                  md={12}
+                  lg={12}
+                  className="registerpage_inputright_col_container"
                 >
-                  Sign in
-                </span>
-              </p>
-
-              <form>
-                <div style={{ marginTop: "16px", position: "relative" }}>
-                  <p className="register_inputlabel">Full Name</p>
-                  <Input
-                    className={
-                      nameError != "" && validationTrigger
-                        ? "lmsregister_errorinput"
-                        : "lmsregister_input"
-                    }
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      if (validationTrigger) {
-                        setNameError(nameValidator(e.target.value));
+                  <div>
+                    <p className="register_inputlabel">Email</p>
+                    <Input
+                      className={
+                        emailError != "" && validationTrigger
+                          ? "lmsregister_errorinput"
+                          : "lmsregister_input"
                       }
-                    }}
-                    value={name}
-                    status={nameError != "" ? "error" : ""}
-                  />
-                  <p
-                    className={
-                      nameError != "" && validationTrigger
-                        ? "register_errorlabels_visible"
-                        : "register_errorlabels_hide"
-                    }
-                  >
-                    {"Name" + " " + nameError}
-                  </p>
-                </div>
-                <div style={{ marginTop: "22px" }}>
-                  <p className="register_inputlabel">Email</p>
-                  <Input
-                    className={
-                      emailError != "" && validationTrigger
-                        ? "lmsregister_errorinput"
-                        : "lmsregister_input"
-                    }
-                    onChange={handleEmail}
-                    value={email}
-                    status={emailError != "" ? "error" : ""}
-                  />
-                  <p
-                    style={{
-                      padding: windowWidth <= 465 ? "0px 40px 0px 0px" : "0px",
-                      fontSize:
-                        windowWidth <= 465 && emailError.length >= 20
-                          ? "8px"
-                          : "13px",
-                    }}
-                    className={
-                      emailError != "" && validationTrigger
-                        ? "register_errorlabels_visible"
-                        : "register_errorlabels_hide"
-                    }
-                  >
-                    {"Email" + " " + emailError}
-                  </p>
-                </div>
-                <div style={{ marginTop: "22px" }}>
-                  <p className="register_inputlabel">Password</p>
-                  <Input.Password
-                    className={
-                      passwordError != "" && validationTrigger
-                        ? "lmsregister_errorinput"
-                        : "lmsregister_input"
-                    }
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      if (validationTrigger) {
-                        setPasswordError(addressValidator(e.target.value));
+                      onChange={handleEmail}
+                      value={email}
+                      status={emailError != "" ? "error" : ""}
+                    />
+                    <p
+                      className={
+                        emailError != "" && validationTrigger
+                          ? "register_errorlabels_visible"
+                          : "register_errorlabels_hide"
                       }
-                    }}
-                    value={password}
-                    status={passwordError != "" ? "error" : ""}
-                  />
-                  <p
-                    className={
-                      passwordError != "" && validationTrigger
-                        ? "register_errorlabels_visible"
-                        : "register_errorlabels_hide"
-                    }
-                  >
-                    {"Password" + " " + passwordError}
-                  </p>
-                </div>
+                    >
+                      {"Email" + " " + emailError}
+                    </p>
+                  </div>
+                </Col>
+              </Row>
 
-                <div style={{ marginTop: "22px" }}>
-                  <p className="register_inputlabel">Course</p>
-                  <Select
-                    className={
-                      courseError != "" && validationTrigger
-                        ? "lmsregister_errorinput"
-                        : "lmsregister_input"
-                    }
-                    onChange={(value) => {
-                      setCourse(value);
-                      if (validationTrigger) {
-                        setCourseError(selectValidator(value));
+              <Row gutter={16} style={{ marginTop: "22px" }}>
+                <Col xs={24} sm={24} md={12} lg={12}>
+                  <div>
+                    <p className="register_inputlabel">Password</p>
+                    <Input.Password
+                      className={
+                        passwordError != "" && validationTrigger
+                          ? "lmsregister_errorinput"
+                          : "lmsregister_input"
                       }
-                    }}
-                    value={course}
-                    status={courseError != "" ? "error" : ""}
-                    options={courseOptions.map((item) => ({
-                      value: item.id ? item.id : item.name,
-                      label: item.full_Name ? item.full_Name : item.name,
-                    }))}
-                  />
-                  <p
-                    className={
-                      courseError != "" && validationTrigger
-                        ? "register_errorlabels_visible"
-                        : "register_errorlabels_hide"
-                    }
-                  >
-                    {"Course" + " " + courseError}
-                  </p>
-                </div>
-
-                <div style={{ marginTop: "22px" }}>
-                  <p className="register_inputlabel">Course Location</p>
-                  <Select
-                    className={
-                      courseLoationError != "" && validationTrigger
-                        ? "lmsregister_errorinput"
-                        : "lmsregister_input"
-                    }
-                    onChange={(value) => {
-                      setCourseLoaction(value);
-                      if (validationTrigger) {
-                        setCourseLoactionError(selectValidator(value));
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (validationTrigger) {
+                          setPasswordError(addressValidator(e.target.value));
+                        }
+                      }}
+                      value={password}
+                      status={passwordError != "" ? "error" : ""}
+                    />
+                    <p
+                      className={
+                        passwordError != "" && validationTrigger
+                          ? "register_errorlabels_visible"
+                          : "register_errorlabels_hide"
                       }
-                    }}
-                    value={courseLoation}
-                    status={courseLoationError != "" ? "error" : ""}
-                    options={courseLoationOptions.map((item) => ({
-                      value: item.id ? item.id : item.name,
-                      label: item.full_Name ? item.full_Name : item.name,
-                    }))}
-                  />
-                  <p
-                    style={{
-                      padding: windowWidth <= 465 ? "0px 20px 0px 0px" : "0px",
-                      fontSize: windowWidth <= 465 ? "10px" : "13px",
-                    }}
-                    className={
-                      courseLoationError != "" && validationTrigger
-                        ? "register_errorlabels_visible"
-                        : "register_errorlabels_hide"
-                    }
-                  >
-                    {"Course Location" + " " + courseLoationError}
-                  </p>
-                </div>
-
-                <div style={{ marginTop: "22px", marginBottom: "22px" }}>
-                  <p className="register_inputlabel">Course Joining Date</p>
-                  <DatePicker
-                    className={
-                      coursejoingDateError != "" && validationTrigger
-                        ? "lmsregister_errorinput"
-                        : "lmsregister_input"
-                    }
-                    onChange={(value) => {
-                      setCoursejoingDate(value);
-                      if (validationTrigger) {
-                        setCoursejoingDateError(selectValidator(value));
+                    >
+                      {"Password" + " " + passwordError}
+                    </p>
+                  </div>
+                </Col>
+                <Col
+                  xs={24}
+                  sm={24}
+                  md={12}
+                  lg={12}
+                  className="registerpage_inputright_col_container"
+                >
+                  <div>
+                    <p className="register_inputlabel">Course</p>
+                    <Select
+                      className={
+                        courseError != "" && validationTrigger
+                          ? "lmsregister_errorinput"
+                          : "lmsregister_input"
                       }
-                    }}
-                    value={coursejoingDate}
-                    status={coursejoingDateError != "" ? "error" : ""}
-                  />
-                  <p
-                    style={{
-                      padding: windowWidth <= 465 ? "0px 40px 0px 0px" : "0px",
-                      fontSize: windowWidth <= 465 ? "10px" : "13px",
-                    }}
-                    className={
-                      coursejoingDateError != "" && validationTrigger
-                        ? "register_errorlabels_visible"
-                        : "register_errorlabels_hide"
-                    }
-                  >
-                    {"Course Joining Date" + " " + coursejoingDateError}
-                  </p>
-                </div>
+                      onChange={(value) => {
+                        setCourse(value);
+                        if (validationTrigger) {
+                          setCourseError(selectValidator(value));
+                        }
+                      }}
+                      value={course}
+                      status={courseError != "" ? "error" : ""}
+                      options={courseOptions.map((item) => ({
+                        value: item.id ? item.id : item.name,
+                        label: item.full_Name ? item.full_Name : item.name,
+                      }))}
+                    />
+                    <p
+                      className={
+                        courseError != "" && validationTrigger
+                          ? "register_errorlabels_visible"
+                          : "register_errorlabels_hide"
+                      }
+                    >
+                      {"Course" + " " + courseError}
+                    </p>
+                  </div>
+                </Col>
+              </Row>
 
+              <Row gutter={16} style={{ marginTop: "22px" }}>
+                <Col xs={24} sm={24} md={12} lg={12}>
+                  <div>
+                    <p className="register_inputlabel">Course Location</p>
+                    <Select
+                      className={
+                        courseLoationError != "" && validationTrigger
+                          ? "lmsregister_errorinput"
+                          : "lmsregister_input"
+                      }
+                      onChange={(value) => {
+                        setCourseLoaction(value);
+                        if (validationTrigger) {
+                          setCourseLoactionError(selectValidator(value));
+                        }
+                      }}
+                      value={courseLoation}
+                      status={courseLoationError != "" ? "error" : ""}
+                      options={courseLoationOptions.map((item) => ({
+                        value: item.id ? item.id : item.name,
+                        label: item.full_Name ? item.full_Name : item.name,
+                      }))}
+                    />
+                    <p
+                      className={
+                        courseLoationError != "" && validationTrigger
+                          ? "register_errorlabels_visible"
+                          : "register_errorlabels_hide"
+                      }
+                    >
+                      {"Course Location" + " " + courseLoationError}
+                    </p>
+                  </div>
+                </Col>
+                <Col
+                  xs={24}
+                  sm={24}
+                  md={12}
+                  lg={12}
+                  className="registerpage_inputright_col_container"
+                >
+                  <div>
+                    <p className="register_inputlabel">Course Joining Date</p>
+                    <DatePicker
+                      className={
+                        coursejoingDateError != "" && validationTrigger
+                          ? "lmsregister_errorinput"
+                          : "lmsregister_input"
+                      }
+                      onChange={(value) => {
+                        setCoursejoingDate(value);
+                        if (validationTrigger) {
+                          setCoursejoingDateError(selectValidator(value));
+                        }
+                      }}
+                      value={coursejoingDate}
+                      status={coursejoingDateError != "" ? "error" : ""}
+                    />
+                    <p
+                      className={
+                        coursejoingDateError != "" && validationTrigger
+                          ? "register_errorlabels_visible"
+                          : "register_errorlabels_hide"
+                      }
+                    >
+                      {"Course Joining Date" + " " + coursejoingDateError}
+                    </p>
+                  </div>
+                </Col>
+              </Row>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: "16px",
+                }}
+              >
                 {buttonLoading ? (
                   <button
-                    className="register_disablesubmitbutton"
+                    className="registerpage_disablesubmitbutton"
                     onClick={(e) => e.preventDefault()}
                     style={{ marginTop: "20px" }}
                   >
@@ -534,7 +611,7 @@ export default function Register() {
                   </button>
                 ) : (
                   <button
-                    className="register_submitbutton"
+                    className="registerpage_submitbutton"
                     style={{ marginTop: "20px" }}
                     type="submit"
                     onClick={handleSubmit}
@@ -542,11 +619,11 @@ export default function Register() {
                     Submit
                   </button>
                 )}
-              </form>
-            </div>
-          </Col>
-        </Row>
-      </div>
+              </div>
+            </form>
+          </div>
+        </Col>
+      </Row>
     </div>
   );
 }

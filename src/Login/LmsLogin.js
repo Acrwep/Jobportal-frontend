@@ -13,7 +13,9 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { MdMenuBook } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import InterviewIcon from "../images/login-interview.png";
-import Image from "../images/banner-girl.png";
+import { TbArrowBadgeRight } from "react-icons/tb";
+import ActeLogo from "../images/old-acte-logo.png";
+import StudentImage from "../images/banner-girl.png";
 import { useDispatch } from "react-redux";
 import { storeCurrentPortalName } from "../Redux/slice";
 
@@ -130,202 +132,249 @@ export default function LmsLogin() {
   };
 
   return (
-    <div className="register_mainContainer">
-      <div className="register_largecard">
-        <div className="lmslogin_blurBackground"></div>
+    <div className="loginpage_maincontainer">
+      <Row style={{ height: "100vh" }}>
+        <Col
+          xs={24}
+          sm={24}
+          md={12}
+          lg={12}
+          style={{ backgroundColor: "#555ca3", position: "relative" }}
+        >
+          <div className="loginpage_leftContainer">
+            <p className="loginpage_leftheading">
+              Login Once.
+              <br />
+              Access 3 Portals.
+            </p>
 
-        <Row gutter={0}>
-          <Col
-            xs={24}
-            sm={24}
-            md={24}
-            lg={12}
-            className="register_left-Col-Container"
-            style={{ position: "relative" }}
-          >
-            <div className="register_leftContainer">
-              <p className="register_heading">
-                Login Once.
-                <br />
-                Access 3 Portals.
-              </p>
-
-              <div className="register_points">
-                <div className="lmsregister_subheadingContainer">
-                  <MdMenuBook color="#ffffff" size={20} />
-                  <h3>LMS</h3>
-                </div>
-
-                <ul>
-                  <li>Watch top trainers' videos and docs</li>
-                  <li>Learn anytime with videos and documents.</li>
-                  <li>
-                    Quickly find topics with organized learning materials.
-                  </li>
-                </ul>
-
-                <div className="lmsregister_subheadingContainer">
-                  <img src={InterviewIcon} style={{ width: "22px" }} />
-                  <h3>Interview preparation powered by ai</h3>
-                </div>
-
-                <ul>
-                  <li>Practice company-based interview questions.</li>
-                  <li>Take online assessment tests to crack interviews</li>
-                  <li>Prepare effectively with real-world questions.</li>
-                </ul>
-
-                <div className="lmsregister_subheadingContainer">
-                  <FaUsers color="#ffffff" size={20} />
-                  <h3>Placement</h3>
-                </div>
-                <ul>
-                  <li>Upload your updated resume to the placement portal</li>
-                  <li>Mention ACTE course in your resume for placement</li>
-                  <li>Stay confident—your dream job awaits!</li>
-                </ul>
+            <div className="loginpage_points">
+              <div className="loginpage_subheadingContainer">
+                <MdMenuBook color="#ffffff" size={20} />
+                <h3>LMS</h3>
               </div>
-              {/* <div style={{ marginTop: "20px", display: "flex", gap: "30px" }}>
-                <div className="register_portalcards">
-                  <MdMenuBook color="#ffffff" size={24} />
-                  <h3>LMS</h3>
-                </div>
-                <div className="register_portalcards">
-                  <img src={InterviewIcon} style={{ width: "26px" }} />
-                  <h3>Interview</h3>
-                </div>
-              </div> */}
 
-              {/* <div
-                className="register_portalcards"
-                style={{ marginTop: "20px" }}
-              >
-                <FaUsers color="#ffffff" size={24} />
+              <ul>
+                <li>
+                  <TbArrowBadgeRight size={18} style={{ marginRight: "6px" }} />{" "}
+                  Watch top trainers' videos and docs
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Learn anytime with videos and documents.
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Quickly find topics with organized learning materials.
+                </li>
+              </ul>
+
+              <div className="loginpage_subheadingContainer">
+                <img src={InterviewIcon} style={{ width: "22px" }} />
+                <h3>Interview preparation powered by ai</h3>
+              </div>
+
+              <ul>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Practice company-based interview questions.
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Take online assessment tests to crack interviews
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Prepare effectively with real-world questions.
+                </li>
+              </ul>
+
+              <div className="loginpage_subheadingContainer">
+                <FaUsers color="#ffffff" size={20} />
                 <h3>Placement</h3>
-              </div> */}
+              </div>
+              <ul>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Upload your updated resume to the placement portal
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Mention ACTE course in your resume for placement
+                </li>
+                <li>
+                  {" "}
+                  <TbArrowBadgeRight
+                    size={18}
+                    style={{ marginRight: "6px" }}
+                  />{" "}
+                  Stay confident—your dream job awaits!
+                </li>
+              </ul>
             </div>
-            {/* <div className="register_bannergirlContainer">
-              <img src={Image} />
-            </div> */}
-          </Col>
+          </div>
 
-          <Col xs={24} sm={24} md={24} lg={12} style={{ marginTop: "20px" }}>
-            <div className="lmslogin_rightContainer">
-              <p className="register_createaccount_heading">Sign In</p>
-              <p className="register_smalltext">
-                Dont have an account?{" "}
-                <span
-                  style={{
-                    color: "#0056b3",
-                    fontWeight: 600,
-                    cursor: "pointer",
+          <div className="loginpage_leftbuttonContainer">
+            <div className="loginpage_leftactive_button">Login</div>
+            <div
+              className="loginpage_leftinactive_button"
+              onClick={() => navigate("/register")}
+            >
+              Sign up
+            </div>
+          </div>
+
+          <div className="loginpage_leftbackground_imageContainer">
+            <img
+              src={StudentImage}
+              className="loginpage_leftbackground_image"
+            />
+          </div>
+        </Col>
+        <Col xs={24} sm={24} md={12} lg={12}>
+          <div className="loginpage_rightContainer">
+            <img src={ActeLogo} className="loginpage_logo" />
+            <p className="register_smalltext">
+              Dont have an account?{" "}
+              <span
+                style={{
+                  color: "#0056b3",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/register")}
+              >
+                Sign Up
+              </span>
+            </p>
+            <form style={{ width: "60%" }}>
+              <div style={{ marginTop: "22px" }}>
+                <p className="register_inputlabel">Email</p>
+                <Input
+                  className={
+                    emailError != "" && validationTrigger
+                      ? "register_errorinput"
+                      : "register_input"
+                  }
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (validationTrigger) {
+                      setEmailError(emailValidator(e.target.value));
+                    }
                   }}
-                  onClick={() => navigate("/register")}
+                  type="email"
+                  name="email"
+                  value={email}
+                  status={emailError != "" ? "error" : ""}
+                />
+                <p
+                  className={
+                    emailError != "" && validationTrigger
+                      ? "register_errorlabels_visible"
+                      : "register_errorlabels_hide"
+                  }
                 >
-                  Sign Up
-                </span>
-              </p>
-              <form>
-                <div style={{ marginTop: "22px" }}>
-                  <p className="register_inputlabel">Email</p>
-                  <Input
-                    className={
-                      emailError != "" && validationTrigger
-                        ? "register_errorinput"
-                        : "register_input"
+                  {"Email" + " " + emailError}
+                </p>
+              </div>
+              <div style={{ marginTop: "26px" }}>
+                <p className="register_inputlabel">Password</p>
+                <Input.Password
+                  className={
+                    passwordError != "" && validationTrigger
+                      ? "register_errorinput"
+                      : "register_input"
+                  }
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (validationTrigger) {
+                      setPasswordError(addressValidator(e.target.value));
                     }
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (validationTrigger) {
-                        setEmailError(emailValidator(e.target.value));
-                      }
-                    }}
-                    type="email"
-                    name="email"
-                    value={email}
-                    status={emailError != "" ? "error" : ""}
-                  />
-                  <p
-                    className={
-                      emailError != "" && validationTrigger
-                        ? "register_errorlabels_visible"
-                        : "register_errorlabels_hide"
-                    }
-                  >
-                    {"Email" + " " + emailError}
-                  </p>
-                </div>
-                <div style={{ marginTop: "26px" }}>
-                  <p className="register_inputlabel">Password</p>
-                  <Input.Password
-                    className={
-                      passwordError != "" && validationTrigger
-                        ? "register_errorinput"
-                        : "register_input"
-                    }
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      if (validationTrigger) {
-                        setPasswordError(addressValidator(e.target.value));
-                      }
-                    }}
-                    value={password}
-                    status={passwordError != "" ? "error" : ""}
-                  />
-                  <p
-                    className={
-                      passwordError != "" && validationTrigger
-                        ? "register_errorlabels_visible"
-                        : "register_errorlabels_hide"
-                    }
-                  >
-                    {"Password" + " " + passwordError}
-                  </p>
-                </div>
+                  }}
+                  value={password}
+                  status={passwordError != "" ? "error" : ""}
+                />
+                <p
+                  className={
+                    passwordError != "" && validationTrigger
+                      ? "register_errorlabels_visible"
+                      : "register_errorlabels_hide"
+                  }
+                >
+                  {"Password" + " " + passwordError}
+                </p>
+              </div>
 
-                <div className="lmslogin_forgotpasswordContainer">
-                  <p
-                    className="lmslogin_forgotpassword"
-                    onClick={() => navigate("/forgotpassword")}
-                  >
-                    Forgot password?
-                  </p>
-                </div>
+              <div className="lmslogin_forgotpasswordContainer">
+                <p
+                  className="lmslogin_forgotpassword"
+                  onClick={() => navigate("/forgotpassword")}
+                >
+                  Forgot password?
+                </p>
+              </div>
 
-                {loading ? (
-                  <button
-                    className="register_disablesubmitbutton"
-                    style={{ marginTop: "36px" }}
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <>
-                      <Spin
-                        size="default"
-                        indicator={
-                          <LoadingOutlined
-                            style={{ color: "#ffffff", marginRight: "6px" }}
-                            spin
-                          />
-                        }
-                      />{" "}
-                      Loading...
-                    </>
-                  </button>
-                ) : (
-                  <button
-                    className="register_submitbutton"
-                    style={{ marginTop: "36px" }}
-                    onClick={handleSubmit}
-                    type="submit"
-                  >
-                    Sign In
-                  </button>
-                )}
-              </form>
-            </div>
-          </Col>
-        </Row>
-      </div>
+              {loading ? (
+                <button
+                  className="register_disablesubmitbutton"
+                  style={{ marginTop: "36px" }}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <>
+                    <Spin
+                      size="default"
+                      indicator={
+                        <LoadingOutlined
+                          style={{ color: "#ffffff", marginRight: "6px" }}
+                          spin
+                        />
+                      }
+                    />{" "}
+                    Loading...
+                  </>
+                </button>
+              ) : (
+                <button
+                  className="register_submitbutton"
+                  style={{ marginTop: "36px" }}
+                  onClick={handleSubmit}
+                  type="submit"
+                >
+                  Sign In
+                </button>
+              )}
+            </form>
+          </div>
+        </Col>
+      </Row>
     </div>
   );
 }
