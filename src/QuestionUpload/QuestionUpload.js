@@ -70,7 +70,7 @@ export default function QuestionUpload() {
   const [deleteModal, setDeleteModal] = useState(false);
 
   const columns = [
-    { title: "Question", key: "question", dataIndex: "question", width: 280 },
+    { title: "Question", key: "question", dataIndex: "question", width: 320 },
     { title: "Option A", key: "option_a", dataIndex: "option_a", width: 190 },
     { title: "Option B", key: "option_b", dataIndex: "option_b", width: 190 },
     { title: "Option C", key: "option_c", dataIndex: "option_c", width: 190 },
@@ -92,6 +92,13 @@ export default function QuestionUpload() {
       key: "course_name",
       dataIndex: "course_name",
       width: 200,
+      render: (item, record) => {
+        return record.course_name === "" || record.course_name === null ? (
+          <p className="questionupload_table_emptycourse">-</p>
+        ) : (
+          <p>{record.course_name}</p>
+        );
+      },
     },
     {
       title: "Action",
@@ -208,8 +215,9 @@ export default function QuestionUpload() {
     console.log("coursesssssss", courses);
 
     const payload = {
+      // ...(sectionid && { section_id: sectionid }),
       section_id: sectionid === undefined ? null : sectionid,
-      courses: courses,
+      ...(sectionid ? (sectionid === 1 ? {} : { courses: courses }) : {}),
     };
     try {
       const response = await getQuestions(payload);
@@ -253,7 +261,12 @@ export default function QuestionUpload() {
     console.log("session", value);
     const sec = value === undefined ? null : value;
     setSectionFilterId(sec);
-    getQuestionsData(sec, courseFilterId, courseData);
+    if (sec === 1) {
+      setCourseFilterId(null);
+      getQuestionsData(sec, courseFilterId, courseData);
+    } else {
+      getQuestionsData(sec, courseFilterId, courseData);
+    }
   };
 
   const handleCourseFilter = (value) => {
@@ -286,10 +299,10 @@ export default function QuestionUpload() {
     e.preventDefault();
     setValidationTrigger(true);
     const questionvalidate = addressValidator(question);
-    const optionOneValidate = addressValidator(optionOne);
-    const optionTwoValidate = addressValidator(optionTwo);
-    const optionThreeValidate = addressValidator(optionThree);
-    const optionFourValidate = addressValidator(optionFour);
+    const optionOneValidate = selectValidator(optionOne);
+    const optionTwoValidate = selectValidator(optionTwo);
+    const optionThreeValidate = selectValidator(optionThree);
+    const optionFourValidate = selectValidator(optionFour);
     const sectionValidate = selectValidator(sectionId);
     let courseValidate = "";
     let correctAnswerValidate = "";
@@ -467,7 +480,7 @@ export default function QuestionUpload() {
         const option1 = row[option1Index];
 
         if (option1) {
-          let option1Validate = addressValidator(option1);
+          let option1Validate = selectValidator(option1);
           updateExcelData[rowIndex + 1].option_a = option1;
           if (option1Validate) {
             error.push({
@@ -486,7 +499,7 @@ export default function QuestionUpload() {
         const option2 = row[option2Index];
 
         if (option2) {
-          let option2Validate = addressValidator(option2);
+          let option2Validate = selectValidator(option2);
           updateExcelData[rowIndex + 1].option_b = option2;
           if (option2Validate) {
             error.push({
@@ -505,7 +518,7 @@ export default function QuestionUpload() {
         const option3 = row[option3Index];
 
         if (option3) {
-          let option3Validate = addressValidator(option3);
+          let option3Validate = selectValidator(option3);
           updateExcelData[rowIndex + 1].option_c = option3;
           if (option3Validate) {
             error.push({
@@ -524,7 +537,7 @@ export default function QuestionUpload() {
         const option4 = row[option4Index];
 
         if (option4) {
-          let option4Validate = addressValidator(option4);
+          let option4Validate = selectValidator(option4);
           updateExcelData[rowIndex + 1].option_d = option4;
           if (option4Validate) {
             error.push({
@@ -758,6 +771,7 @@ export default function QuestionUpload() {
               selectClassName="questionupload_filterselectfield"
               allowClear={true}
               onChange={handleSectionFilter}
+              value={sectionFilterId}
             />
             <PortalSelectField
               options={courseData}
@@ -765,6 +779,8 @@ export default function QuestionUpload() {
               placeholder="Select Course"
               selectClassName="questionupload_filterselectfield"
               allowClear={true}
+              value={courseFilterId}
+              disabled={sectionFilterId === 1 ? true : false}
               onChange={handleCourseFilter}
             />
           </div>
@@ -841,7 +857,7 @@ export default function QuestionUpload() {
                 onChange={(event) => {
                   setOptionOne(event.target.value);
                   if (validationTrigger) {
-                    setOptionOneError(addressValidator(event.target.value));
+                    setOptionOneError(selectValidator(event.target.value));
                   }
                 }}
                 error={optionOneError}
@@ -854,7 +870,7 @@ export default function QuestionUpload() {
                 onChange={(event) => {
                   setOptionTwo(event.target.value);
                   if (validationTrigger) {
-                    setOptionTwoError(addressValidator(event.target.value));
+                    setOptionTwoError(selectValidator(event.target.value));
                   }
                 }}
                 error={optionTwoError}
@@ -870,7 +886,7 @@ export default function QuestionUpload() {
                 onChange={(event) => {
                   setOptionThree(event.target.value);
                   if (validationTrigger) {
-                    setOptionThreeError(addressValidator(event.target.value));
+                    setOptionThreeError(selectValidator(event.target.value));
                   }
                 }}
                 error={optionThreeError}
@@ -883,7 +899,7 @@ export default function QuestionUpload() {
                 onChange={(event) => {
                   setOptionFour(event.target.value);
                   if (validationTrigger) {
-                    setOptionFourError(addressValidator(event.target.value));
+                    setOptionFourError(selectValidator(event.target.value));
                   }
                 }}
                 error={optionFourError}

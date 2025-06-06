@@ -88,20 +88,22 @@ const MainSideMenu = () => {
 
     if (accessToken) {
       setShowSideBar(true);
-      if (loginDetailsJson.role_id === 1 && location.pathname === "/") {
-        navigate("/trainers");
-        setShowPages(false);
-        setShowSideBar(true);
-      } else if (
-        (loginDetailsJson.role_id === 2 || loginDetailsJson.role_id === 3) &&
-        location.pathname === "/"
-      ) {
-        const defaultCourseName = localStorage.getItem("defaultCourseName");
-        localStorage.setItem("selectedCourseName", defaultCourseName);
+      if (loginDetailsJson) {
+        if (loginDetailsJson.role_id === 1 && location.pathname === "/") {
+          navigate("/trainers");
+          setShowPages(false);
+          setShowSideBar(true);
+        } else if (
+          (loginDetailsJson.role_id === 2 || loginDetailsJson.role_id === 3) &&
+          location.pathname === "/"
+        ) {
+          const defaultCourseName = localStorage.getItem("defaultCourseName");
+          localStorage.setItem("selectedCourseName", defaultCourseName);
 
-        const defaultCourseId = localStorage.getItem("defaultCourseId");
-        localStorage.setItem("selectedCourseId", defaultCourseId);
-        navigate(`/courses`);
+          const defaultCourseId = localStorage.getItem("defaultCourseId");
+          localStorage.setItem("selectedCourseId", defaultCourseId);
+          navigate(`/courses`);
+        }
       }
 
       if (location.pathname === "/search") {
@@ -257,6 +259,8 @@ const MainSideMenu = () => {
     ) {
       dispatch(storeCurrentPortalName("placement"));
     } else if (
+      pathName === "question-upload" ||
+      pathName === "candidates" ||
       pathName === "assessments" ||
       pathName === "assessment-results"
     ) {

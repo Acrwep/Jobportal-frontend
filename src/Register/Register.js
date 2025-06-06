@@ -244,7 +244,7 @@ export default function Register() {
         >
           <div className="loginpage_leftContainer">
             <p className="loginpage_leftheading">
-              Login Once.
+              Register Once.
               <br />
               Access 3 Portals.
             </p>

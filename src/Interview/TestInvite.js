@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Col, Row, Spin } from "antd";
 import Actelogo from "../images/acte-logo.png";
 import CommonInputField from "../Common/CommonInputField";
-import { getAllUsers, getCourses } from "../Common/action";
+import { checkTestCompleted, getAllUsers, getCourses } from "../Common/action";
 import {
   addressValidator,
   emailValidator,
@@ -26,8 +26,10 @@ export default function TestInvite() {
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const today = new Date();
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
+    console.log("hrefff", window.location.href);
     if (isTokenExpired(token)) {
       console.log("Token is expired");
       navigate("/token-unavailable");
@@ -76,21 +78,47 @@ export default function TestInvite() {
     const payload = {
       email: email,
     };
+
     try {
       const response = await getAllUsers(payload);
       console.log(response);
       const users = response?.data?.data || [];
       if (users.length >= 1) {
-        setTimeout(() => {
-          navigate("/online-test", {
-            state: {
-              userId: users[0].id,
-              courseId: users[0].course_id,
-              token: token,
-            },
-          });
+        //check test already attempted or not
+        let alreadyAttempted = false;
+        try {
+          const response = await checkTestCompleted(
+            `${
+              API_URL === "http://localhost:3000"
+                ? "http://localhost:3001/test-invite/"
+                : "https://placement.acte.in/test-invite/"
+            }${token}`
+          );
+          console.log("checkTestCompleted", response);
+          alreadyAttempted = response?.data?.data;
+        } catch (error) {
+          CommonToaster(
+            error?.response?.data?.message ||
+              "Something went wrong. Try again later"
+          );
+        }
+
+        // If already attempted, do not allow the test; if not attempted, allow the test
+        if (alreadyAttempted === false) {
+          setTimeout(() => {
+            navigate("/online-test", {
+              state: {
+                userId: users[0].id,
+                courseId: users[0].course_id,
+                token: token,
+              },
+            });
+            setButtonLoading(false);
+          }, 1000);
+        } else {
           setButtonLoading(false);
-        }, 1000);
+          CommonToaster("The test has already been submitted using this link.");
+        }
       } else {
         setButtonLoading(false);
         CommonToaster("Your not registered yet. Contact Acte Support");
@@ -192,6 +220,7 @@ export default function TestInvite() {
                     <CommonInputField
                       label="Email"
                       mandatory
+                      name="email"
                       value={email}
                       onChange={(e) => {
                         setEmail(e.target.value);

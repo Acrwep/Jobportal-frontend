@@ -624,3 +624,14 @@ export const readTestLink = async (linkId) => {
     throw error;
   }
 };
+
+export const checkTestCompleted = async (test_link) => {
+  try {
+    const response = await api.get(
+      `/api/checkTestCompleted?test_link=${test_link}`
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -99,6 +99,7 @@ export default function Candidates() {
     {
       title: "Result",
       width: 140,
+      fixed: "right",
       render: (text, record) => {
         return (
           <div

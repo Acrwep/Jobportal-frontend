@@ -26,6 +26,8 @@ export default function OnlineTest() {
   const [visibleSectionA, setVisibleSectionA] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [warningModal, setWarningModal] = useState(false);
+  const [assessmentToken, setAssessmentToken] = useState("");
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const handleFullscreenStart = () => {
     const el = document.documentElement;
@@ -86,6 +88,7 @@ export default function OnlineTest() {
   }, []);
 
   useEffect(() => {
+    console.log("hrefff", window.location.href);
     console.log(location?.state?.userId, location?.state?.courseId);
     const user_id = location?.state?.userId || null;
     setUserId(user_id);
@@ -94,6 +97,7 @@ export default function OnlineTest() {
     setCourseId(course_id);
 
     const token = location?.state?.token || null;
+    setAssessmentToken(token);
     if (course_id === null || user_id === null) {
       CommonToaster("Something went wrong. Contact Admin");
       navigate(`/test-invite/${token}`);
@@ -244,6 +248,11 @@ export default function OnlineTest() {
           ? courseid
           : courseId,
       answers: answers,
+      assesmentLink: `${
+        API_URL === "http://localhost:3000"
+          ? "http://localhost:3001/test-invite/"
+          : "https://placement.acte.in/test-invite/"
+      }${assessmentToken}`,
     };
     console.log("final payload", payload);
 
@@ -325,7 +334,7 @@ export default function OnlineTest() {
               return (
                 <>
                   {index === questionIndex ? (
-                    <>
+                    <React.Fragment key={index}>
                       <Col span={12} className="questionColContainer">
                         <div style={{ marginTop: "20px" }}>
                           <p className="onlinetest_questionnumber">
@@ -412,7 +421,7 @@ export default function OnlineTest() {
                           </button>
                         </div>
                       </Col>
-                    </>
+                    </React.Fragment>
                   ) : (
                     ""
                   )}
@@ -430,7 +439,7 @@ export default function OnlineTest() {
               return (
                 <>
                   {index === questionIndex ? (
-                    <>
+                    <React.Fragment key={index}>
                       <Col span={12} className="questionColContainer">
                         <div style={{ marginTop: "20px" }}>
                           <p className="onlinetest_questionnumber">
@@ -564,7 +573,7 @@ export default function OnlineTest() {
                           )}
                         </div>
                       </Col>
-                    </>
+                    </React.Fragment>
                   ) : (
                     ""
                   )}

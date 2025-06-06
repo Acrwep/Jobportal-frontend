@@ -17,6 +17,11 @@
     padding: 12px;
   }
 }
+@media (min-width: 1024px) and (max-width: 1350px) {
+  .loginpage_leftContainer {
+    padding: 30px;
+  }
+}
 .loginpage_leftheading {
   font-size: 38px;
   font-weight: 700;
@@ -24,13 +29,21 @@
   line-height: 1.4;
   margin-bottom: 16px !important;
 }
-
+@media (min-width: 1900px) and (max-width: 3000px) {
+  .loginpage_leftheading {
+    font-size: 85px;
+  }
+}
 .loginpage_points h3 {
   font-size: 20px;
   font-weight: 700;
   color: #ffffff;
 }
-
+@media (min-width: 1900px) and (max-width: 3000px) {
+  .loginpage_points h3 {
+    font-size: 50px;
+  }
+}
 .loginpage_points p {
   font-size: 14px;
   color: #e6e6e6;
@@ -41,10 +54,26 @@
   color: #fff;
   font-weight: 600;
 }
+@media (min-width: 1900px) and (max-width: 3000px) {
+  .loginpage_points ul {
+    font-size: 30px;
+    padding: 20px 0px 20px 24px;
+  }
+}
+@media (min-width: 1024px) and (max-width: 1350px) {
+  .loginpage_points ul {
+    font-size: 13px;
+  }
+}
 .loginpage_points li {
   line-height: 28px;
   display: flex;
   align-items: center;
+}
+@media (min-width: 1900px) and (max-width: 3000px) {
+  .loginpage_points li {
+    line-height: 70px;
+  }
 }
 .loginpage_subheadingContainer {
   display: flex;
@@ -106,6 +135,14 @@
     height: calc(100% - 102px);
   }
 }
+@media (min-width: 1900px) and (max-width: 3000px) {
+  .loginpage_leftbackground_imageContainer {
+    left: 4%;
+    top: 260px;
+    height: calc(100% - 260px);
+  }
+}
+
 .loginpage_leftbackground_image {
   width: max-content;
   object-fit: cover;
@@ -126,6 +163,7 @@
     display: none;
   }
 }
+
 .loginpage_leftactive_button {
   display: flex;
   align-items: center;
@@ -140,6 +178,14 @@
   text-transform: uppercase;
   margin-bottom: 16px;
 }
+@media (min-width: 1900px) and (max-width: 3000px) {
+  .loginpage_leftactive_button {
+    padding: 40px 60px;
+    font-size: 28px;
+    border-top-left-radius: 60px;
+    border-bottom-left-radius: 60px;
+  }
+}
 .loginpage_leftinactive_button {
   display: flex;
   align-items: center;
@@ -152,6 +198,14 @@
   font-size: 16px;
   text-transform: uppercase;
   color: #fff;
+}
+@media (min-width: 1900px) and (max-width: 3000px) {
+  .loginpage_leftinactive_button {
+    padding: 40px 60px;
+    font-size: 28px;
+    border-top-left-radius: 60px;
+    border-bottom-left-radius: 60px;
+  }
 }
 .loginpage_leftinactive_button:hover {
   background-color: #acc9e981;
