@@ -13,6 +13,7 @@ import "./styles.css";
 import Header from "../Header/Header";
 import { getCandidateById } from "../Common/action";
 import moment from "moment";
+import PrismaZoom from "react-prismazoom";
 
 export default function Profile() {
   pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -406,12 +407,14 @@ export default function Profile() {
                       />
                     </div>
                     <div className="admin_resumemodal_resumeview">
-                      <Document
-                        file={pdfDataUrl}
-                        onLoadSuccess={onDocumentLoadSuccess}
-                      >
-                        <Page pageNumber={pageNumber} />
-                      </Document>
+                      <PrismaZoom>
+                        <Document
+                          file={pdfDataUrl}
+                          onLoadSuccess={onDocumentLoadSuccess}
+                        >
+                          <Page pageNumber={pageNumber} />
+                        </Document>
+                      </PrismaZoom>
                     </div>
 
                     <div className="admin_resumemodal_paginationdiv">

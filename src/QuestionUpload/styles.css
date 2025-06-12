@@ -24,9 +24,9 @@
   height: 32px !important;
 }
 .questionupload_button {
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   background-color: #0056b3 !important;
-  border-radius: 9px !important;
+  border-radius: 6px !important;
   outline: 0 !important;
   border: none;
   color: #fff;

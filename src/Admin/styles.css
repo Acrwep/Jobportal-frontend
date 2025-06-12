@@ -386,6 +386,7 @@
 .admin_resumemodal_resumeview {
   height: 75vh;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 .admin_resumemodal_paginationdiv {
   display: flex;

@@ -135,6 +135,13 @@
     height: calc(100% - 102px);
   }
 }
+@media (min-width: 1000px) and (max-width: 1300px) {
+  .loginpage_leftbackground_imageContainer {
+    left: 6%;
+    top: 140px;
+    height: calc(100% - 140px);
+  }
+}
 @media (min-width: 1900px) and (max-width: 3000px) {
   .loginpage_leftbackground_imageContainer {
     left: 4%;

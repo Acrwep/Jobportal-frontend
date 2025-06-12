@@ -26,12 +26,15 @@ export default function StudentResult() {
       const response = await getAssessmentAnswers(payload);
       const answers = response?.data?.data || [];
       console.log("answers response", response);
-      if (answers.length >= 1) {
-        const addChildren = answers.map((item, index) => {
+      const reverseData = answers.reverse();
+      if (reverseData.length >= 1) {
+        const addChildren = reverseData.map((item, index) => {
           return {
             ...item,
             key: index + 1,
-            label: `Attempt ${item.attempt_number}`,
+            label: `${
+              item.question_type ? item.question_type : `Attempt ${index + 1}`
+            }`,
             children: (
               <div>
                 <Row style={{ marginBottom: "12px" }}>

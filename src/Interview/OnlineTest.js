@@ -100,7 +100,7 @@ export default function OnlineTest() {
     setAssessmentToken(token);
     if (course_id === null || user_id === null) {
       CommonToaster("Something went wrong. Contact Admin");
-      navigate(`/test-invite/${token}`);
+      navigate(`/test-invite/${location?.state?.questionTypeId}/${token}`);
     }
   }, []);
 
@@ -148,6 +148,7 @@ export default function OnlineTest() {
   const getSectionAQuestionsData = async () => {
     const payload = {
       section_id: 1,
+      question_type_id: parseInt(location?.state?.questionTypeId),
     };
     try {
       const response = await getQuestions(payload);
@@ -171,6 +172,7 @@ export default function OnlineTest() {
     const payload = {
       section_id: 2,
       courses: [location?.state?.courseId || null],
+      question_type_id: parseInt(location?.state?.questionTypeId),
     };
     try {
       const response = await getQuestions(payload);
@@ -252,7 +254,7 @@ export default function OnlineTest() {
         API_URL === "http://localhost:3000"
           ? "http://localhost:3001/test-invite/"
           : "https://placement.acte.in/test-invite/"
-      }${assessmentToken}`,
+      }${parseInt(location?.state?.questionTypeId)}/${assessmentToken}`,
     };
     console.log("final payload", payload);
 
@@ -268,6 +270,7 @@ export default function OnlineTest() {
             totalQuestions: result.total_questions,
             percentage: result.percentage,
             totalMark: result.total_marks_obtained,
+            grade: result.grade,
           },
         });
       }, 1000);

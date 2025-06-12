@@ -39,6 +39,7 @@ import CommonMultiSelect from "../Common/CommonMultiSelect";
 import { addressValidator } from "../Common/Validation";
 import { useDispatch } from "react-redux";
 import { storePortalMenuStatus, storeLogoutMenuStatus } from "../Redux/slice";
+import PrismaZoom from "react-prismazoom";
 
 export default function Admin() {
   pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -2087,9 +2088,11 @@ export default function Admin() {
         centered
       >
         <div className="admin_resumemodal_resumeview">
-          <Document file={resumeBase64} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page pageNumber={pageNumber} />
-          </Document>
+          <PrismaZoom>
+            <Document file={resumeBase64} onLoadSuccess={onDocumentLoadSuccess}>
+              <Page pageNumber={pageNumber} />
+            </Document>
+          </PrismaZoom>
         </div>
 
         <div className="admin_resumemodal_paginationdiv">

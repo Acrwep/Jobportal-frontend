@@ -151,9 +151,31 @@ export default function Register() {
     }
   };
 
+  const formatDateTimeIST = (date) => {
+    return new Intl.DateTimeFormat("en-GB", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // 24-hour format
+      timeZone: "Asia/Kolkata", // IST timezone
+    })
+      .format(date)
+      .replace(",", ""); // Remove comma
+  };
+
+  const convertToBackendFormat = (dateString) => {
+    const [datePart, timePart] = dateString.split(" ");
+    const [day, month, year] = datePart.split("/");
+    return `${year}-${month}-${day} ${timePart}`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setValidationTrigger(true);
+    const formatJoingdate = formatDateTimeIST(new Date(coursejoingDate));
 
     const nameValidate = nameValidator(name);
     const emailValidate = emailValidator(email);
@@ -213,7 +235,9 @@ export default function Register() {
       role_id: studentRoleId,
       course_id: course,
       location_id: courseLoation,
-      course_join_date: coursejoingDate,
+      course_join_date: convertToBackendFormat(formatJoingdate),
+      experience: null,
+      profile: null,
     };
 
     try {

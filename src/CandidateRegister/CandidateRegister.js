@@ -37,10 +37,18 @@ import { CommonToaster } from "../Common/CommonToaster";
 import axios from "axios";
 import { CloudUploadOutlined } from "@ant-design/icons";
 import { Country, State, City } from "country-state-city";
-import { candidateRegistration, getCourses } from "../Common/action";
+import {
+  candidateRegistration,
+  checkCandidateRegisteredInPlacement,
+  getCourses,
+} from "../Common/action";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { storeLogoutMenuStatus, storePortalMenuStatus } from "../Redux/slice";
+import {
+  storeLogoutMenuStatus,
+  storePlacementRegisterStatus,
+  storePortalMenuStatus,
+} from "../Redux/slice";
 import { useNavigate } from "react-router-dom";
 import PortalMenu from "../Common/PortalMenu";
 
@@ -772,6 +780,10 @@ export default function CandidateRegister() {
       console.log("registration response", response);
       CommonToaster("Register successfull!");
       formReset();
+
+      setTimeout(() => {
+        checkCandidate(email);
+      }, 500);
     } catch (error) {
       console.log("registration error", error);
       setLoading(false);
@@ -877,6 +889,18 @@ export default function CandidateRegister() {
     setResume("");
     setResumeError("");
     setPageSection(1);
+  };
+
+  const checkCandidate = async (email) => {
+    try {
+      const response = await checkCandidateRegisteredInPlacement(email);
+      console.log("check candidate registed in placement", response);
+      const regStatus = response?.data?.data || false;
+      localStorage.setItem("checkCandidateRegisteredInPlacement", regStatus);
+      dispatch(storePlacementRegisterStatus(regStatus));
+    } catch (error) {
+      console.log("check candidate", error);
+    }
   };
 
   return (
@@ -1044,6 +1068,7 @@ export default function CandidateRegister() {
                   <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                     <CommonInputField
                       label="Email"
+                      name="email"
                       mandatory={true}
                       value={email}
                       onChange={handleEmail}

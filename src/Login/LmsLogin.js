@@ -8,7 +8,12 @@ import {
   nameValidator,
 } from "../Common/Validation";
 import { CommonToaster } from "../Common/CommonToaster";
-import { adminLogin, getCourseByTrainers, getCourses } from "../Common/action";
+import {
+  adminLogin,
+  checkCandidateRegisteredInPlacement,
+  getCourseByTrainers,
+  getCourses,
+} from "../Common/action";
 import { LoadingOutlined } from "@ant-design/icons";
 import { MdMenuBook } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
@@ -17,7 +22,10 @@ import { TbArrowBadgeRight } from "react-icons/tb";
 import ActeLogo from "../images/old-acte-logo.png";
 import StudentImage from "../images/banner-girl.png";
 import { useDispatch } from "react-redux";
-import { storeCurrentPortalName } from "../Redux/slice";
+import {
+  storeCurrentPortalName,
+  storePlacementRegisterStatus,
+} from "../Redux/slice";
 
 export default function LmsLogin() {
   const navigate = useNavigate();
@@ -76,6 +84,9 @@ export default function LmsLogin() {
           getCoursesByTrainersData(loginDetails.id);
         } else {
           getCourseData(loginDetails.course_id);
+          setTimeout(() => {
+            checkCandidate(loginDetails.email);
+          }, 500);
         }
       }, 1000);
     } catch (error) {
@@ -131,13 +142,25 @@ export default function LmsLogin() {
     }
   };
 
+  const checkCandidate = async (email) => {
+    try {
+      const response = await checkCandidateRegisteredInPlacement(email);
+      console.log("check candidate registed in placement", response);
+      const status = response?.data?.data || false;
+      localStorage.setItem("checkCandidateRegisteredInPlacement", status);
+      dispatch(storePlacementRegisterStatus(status));
+    } catch (error) {
+      console.log("check candidate", error);
+    }
+  };
+
   return (
     <div className="loginpage_maincontainer">
       <Row style={{ height: "100vh" }}>
         <Col
           xs={24}
           sm={24}
-          md={12}
+          md={24}
           lg={12}
           style={{ backgroundColor: "#555ca3", position: "relative" }}
         >
@@ -259,11 +282,11 @@ export default function LmsLogin() {
             />
           </div>
         </Col>
-        <Col xs={24} sm={24} md={12} lg={12}>
+        <Col xs={24} sm={24} md={24} lg={12}>
           <div className="loginpage_rightContainer">
             <img src={ActeLogo} className="loginpage_logo" />
             <p className="register_smalltext">
-              Dont have an account?{" "}
+              Don't have an account?{" "}
               <span
                 style={{
                   color: "#0056b3",

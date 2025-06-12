@@ -32,6 +32,7 @@ import {
   storeCurrentPortalName,
   storeLogoutMenuStatus,
   storeNotificationCount,
+  storePlacementRegisterStatus,
   storePortalMenuStatus,
 } from "../Redux/slice";
 import TestInvite from "../Interview/TestInvite";
@@ -59,6 +60,9 @@ const MainSideMenu = () => {
   const dispatch = useDispatch();
   const portalMenu = useSelector((state) => state.portalmenu);
   const logoutMenu = useSelector((state) => state.logoutmenu);
+  const placementRegisterStatus = useSelector(
+    (state) => state.placementregisterstatus
+  );
   const currentPortalName = useSelector((state) => state.currentportalname);
   const notificationCount = useSelector((state) => state.notificationcount);
 
@@ -67,7 +71,6 @@ const MainSideMenu = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
-  const [placmentStatus, setPlacementStatus] = useState(false);
   const [roleId, setRoleId] = useState(null);
 
   useEffect(() => {
@@ -77,13 +80,17 @@ const MainSideMenu = () => {
     const loginDetails = localStorage.getItem("loginDetails");
     const loginDetailsJson = JSON.parse(loginDetails);
     const selectedCourseName = localStorage.getItem("selectedCourseName");
-    console.log("selected course name", selectedCourseName);
+    console.log(
+      "selected course name",
+      selectedCourseName,
+      placementRegisterStatus
+    );
 
     if (loginDetailsJson) {
       setUserName(loginDetailsJson.name);
       setUserEmail(loginDetailsJson.email);
       setRoleId(loginDetailsJson.role_id);
-      checkCandidate(loginDetailsJson.email);
+      getAssessmentLinkData();
     }
 
     if (accessToken) {
@@ -245,6 +252,14 @@ const MainSideMenu = () => {
   }, []);
 
   useEffect(() => {
+    const getPlacementRegisterStatus = localStorage.getItem(
+      "checkCandidateRegisteredInPlacement"
+    );
+    dispatch(
+      storePlacementRegisterStatus(
+        getPlacementRegisterStatus === "true" ? true : false
+      )
+    );
     //the code below highlights the active portal even after a refresh
     const pathName = location.pathname.split("/")[1];
 
@@ -269,22 +284,6 @@ const MainSideMenu = () => {
       dispatch(storeCurrentPortalName("lms"));
     }
   }, []);
-
-  const checkCandidate = async (email) => {
-    try {
-      const response = await checkCandidateRegisteredInPlacement(email);
-      console.log("check candidate registed in placement", response);
-      const status = response?.data?.data || false;
-      localStorage.setItem("checkCandidateRegisteredInPlacement", status);
-      setPlacementStatus(status);
-    } catch (error) {
-      console.log("check candidate", error);
-    } finally {
-      setTimeout(() => {
-        getAssessmentLinkData();
-      }, 300);
-    }
-  };
 
   const getAssessmentLinkData = async () => {
     const loginuserId = localStorage.getItem("loginUserId");
@@ -409,7 +408,10 @@ const MainSideMenu = () => {
         </Routes>
       ) : location.pathname.includes("/test-invite") ? (
         <Routes>
-          <Route path="/test-invite/:token" element={<TestInvite />} />
+          <Route
+            path="/test-invite/:questionTypeId/:token"
+            element={<TestInvite />}
+          />
         </Routes>
       ) : location.pathname === "/token-unavailable" ? (
         <Routes>
@@ -541,7 +543,7 @@ const MainSideMenu = () => {
 
                         {roleId === 3 && (
                           <>
-                            {placmentStatus === true ? (
+                            {placementRegisterStatus === true ? (
                               <FaRegCheckCircle
                                 color="#52c41a"
                                 className="portalmenu_placementStatusIcon"

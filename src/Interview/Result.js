@@ -9,12 +9,14 @@ export default function Result() {
   const [totalQuestions, setTotalQuestions] = useState(null);
   const [percentage, setPercentage] = useState(null);
   const [totalMark, setTotalMark] = useState(null);
+  const [grade, setGrade] = useState("");
 
   useEffect(() => {
     console.log(location.state, "locationnnn");
     setTotalQuestions(location?.state?.totalQuestions);
     setPercentage(location?.state?.percentage);
     setTotalMark(location?.state?.totalMark);
+    setGrade(location?.state?.grade);
   }, []);
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function Result() {
           <div className="result_subheadingContainer">
             <p className="result_subheading">Attempted Questions:</p>
             <p className="result_subheading">Correct Answer:</p>
-            <p className="result_subheading">Percentage:</p>
+            <p className="result_subheading">Grade:</p>
           </div>
 
           <div className="result_subheadingContainer">
@@ -54,11 +56,12 @@ export default function Result() {
               {totalMark === null || totalMark === undefined ? "-" : totalMark}
             </p>
             <p style={{ fontWeight: 600 }}>
-              {percentage === "NaN"
+              {/* {percentage === "NaN"
                 ? 0 + " %"
                 : percentage != "NaN"
                 ? percentage + " %"
-                : "-"}
+                : "-"} */}
+              {grade}
             </p>
           </div>
         </div>

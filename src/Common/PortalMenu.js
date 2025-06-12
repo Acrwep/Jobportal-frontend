@@ -23,19 +23,20 @@ export default function PortalMenu() {
   const dispatch = useDispatch();
   const portalMenu = useSelector((state) => state.portalmenu);
   const logoutMenu = useSelector((state) => state.logoutmenu);
+  const placementRegisterStatus = useSelector(
+    (state) => state.placementregisterstatus
+  );
   const currentPortalName = useSelector((state) => state.currentportalname);
   const notificationCount = useSelector((state) => state.notificationcount);
 
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [roleId, setRoleId] = useState(null);
-  const [placementStatus, setPlacementStatus] = useState(false);
 
   useEffect(() => {
     const loginDetails = localStorage.getItem("loginDetails");
     const loginDetailsJson = JSON.parse(loginDetails);
     const selectedCourseName = localStorage.getItem("selectedCourseName");
-    console.log("selected course name", selectedCourseName);
 
     if (loginDetailsJson) {
       setUserName(loginDetailsJson.name);
@@ -92,7 +93,7 @@ export default function PortalMenu() {
     if (roleId === 3) {
       navigate(`/assessments`);
     } else {
-      navigate("/trainers");
+      navigate("/question-upload");
     }
   };
 
@@ -168,7 +169,7 @@ export default function PortalMenu() {
 
             {roleId === 3 && (
               <>
-                {placementStatus === true ? (
+                {placementRegisterStatus === true ? (
                   <FaRegCheckCircle
                     color="#52c41a"
                     className="common_portalmenu_placementStatusIcon"

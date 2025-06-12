@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Input, Spin, Drawer, Collapse, Divider } from "antd";
+import {
+  Row,
+  Col,
+  Input,
+  Spin,
+  Drawer,
+  Collapse,
+  Divider,
+  Modal,
+  Button,
+} from "antd";
 import { useNavigate } from "react-router-dom";
 import CommonTable from "../Common/CommonTable";
 import { IoIosSend } from "react-icons/io";
@@ -9,6 +19,7 @@ import {
   getAssessmentAnswers,
   getCandidates,
   getCourses,
+  getQuestionTypes,
   sendInterviewRequest,
 } from "../Common/action";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -19,6 +30,8 @@ import { AiOutlineEye } from "react-icons/ai";
 import { ImCross } from "react-icons/im";
 import { PiCheckFatFill } from "react-icons/pi";
 import CommonNodataFound from "../Common/CommonNodataFound";
+import { addressValidator, selectValidator } from "../Common/Validation";
+import PortalInputField from "../Common/PortalInputField";
 const { Search } = Input;
 
 export default function Candidates() {
@@ -42,6 +55,11 @@ export default function Candidates() {
   const [selectedDates, setSelectedDates] = useState([]);
   const [resultDrawer, setResultDrawer] = useState(false);
   const [answersData, setAnswersData] = useState([]);
+  const [questionTypeModal, setQuestionTypeModal] = useState(false);
+  const [questionType, setQuestionType] = useState("");
+  const [questionTypeError, setQuestionTypeError] = useState("");
+  const [validationTrigger, setValidationTrigger] = useState(false);
+  const [typeData, setTypeData] = useState([]);
 
   const columns = [
     { title: "Name", key: "name", dataIndex: "name", width: 200 },
@@ -161,8 +179,26 @@ export default function Candidates() {
       );
     } finally {
       setTimeout(() => {
-        setTableLoading(false);
+        getQuestionTypesData();
       }, 500);
+    }
+  };
+
+  const getQuestionTypesData = async () => {
+    try {
+      const response = await getQuestionTypes();
+      console.log("type response", response);
+      const questionTypes = response?.data?.data || [];
+      setTypeData(questionTypes);
+    } catch (error) {
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
+    } finally {
+      setTimeout(() => {
+        setTableLoading(false);
+      }, 300);
     }
   };
 
@@ -175,12 +211,14 @@ export default function Candidates() {
       const response = await getAssessmentAnswers(payload);
       const answers = response?.data?.data || [];
       console.log("answers response", response);
-      if (answers.length >= 1) {
+      const reverseData = answers.reverse();
+      if (reverseData.length >= 1) {
         const addChildren = answers.map((item, index) => {
+          const questionType = item.answers?.[0]?.question_type ?? "";
           return {
             ...item,
             key: index + 1,
-            label: `Attempt ${item.attempt_number}`,
+            label: `${questionType}`,
             children: (
               <div>
                 <Row style={{ marginBottom: "12px" }}>
@@ -205,9 +243,9 @@ export default function Candidates() {
                   </Col>
                   <Col span={12}>
                     <p>
-                      Percentage:{" "}
+                      Remark :{" "}
                       <span style={{ fontWeight: 600, color: "#0056b3" }}>
-                        {item.percentage}%
+                        {item.grade}
                       </span>
                     </p>
                   </Col>
@@ -310,34 +348,49 @@ export default function Candidates() {
     setSelectedRows(row);
   };
 
-  const handleSendRequest = async () => {
-    if (selectedRows.length >= 1) {
-      setRequestLoading(true);
-      const filterData = selectedRows.map((item) => {
-        return { id: item.id, course_id: item.course_id };
-      });
-      const payload = {
-        users: filterData,
-      };
-      console.log("payloaddd", payload);
+  const handleSendInterviewRequest = async () => {
+    setValidationTrigger(true);
+    const typeValidate = selectValidator(questionType);
 
-      try {
-        await sendInterviewRequest(payload);
-        CommonToaster("Request sent to email successfully!");
-      } catch (error) {
-        CommonToaster(
-          error?.response?.data?.message ||
-            "Something went wrong. Try again later"
-        );
-      } finally {
-        setTimeout(() => {
-          setRequestLoading(false);
-          getCandidatesData();
-        }, 500);
-      }
-    } else {
-      CommonToaster("Please select candidate");
+    setQuestionTypeError(typeValidate);
+
+    if (typeValidate) return;
+
+    setRequestLoading(true);
+    const filterData = selectedRows.map((item) => {
+      return {
+        id: item.id,
+        course_id: item.course_id,
+        question_type_id: questionType,
+      };
+    });
+    const payload = {
+      users: filterData,
+    };
+    console.log("payloaddd", payload);
+    try {
+      await sendInterviewRequest(payload);
+      CommonToaster("Request sent to email successfully!");
+    } catch (error) {
+      formReset();
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
+    } finally {
+      setTimeout(() => {
+        formReset();
+        getCandidatesData();
+      }, 500);
     }
+  };
+
+  const formReset = () => {
+    setRequestLoading(false);
+    setQuestionTypeModal(false);
+    setQuestionType("");
+    setQuestionTypeError("");
+    setValidationTrigger(false);
   };
 
   // onchange functions
@@ -415,29 +468,19 @@ export default function Candidates() {
             alignItems: "center",
           }}
         >
-          {requestLoading ? (
-            <button className="candidate_disablesendrequestbutton">
-              <>
-                <Spin
-                  size="small"
-                  indicator={
-                    <LoadingOutlined
-                      style={{ color: "#ffffff", marginRight: "6px" }}
-                      spin
-                    />
-                  }
-                />{" "}
-              </>
-            </button>
-          ) : (
-            <button
-              className="candidate_sendrequestbutton"
-              onClick={handleSendRequest}
-            >
-              <IoIosSend size={19} style={{ marginRight: "4px" }} />
-              Send Interview Request
-            </button>
-          )}
+          <button
+            className="candidate_sendrequestbutton"
+            onClick={() => {
+              if (selectedRows.length >= 1) {
+                setQuestionTypeModal(true);
+              } else {
+                CommonToaster("Please select candidate");
+              }
+            }}
+          >
+            <IoIosSend size={19} style={{ marginRight: "4px" }} />
+            Send Interview Request
+          </button>
         </Col>
       </Row>
 
@@ -472,6 +515,51 @@ export default function Candidates() {
           <CommonNodataFound title="No result found" />
         )}
       </Drawer>
+
+      {/* question type modal */}
+      <Modal
+        open={questionTypeModal}
+        onCancel={formReset}
+        title="Select Question Type"
+        footer={[
+          <div className="courses_addtopicmodal_footerContainer">
+            {requestLoading ? (
+              <Button className="courses_modal_disablesubmitbutton">
+                <>
+                  <Spin
+                    size="small"
+                    className="courses_addtopicbutton_spin"
+                    indicator={<LoadingOutlined spin color="#fff" />}
+                  />{" "}
+                </>
+              </Button>
+            ) : (
+              <Button
+                className="courses_modal_submitbutton"
+                onClick={handleSendInterviewRequest}
+              >
+                Submit
+              </Button>
+            )}
+          </div>,
+        ]}
+      >
+        <div style={{ marginTop: "20px" }}>
+          <PortalSelectField
+            label="Type"
+            options={typeData}
+            mandatory={true}
+            value={questionType}
+            onChange={(value) => {
+              setQuestionType(value);
+              if (validationTrigger) {
+                setQuestionTypeError(selectValidator(value));
+              }
+            }}
+            error={questionTypeError}
+          />
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -419,6 +419,26 @@ export const createOptionsForQuestion = async (payload) => {
   }
 };
 
+export const createQuestionType = async (payload) => {
+  try {
+    const response = await api.post("/api/createQuestionType", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getQuestionTypes = async (payload) => {
+  try {
+    const response = await api.get("/api/getQuestionTypes", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // answer api
 export const insertAnswers = async (payload) => {
   try {

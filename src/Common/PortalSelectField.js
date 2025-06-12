@@ -38,6 +38,7 @@ export default function PortalSelectField({
   allowClear,
   disabled,
   loading,
+  hideError,
 }) {
   return (
     <div style={style} className="commonInputfield_container">
@@ -85,17 +86,21 @@ export default function PortalSelectField({
         defaultValue={defaultValue}
         loading={loading}
       />
-      <div
-        className={
-          error
-            ? "commoninput_errormessage_activediv"
-            : "commoninput_errormessagediv"
-        }
-      >
-        <p className="commonfield_errortext">
-          {label ? label + error : "" + error}
-        </p>
-      </div>
+      {hideError === true ? (
+        ""
+      ) : (
+        <div
+          className={
+            error
+              ? "commoninput_errormessage_activediv"
+              : "commoninput_errormessagediv"
+          }
+        >
+          <p className="commonfield_errortext">
+            {label ? label + error : "" + error}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

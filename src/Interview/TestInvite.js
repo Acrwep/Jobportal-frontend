@@ -17,6 +17,7 @@ import Loader from "../Common/Loader";
 
 export default function TestInvite() {
   const navigate = useNavigate();
+  const { questionTypeId } = useParams();
   const { token } = useParams();
   const [fullName, setFullName] = useState("");
   const [fullNameError, setFullNameError] = useState("");
@@ -29,7 +30,7 @@ export default function TestInvite() {
   const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    console.log("hrefff", window.location.href);
+    console.log("hrefff", questionTypeId);
     if (isTokenExpired(token)) {
       console.log("Token is expired");
       navigate("/token-unavailable");
@@ -92,7 +93,7 @@ export default function TestInvite() {
               API_URL === "http://localhost:3000"
                 ? "http://localhost:3001/test-invite/"
                 : "https://placement.acte.in/test-invite/"
-            }${token}`
+            }${questionTypeId}/${token}`
           );
           console.log("checkTestCompleted", response);
           alreadyAttempted = response?.data?.data;
@@ -111,6 +112,7 @@ export default function TestInvite() {
                 userId: users[0].id,
                 courseId: users[0].course_id,
                 token: token,
+                questionTypeId: questionTypeId,
               },
             });
             setButtonLoading(false);

@@ -49,6 +49,18 @@ const logoutMenuStatusSlice = createSlice({
   },
 });
 
+const placementRegisterStatus = false;
+const placementRegisterStatusSlice = createSlice({
+  name: "placementregisterstatus",
+  initialState: placementRegisterStatus,
+  reducers: {
+    storePlacementRegisterStatus(state, action) {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
 const courseVideosSlice = createSlice({
   name: "coursevideos",
   initialState,
@@ -155,6 +167,8 @@ export const { storeCurrentPortalName } = currentPortalNameSlice.actions;
 export const { storeFolderProfiles } = folderProfilesSlice.actions;
 export const { storePortalMenuStatus } = portalMenuStatusSlice.actions;
 export const { storeLogoutMenuStatus } = logoutMenuStatusSlice.actions;
+export const { storePlacementRegisterStatus } =
+  placementRegisterStatusSlice.actions;
 export const { storeCourseVideos } = courseVideosSlice.actions;
 export const { storeTrainerId } = trainerIdSlice.actions;
 export const { storeCourseDocuments } = courseDocumentsSlice.actions;
@@ -169,6 +183,8 @@ export const currentPortalNameReducer = currentPortalNameSlice.reducer;
 export const folderProfilesReducer = folderProfilesSlice.reducer;
 export const portalMenuStatusReducer = portalMenuStatusSlice.reducer;
 export const logoutMenuStatusReducer = logoutMenuStatusSlice.reducer;
+export const placementRegisterStatusReducer =
+  placementRegisterStatusSlice.reducer;
 export const courseVideosReducer = courseVideosSlice.reducer;
 export const trainerIdReducer = trainerIdSlice.reducer;
 export const courseDocumentsReducer = courseDocumentsSlice.reducer;

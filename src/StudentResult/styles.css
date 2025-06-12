@@ -128,3 +128,39 @@
   margin-bottom: 24px !important;
   border-color: #eee !important;
 }
+.assessmentlink_pendingContainer {
+  background-color: #ffbf0033;
+  color: #fabb00;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.assessmentlink_completedContainer {
+  background-color: #14b8a524;
+  color: #14b8a6;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.assessmentlink_expiredContainer {
+  background-color: rgba(244, 67, 54, 0.164);
+  color: #f44336d1;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
