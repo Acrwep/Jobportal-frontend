@@ -1253,15 +1253,14 @@ export default function Admin() {
                           checked={item.isSelect ? item.isSelect : false}
                         />
                         <div className="admin_eligiblecandidateContainer">
-                          <p className="admin_eligibleheading">
-                            Eligible Candidate
-                          </p>
+                          <p className="admin_eligibleheading">Black List</p>
                           <Checkbox
                             onChange={(e) => {
                               setEligibleCandidateStatus(e.target.checked);
                               setEligibleCandidateId(item.id);
                               setEligibleModal(true);
                             }}
+                            className="admin_blacklistcheckbox"
                             checked={
                               item.eligibleCandidates === 0 ? false : true
                             }
@@ -2147,8 +2146,8 @@ export default function Admin() {
             onClick={() => console.log(eligibleCandidateStatus)}
           >
             {eligibleCandidateStatus === true
-              ? "Are you sure you want to make this candidate eligible?"
-              : "Are you sure you want to remove this candidate's eligibility?"}
+              ? "Are you sure you want to blacklist this candidate?"
+              : "Are you sure you want to remove this candidate from the blacklist?"}
           </p>
         </div>
       </Modal>

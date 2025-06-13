@@ -32,8 +32,8 @@ export default function AdminSearch() {
   ];
   const [courseLocation, setCourseLocation] = useState([]);
   const eligibleStatusOptions = [
-    { id: 1, name: "Eligible" },
-    { id: 2, name: "Not Eligible" },
+    { id: 1, name: "Blacklisted" },
+    { id: 2, name: "Not Blacklisted" },
   ];
   const [eligibleStatus, setEligibleStatus] = useState(null);
   const [courseJoiningDate, setCourseJoiningDate] = useState([]);
@@ -250,7 +250,7 @@ export default function AdminSearch() {
           <div className="adminsearch_filter_searchContainer">
             <CommonSelectField
               options={eligibleStatusOptions}
-              label="Eligible status"
+              label="Blacklist status"
               style={{ width: "20%" }}
               allowClear={true}
               labelClassName="adminsearch_filterselectlabel"

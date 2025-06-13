@@ -60,6 +60,7 @@ export default function Candidates() {
   const [questionTypeError, setQuestionTypeError] = useState("");
   const [validationTrigger, setValidationTrigger] = useState(false);
   const [typeData, setTypeData] = useState([]);
+  const [callTypeApi, setCallTypeApi] = useState(true);
 
   const columns = [
     { title: "Name", key: "name", dataIndex: "name", width: 200 },
@@ -85,6 +86,19 @@ export default function Candidates() {
         return (
           <div style={{ display: "flex", justifyContent: "center" }}>
             <p>{text ? moment(text).format("DD/MM/YYYY") : "-"}</p>
+          </div>
+        );
+      },
+    },
+    {
+      title: "Register In Placement",
+      key: "is_placement_registered",
+      dataIndex: "is_placement_registered",
+      width: 200,
+      render: (text, record) => {
+        return (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <p>{text === 1 ? "Yes" : "Not Yet"}</p>
           </div>
         );
       },
@@ -179,7 +193,11 @@ export default function Candidates() {
       );
     } finally {
       setTimeout(() => {
-        getQuestionTypesData();
+        if (callTypeApi) {
+          getQuestionTypesData();
+        } else {
+          setTableLoading(false);
+        }
       }, 500);
     }
   };
@@ -197,6 +215,7 @@ export default function Candidates() {
       );
     } finally {
       setTimeout(() => {
+        setCallTypeApi(false);
         setTableLoading(false);
       }, 300);
     }
@@ -348,7 +367,24 @@ export default function Candidates() {
     setSelectedRows(row);
   };
 
+  const checkCandidateRegisterInPlacement = () => {
+    if (selectedRows.length >= 1) {
+      const filterNonPlacementCandidates = selectedRows.filter(
+        (f) => f.is_placement_registered === 0
+      );
+
+      if (filterNonPlacementCandidates.length >= 1) {
+        CommonToaster("Select Only Placement Registered Candidates");
+      } else {
+        setQuestionTypeModal(true);
+      }
+    } else {
+      CommonToaster("Please select candidate");
+    }
+  };
+
   const handleSendInterviewRequest = async () => {
+    const today = new Date();
     setValidationTrigger(true);
     const typeValidate = selectValidator(questionType);
 
@@ -362,6 +398,7 @@ export default function Candidates() {
         id: item.id,
         course_id: item.course_id,
         question_type_id: questionType,
+        created_date: moment(today).format("YYYY-MM-DD HH:mm:ss"),
       };
     });
     const payload = {
@@ -427,8 +464,10 @@ export default function Candidates() {
 
   return (
     <div>
-      <p className="portal_mainheadings">Candidates</p>
-
+      <p className="portal_mainheadings">
+        Candidates{" "}
+        <span style={{ fontSize: "22px" }}>{`( ${data.length} )`}</span>
+      </p>
       <Row style={{ marginTop: "22px" }}>
         <Col xs={24} sm={24} md={24} lg={14}>
           <div className="questionupload_filterContainer">
@@ -440,6 +479,7 @@ export default function Candidates() {
               allowClear={true}
               onChange={handleBranchFilter}
               value={branchId}
+              hideError={true}
             />
             <PortalSelectField
               options={courseOptions}
@@ -449,6 +489,7 @@ export default function Candidates() {
               allowClear={true}
               onChange={handleCourseFilter}
               value={courseId}
+              hideError={true}
             />
             {/* <CommonDoubleDatePicker /> */}
             <PortalDoubleDatePicker
@@ -470,13 +511,14 @@ export default function Candidates() {
         >
           <button
             className="candidate_sendrequestbutton"
-            onClick={() => {
-              if (selectedRows.length >= 1) {
-                setQuestionTypeModal(true);
-              } else {
-                CommonToaster("Please select candidate");
-              }
-            }}
+            // onClick={() => {
+            //   if (selectedRows.length >= 1) {
+            //     setQuestionTypeModal(true);
+            //   } else {
+            //     CommonToaster("Please select candidate");
+            //   }
+            // }}
+            onClick={checkCandidateRegisterInPlacement}
           >
             <IoIosSend size={19} style={{ marginRight: "4px" }} />
             Send Interview Request
@@ -486,7 +528,7 @@ export default function Candidates() {
 
       <div style={{ marginTop: "22px" }}>
         <CommonTable
-          scroll={{ x: 1600 }}
+          scroll={{ x: 1800 }}
           columns={columns}
           dataSource={data}
           dataPerPage={10}

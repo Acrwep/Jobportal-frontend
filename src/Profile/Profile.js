@@ -141,7 +141,7 @@ export default function Profile() {
                           CTC Annually
                         </p>
                         <p className="profilecard_Experienceyear">
-                          {item.currentCTC}
+                          {item.currentCTC ? item.currentCTC : "-"}
                         </p>
                       </div>
 
@@ -260,12 +260,12 @@ export default function Profile() {
 
                     <div className="jobprefcard_contentdiv">
                       <p className="jobprefcard_locationheading">
-                        Eligible Status
+                        Blacklist Status
                       </p>
                       <p className="jobprefcard_locationtext">
                         {item.eligibleCandidates === 0
-                          ? "Not Eligible"
-                          : "Eligible"}
+                          ? "Not Blacklisted"
+                          : "Blacklisted"}
                       </p>
                     </div>
                   </div>

@@ -38,6 +38,8 @@
   font-size: 20px;
   font-weight: 700;
   color: #ffffff;
+  position: relative;
+  z-index: 999;
 }
 @media (min-width: 1900px) and (max-width: 3000px) {
   .loginpage_points h3 {
@@ -48,6 +50,8 @@
   font-size: 14px;
   color: #e6e6e6;
   line-height: 1.5;
+  position: relative;
+  z-index: 999;
 }
 .loginpage_points ul {
   padding: 6px 0px 6px 24px;
@@ -69,6 +73,8 @@
   line-height: 28px;
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: 999;
 }
 @media (min-width: 1900px) and (max-width: 3000px) {
   .loginpage_points li {
@@ -142,7 +148,14 @@
     height: calc(100% - 140px);
   }
 }
-@media (min-width: 1900px) and (max-width: 3000px) {
+@media (min-width: 1900px) and (max-width: 2499px) {
+  .loginpage_leftbackground_imageContainer {
+    left: 1%;
+    top: 240px;
+    height: calc(100% - 240px);
+  }
+}
+@media (min-width: 2500px) and (max-width: 3000px) {
   .loginpage_leftbackground_imageContainer {
     left: 4%;
     top: 260px;
@@ -164,6 +177,7 @@
   position: absolute;
   top: 20%;
   right: 0px;
+  z-index: 999;
 }
 @media (min-width: 320px) and (max-width: 521px) {
   .loginpage_leftbuttonContainer {

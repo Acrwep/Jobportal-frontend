@@ -277,6 +277,11 @@ export default function CandidateRegister() {
   }, []);
 
   const getCourseData = async () => {
+    const getloginUserDetails = localStorage.getItem("loginDetails");
+    const convertAsJson = JSON.parse(getloginUserDetails);
+    const getLoginUserCourseId = localStorage.getItem("selectedCourseId");
+    setEmail(convertAsJson.email);
+    setCourseId(parseInt(getLoginUserCourseId));
     try {
       const response = await getCourses();
       console.log("course response", response);
@@ -297,23 +302,6 @@ export default function CandidateRegister() {
     if (contactInfoValidationTrigger) {
       const emailValidate = emailValidator(e.target.value);
       setEmailError(emailValidate);
-      const formData = new FormData();
-      formData.append("email", e.target.value);
-      if (emailValidate === "") {
-        setTimeout(async () => {
-          try {
-            const response = await crmEmailValidation(formData);
-            if (response?.data?.message === "Email ID is not exist.") {
-              setEmailError(" is not valid. Contact acte support team.");
-            } else {
-              setEmailError("");
-            }
-            console.log("crm email response", response);
-          } catch (error) {
-            console.log("php email error", error);
-          }
-        }, 300);
-      }
     }
   };
 
@@ -824,7 +812,6 @@ export default function CandidateRegister() {
     setLastNameError("");
     setMobile("");
     setMobileError("");
-    setEmail("");
     setEmailError("");
     setCountry("");
     setCountryError("");
@@ -1073,6 +1060,7 @@ export default function CandidateRegister() {
                       value={email}
                       onChange={handleEmail}
                       error={emailError}
+                      disabled={true}
                       errorFontSize={emailError.length <= 20 ? "14px" : "13px"}
                     />
                   </Col>
@@ -1478,6 +1466,7 @@ export default function CandidateRegister() {
                           setCourseIdError(selectValidator(value));
                         }
                       }}
+                      disabled={true}
                       error={courseIdError}
                     />
                   </Col>

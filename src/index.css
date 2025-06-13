@@ -28,7 +28,9 @@ button {
 }
 .ant-select-outlined.ant-select-disabled:not(.ant-select-customize-input)
   .ant-select-selector {
-  opacity: 0.5;
+  opacity: 0.7;
+  color: rgb(0 0 0 / 52%) !important;
+  background-color: rgba(0, 0, 0, 0.04) !important;
 }
 /* antd table styles */
 .users_table .ant-table-thead .ant-table-cell {

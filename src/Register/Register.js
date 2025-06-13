@@ -264,6 +264,7 @@ export default function Register() {
           sm={24}
           md={24}
           lg={12}
+          xxl={14}
           style={{ backgroundColor: "#555ca3", position: "relative" }}
         >
           <div className="loginpage_leftContainer">
@@ -385,7 +386,7 @@ export default function Register() {
             />
           </div>
         </Col>
-        <Col xs={24} sm={24} md={24} lg={12}>
+        <Col xs={24} sm={24} md={24} lg={12} xxl={10}>
           <div className="loginpage_rightContainer">
             <img src={ActeLogo} className="loginpage_logo" />
             <p className="register_smalltext">

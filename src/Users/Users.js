@@ -289,7 +289,10 @@ export default function Users() {
 
   return (
     <div>
-      <p className="portal_mainheadings">Trainers</p>
+      <p className="portal_mainheadings">
+        Trainers{" "}
+        <span style={{ fontSize: "22px" }}>{`( ${usersData.length} )`}</span>
+      </p>
 
       <Row style={{ marginTop: "22px" }}>
         <Col xs={24} sm={24} md={24} lg={12}>

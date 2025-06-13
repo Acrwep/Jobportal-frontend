@@ -917,7 +917,12 @@ export default function QuestionUpload() {
   return (
     <div>
       <div className="portal_headinContainer">
-        <p className="portal_mainheadings">Questions</p>
+        <p className="portal_mainheadings">
+          Questions{" "}
+          <span
+            style={{ fontSize: "22px" }}
+          >{`( ${questionsData.length} )`}</span>
+        </p>
       </div>
 
       <Row style={{ marginTop: "22px" }}>
