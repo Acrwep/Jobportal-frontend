@@ -283,7 +283,7 @@ export default function Register() {
               <ul>
                 <li>
                   <TbArrowBadgeRight size={18} style={{ marginRight: "6px" }} />{" "}
-                  Watch top trainers' videos and docs
+                  Watch Top Trainers' Videos And Docs
                 </li>
                 <li>
                   {" "}
@@ -291,7 +291,7 @@ export default function Register() {
                     size={18}
                     style={{ marginRight: "6px" }}
                   />{" "}
-                  Learn anytime with videos and documents.
+                  Learn Anytime With Videos And Documents.
                 </li>
                 <li>
                   {" "}
@@ -299,13 +299,13 @@ export default function Register() {
                     size={18}
                     style={{ marginRight: "6px" }}
                   />{" "}
-                  Quickly find topics with organized learning materials.
+                  Quickly Find Topics With Organized Learning Materials.
                 </li>
               </ul>
 
               <div className="loginpage_subheadingContainer">
                 <img src={InterviewIcon} style={{ width: "22px" }} />
-                <h3>Interview preparation powered by ai</h3>
+                <h3>Interview Practice Powered By AI</h3>
               </div>
 
               <ul>
@@ -315,7 +315,7 @@ export default function Register() {
                     size={18}
                     style={{ marginRight: "6px" }}
                   />{" "}
-                  Practice company-based interview questions.
+                  Practice Company-Based Interview Questions.
                 </li>
                 <li>
                   {" "}
@@ -323,7 +323,7 @@ export default function Register() {
                     size={18}
                     style={{ marginRight: "6px" }}
                   />{" "}
-                  Take online assessment tests to crack interviews
+                  Take Online Assessment Tests To Crack Interviews
                 </li>
                 <li>
                   {" "}
@@ -331,7 +331,7 @@ export default function Register() {
                     size={18}
                     style={{ marginRight: "6px" }}
                   />{" "}
-                  Prepare effectively with real-world questions.
+                  Prepare Effectively With Real-World Questions.
                 </li>
               </ul>
 
@@ -346,7 +346,7 @@ export default function Register() {
                     size={18}
                     style={{ marginRight: "6px" }}
                   />{" "}
-                  Upload your updated resume to the placement portal
+                  Upload Your Updated Resume To The Placement Portal
                 </li>
                 <li>
                   {" "}
@@ -354,7 +354,7 @@ export default function Register() {
                     size={18}
                     style={{ marginRight: "6px" }}
                   />{" "}
-                  Mention ACTE course in your resume for placement
+                  Mention ACTE Course In Your Resume For Placement
                 </li>
                 <li>
                   {" "}
@@ -362,7 +362,7 @@ export default function Register() {
                     size={18}
                     style={{ marginRight: "6px" }}
                   />{" "}
-                  Stay confident—your dream job awaits!
+                  Stay Confident—Your Dream Job Awaits!
                 </li>
               </ul>
             </div>
