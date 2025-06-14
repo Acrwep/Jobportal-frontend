@@ -141,6 +141,15 @@ export const candidateRegistration = async (payload) => {
   }
 };
 
+export const updatePlacementRegister = async (payload) => {
+  try {
+    const response = await api.put("/api/updateCandidate", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const searchByKeyword = async (payload) => {
   try {
     const response = await api.get("/api/searchByKeyword", {

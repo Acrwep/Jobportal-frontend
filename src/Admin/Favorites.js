@@ -34,6 +34,7 @@ import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import CommonMultiSelect from "../Common/CommonMultiSelect";
 import { addressValidator } from "../Common/Validation";
+import PrismaZoom from "react-prismazoom";
 
 export default function Favorites() {
   pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -1356,7 +1357,7 @@ export default function Favorites() {
                                   CTC Anually
                                 </p>
                                 <p className="admin_ctctext">
-                                  {item.currentCTC}
+                                  {item.currentCTC ? item.currentCTC : "-"}
                                 </p>
                               </Col>
                               <Col span={8}>
@@ -1806,22 +1807,29 @@ export default function Favorites() {
         open={resumeViewerModal}
         onCancel={() => {
           setResumeViewerModal(false);
+          setPageNumber(1);
         }}
         footer={false}
         width="50%"
         centered
       >
         <div className="admin_resumemodal_resumeview">
-          <Document file={resumeBase64} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page pageNumber={pageNumber} />
-          </Document>
+          <PrismaZoom>
+            <Document file={resumeBase64} onLoadSuccess={onDocumentLoadSuccess}>
+              <Page pageNumber={pageNumber} />
+            </Document>
+          </PrismaZoom>
         </div>
 
         <div className="admin_resumemodal_paginationdiv">
           <button
             disabled={pageNumber <= 1}
             onClick={() => setPageNumber(pageNumber - 1)}
-            className="admin_resumemodal_paginationbutton"
+            className={
+              pageNumber <= 1
+                ? "admin_resumemodal_disablepaginationbutton"
+                : "admin_resumemodal_paginationbutton"
+            }
           >
             <MdArrowBackIosNew size={12} style={{ marginTop: "2px" }} />
           </button>
@@ -1831,7 +1839,11 @@ export default function Favorites() {
           <button
             disabled={pageNumber >= numPages}
             onClick={() => setPageNumber(pageNumber + 1)}
-            className="admin_resumemodal_paginationbutton"
+            className={
+              pageNumber >= numPages
+                ? "admin_resumemodal_disablepaginationbutton"
+                : "admin_resumemodal_paginationbutton"
+            }
           >
             <MdArrowForwardIos size={12} style={{ marginTop: "2px" }} />
           </button>

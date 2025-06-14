@@ -146,7 +146,7 @@ export default function LmsLogin() {
     try {
       const response = await checkCandidateRegisteredInPlacement(email);
       console.log("check candidate registed in placement", response);
-      const status = response?.data?.data || false;
+      const status = response?.data?.data.is_exists || false;
       localStorage.setItem("checkCandidateRegisteredInPlacement", status);
       dispatch(storePlacementRegisterStatus(status));
     } catch (error) {

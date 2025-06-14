@@ -224,7 +224,10 @@ export default function InterviewDocuments({ roleId, companyLoading }) {
 
       <Modal
         open={isOpen}
-        onCancel={() => setIsOpen(false)}
+        onCancel={() => {
+          setIsOpen(false);
+          setPageNumber(1);
+        }}
         title={selectedDocumentName}
         footer={false}
         width="50%"

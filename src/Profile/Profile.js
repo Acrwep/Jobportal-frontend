@@ -275,10 +275,10 @@ export default function Profile() {
                     {item.languages.map((lan) => {
                       return (
                         <Row>
-                          <Col span={6}>
+                          <Col span={8}>
                             <p className="languagecard_text">{lan.name}</p>
                           </Col>
-                          <Col span={18} style={{ display: "flex" }}>
+                          <Col span={16} style={{ display: "flex" }}>
                             {lan.levelStatus.map((item, index) => (
                               <>
                                 {lan.levelStatus.length - 1 === index ? (
@@ -387,6 +387,125 @@ export default function Profile() {
                         </p>
                       </div>
                     </div>
+                  </div>
+
+                  <div className="profile_skillscard">
+                    <p className="skillscard_headline">Assessment Results</p>
+
+                    {item.attempt_result && item.attempt_result.length >= 1 ? (
+                      <div className="profile_assessmentContainer">
+                        <Row className="profile_assessment_heading_rowContainer">
+                          <Col span={6}>
+                            <p className="profile_assessment_heading">Date</p>
+                          </Col>
+                          <Col span={6}>
+                            <p className="profile_assessment_heading">
+                              Question Type
+                            </p>
+                          </Col>
+                          <Col span={6}>
+                            <p className="profile_assessment_heading">
+                              Perentage
+                            </p>
+                          </Col>
+                          <Col span={6}>
+                            <p
+                              className="profile_assessment_heading"
+                              style={{ borderRight: "none" }}
+                            >
+                              Remark
+                            </p>
+                          </Col>
+                        </Row>
+
+                        {item.attempt_result.map((result, index) => {
+                          const lastIndex = item.attempt_result.length - 1;
+                          return (
+                            <React.Fragment key={index}>
+                              <Row>
+                                <Col
+                                  span={6}
+                                  className="profile_assessment_datasContainer"
+                                  style={{
+                                    borderBottom:
+                                      index === lastIndex
+                                        ? ""
+                                        : "1px solid rgba(128, 128, 128, 0.411)",
+                                  }}
+                                >
+                                  <p className="profile_assessment_datas">
+                                    {moment(result.attempt_date).format(
+                                      "DD-MM-YYYY"
+                                    )}
+                                  </p>
+                                </Col>
+                                <Col
+                                  span={6}
+                                  className="profile_assessment_datasContainer"
+                                  style={{
+                                    borderBottom:
+                                      index === lastIndex
+                                        ? ""
+                                        : "1px solid rgba(128, 128, 128, 0.411)",
+                                  }}
+                                >
+                                  <p className="profile_assessment_datas">
+                                    {result.question_type}
+                                  </p>
+                                </Col>
+                                <Col
+                                  span={6}
+                                  className="profile_assessment_datasContainer"
+                                  style={{
+                                    borderBottom:
+                                      index === lastIndex
+                                        ? ""
+                                        : "1px solid rgba(128, 128, 128, 0.411)",
+                                  }}
+                                >
+                                  <p className="profile_assessment_datas">
+                                    {result.attempt_percentage + "%"}
+                                  </p>
+                                </Col>
+                                <Col
+                                  span={6}
+                                  className="profile_assessment_datasContainer"
+                                  style={{
+                                    borderRight: "none",
+                                    borderBottom:
+                                      index === lastIndex
+                                        ? ""
+                                        : "1px solid rgba(128, 128, 128, 0.411)",
+                                  }}
+                                >
+                                  <p
+                                    className="profile_assessment_datas"
+                                    style={{
+                                      color:
+                                        result.grade === "Average" ||
+                                        result.grade === "Above Average"
+                                          ? "#fabb00"
+                                          : result.grade === "Good" ||
+                                            result.grade === "Very good" ||
+                                            result.grade === "Excellent"
+                                          ? "#14b8a6"
+                                          : "#f44336d1",
+                                      fontWeight: 500,
+                                    }}
+                                  >
+                                    {result.grade}
+                                  </p>
+                                </Col>
+                              </Row>
+                            </React.Fragment>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="profile_assessment_nodatamessage">
+                        No data found
+                      </p>
+                    )}
                   </div>
 
                   <div className="profile_skillscard">

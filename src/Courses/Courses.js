@@ -834,7 +834,7 @@ export default function Courses() {
     }
   };
 
-  function getMimeType(base64) {
+  const getMimeType = (base64) => {
     if (!base64) return "";
     const signature = base64.slice(0, 5).toUpperCase();
     switch (signature) {
@@ -849,16 +849,15 @@ export default function Courses() {
       default:
         return "image/*"; // fallback
     }
-  }
+  };
 
   const handleCompanyEdit = (item) => {
     console.log("clicked company", item);
     setCompanyId(item.id);
     setCompanyName(item.company_name);
     setCompanyLogo(item.logo);
-    const logo = `data:image/jpeg;base64,${item.logo}`;
-    const getLogoType = logo.match(/^data:image\/(\w+);base64,/);
-    setCompanyLogoType(getLogoType ? `image/${getLogoType[1]}` : null);
+    const logotype = getMimeType(item.logo);
+    setCompanyLogoType(logotype);
     setCompanyModal(true);
     setCompanyEdit(true);
   };
@@ -1172,6 +1171,7 @@ export default function Courses() {
                     <>
                       {companyList.map((item, index) => {
                         const logotype = getMimeType(item.logo);
+                        console.log("mime typeee", logotype);
                         const companylogo = `data:${logotype};base64,${item.logo}`;
                         return (
                           <React.Fragment key={index}>

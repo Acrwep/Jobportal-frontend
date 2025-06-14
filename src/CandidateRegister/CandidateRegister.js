@@ -40,7 +40,9 @@ import { Country, State, City } from "country-state-city";
 import {
   candidateRegistration,
   checkCandidateRegisteredInPlacement,
+  getCandidateById,
   getCourses,
+  updatePlacementRegister,
 } from "../Common/action";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
@@ -79,6 +81,7 @@ export default function CandidateRegister() {
   const { Dragger } = Upload;
   const dispatch = useDispatch();
   const [pageSection, setPageSection] = useState(1);
+  const [candidateId, setCandidateId] = useState(null);
   //contact info usestates
   const [firstName, setFirstName] = useState("");
   const [firstNameError, setFirstNameError] = useState("");
@@ -293,6 +296,149 @@ export default function CandidateRegister() {
     } catch (error) {
       setCourseNameOptions([]);
       console.log("course error", error);
+    } finally {
+      setTimeout(() => {
+        checkCandidate(convertAsJson.email);
+      }, 300);
+    }
+  };
+
+  const checkCandidate = async (email) => {
+    try {
+      const response = await checkCandidateRegisteredInPlacement(email);
+      console.log("check candidate registed in placement", response);
+      const regStatus = response?.data?.data;
+      localStorage.setItem(
+        "checkCandidateRegisteredInPlacement",
+        regStatus.is_exists
+      );
+      setCandidateId(regStatus.id);
+      dispatch(storePlacementRegisterStatus(regStatus.is_exists));
+      if (regStatus.is_exists === true) {
+        getCandidateDetails();
+      }
+    } catch (error) {
+      console.log("check candidate", error);
+    }
+  };
+
+  const getCandidateDetails = async () => {
+    const loginUserId = localStorage.getItem("loginUserId");
+    console.log("idddddddddd", loginUserId);
+    try {
+      const response = await getCandidateById(parseInt(51));
+      console.log("candidate response", response);
+      const getCandidateArray = response?.data?.data || [];
+      const details = getCandidateArray[0];
+      //contactinfo fetch
+      setFirstName(details.firstName);
+      setLastName(details.lastName);
+      setMobile(details.mobile);
+      const countries = Country.getAllCountries();
+      const findCountry = countries.find((f) => f.name === details.country);
+      const States = State.getStatesOfCountry(findCountry.isoCode);
+      setStateOptions(States);
+      const findState = States.find((f) => f.name === details.state);
+      const cities = City.getCitiesOfState(
+        findCountry.isoCode,
+        findState.isoCode
+      );
+      setCityOptions(cities);
+      const findCity = cities.find((f) => f.name === details.city);
+      setCity(findCity.name);
+      setState(findState.name);
+      setCountry(findCountry.name);
+      setPincode(details.pincode);
+      //experince fetch
+      setExperienceYear(
+        details.yearsOfExperience === "0 Years"
+          ? "0 years"
+          : details.yearsOfExperience
+      );
+      setExperienceMonth(
+        details.monthOfExperience === "0 Months"
+          ? "0 months"
+          : details.monthOfExperience
+      );
+      setCompanyName(details.companyName);
+      setDesignation(details.designation);
+      setStartDate(details.companyStartdate);
+      setEndDate(details.companyEnddate);
+      setworkingStatus(details.workingStatus === 0 ? false : true);
+      if (
+        (details.yearsOfExperience === 0 ||
+          details.yearsOfExperience === "0 Years") &&
+        (details.monthOfExperience === 0 ||
+          details.monthOfExperience === "0 Months")
+      ) {
+        setShowCtcfield(false);
+        setShowCompanyfields(false);
+      }
+      //skills fetch
+      setSkills(details.skills);
+      //education fetch
+      setQualification(details.qualification);
+      setUniversity(details.university);
+      setGraduateYear(details.graduateYear);
+      setTypeofEducation(details.typeOfEducation);
+      //course fetch
+      setCourseId(details.course_id);
+      setCourseLocation(details.courseLocation);
+      setCourseJoiningDate(details.courseJoiningDate);
+
+      setCourseStatus(details.courseStatus === "Inprogress" ? 1 : 2);
+      setMockupPrecentage(
+        details.mockupPercentage === ">25"
+          ? 1
+          : details.mockupPercentage === ">50"
+          ? 2
+          : details.mockupPercentage === ">75"
+          ? 3
+          : 4
+      );
+      //profile info fetch
+      setGender(details.gender);
+      setNoticePeriod(details.noticePeriod);
+      setCtc(details.currentCTC);
+      setEctc(details.expectedCTC);
+      setJobTitles(details.preferredJobTitles);
+      setJobLocations(details.preferredJobLocations);
+      if (details.profileImage) {
+        const profiletype = getMimeType(details.profileImage);
+        setProfilePictureArray([
+          { name: `profile.${profiletype.split("/")[1]}` },
+        ]);
+        setProfilePicture(details.profileImage);
+      } else {
+        setProfilePictureArray([]);
+        setProfilePicture("");
+      }
+      setLinkedinUrl(details.linkedinURL);
+      setSummary(details.profileSummary);
+      setLanguages(details.languages);
+      //resume fetch
+      setResumeArray([{ name: "Resume.pdf" }]);
+      setResume(details.resume);
+      // setCandidateData(response?.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMimeType = (base64) => {
+    if (!base64) return "";
+    const signature = base64.slice(0, 5).toUpperCase();
+    switch (signature) {
+      case "IVBOR":
+        return "image/png";
+      case "/9J/4":
+        return "image/jpeg";
+      case "R0LGO":
+        return "image/gif";
+      case "PD94B":
+        return "image/svg+xml"; // usually SVG base64 starts with '<?xml' which is 'PD94B' when encoded
+      default:
+        return "image/*"; // fallback
     }
   };
 
@@ -425,22 +571,20 @@ export default function CandidateRegister() {
   };
 
   const handleForward = () => {
-    // setPageSection(pageSection + 1);
-    if (pageSection === 1) {
-      handleContactInfoSubmit();
-    } else if (pageSection === 2) {
-      handleExperienceSubmit();
-    } else if (pageSection === 3) {
-      handleSkillsSubmit();
-    } else if (pageSection === 4) {
-      handleEducationSubmit();
-    } else if (pageSection === 5) {
-      handleCourseSubmit();
-    } else if (pageSection === 6) {
-      handleProfileInfoSubmit();
-    } else if (pageSection === 7) {
-      handleResumeSubmit();
-    }
+    setPageSection(pageSection + 1);
+    // if (pageSection === 1) {
+    //   handleContactInfoSubmit();
+    // } else if (pageSection === 2) {
+    //   handleExperienceSubmit();
+    // } else if (pageSection === 3) {
+    //   handleSkillsSubmit();
+    // } else if (pageSection === 4) {
+    //   handleEducationSubmit();
+    // } else if (pageSection === 5) {
+    //   handleCourseSubmit();
+    // } else if (pageSection === 6) {
+    //   handleProfileInfoSubmit();
+    // }
   };
 
   const handleContactInfoSubmit = async () => {
@@ -706,6 +850,7 @@ export default function CandidateRegister() {
     const formatJoingdate = formatDateTimeIST(new Date(courseJoiningDate));
 
     const payload = {
+      ...(candidateId && { id: candidateId }),
       firstName: firstName,
       lastName: lastName,
       mobile: mobile,
@@ -763,37 +908,77 @@ export default function CandidateRegister() {
     };
     console.log("registration payload", payload);
     setLoading(true);
-    try {
-      const response = await candidateRegistration(payload);
-      console.log("registration response", response);
-      CommonToaster("Register successfull!");
-      formReset();
 
-      setTimeout(() => {
-        checkCandidate(email);
-      }, 500);
-    } catch (error) {
-      console.log("registration error", error);
-      setLoading(false);
-      const Error = error?.response?.data?.details;
+    if (candidateId) {
+      try {
+        const response = await updatePlacementRegister(payload);
+        console.log("registration response", response);
+        CommonToaster("Update successfully!");
+        formReset();
 
-      if (
-        Error.includes("for key 'mobile'") ||
-        Error.includes("for key 'candidates.mobile'")
-      ) {
-        CommonToaster("Mobile number already exists");
-      } else if (
-        Error.includes("for key 'email'") ||
-        Error.includes("for key 'candidates.email'")
-      ) {
-        CommonToaster("Email already exists");
-      } else {
-        CommonToaster(error?.response?.data?.message || "Error while register");
-      }
-    } finally {
-      setTimeout(() => {
+        setTimeout(() => {
+          checkCandidate(email);
+        }, 500);
+      } catch (error) {
+        console.log("registration error", error);
         setLoading(false);
-      }, 1000);
+        const Error = error?.response?.data?.details;
+
+        if (
+          Error.includes("for key 'mobile'") ||
+          Error.includes("for key 'candidates.mobile'")
+        ) {
+          CommonToaster("Mobile number already exists");
+        } else if (
+          Error.includes("for key 'email'") ||
+          Error.includes("for key 'candidates.email'")
+        ) {
+          CommonToaster("Email already exists");
+        } else {
+          CommonToaster(
+            error?.response?.data?.message || "Error while register"
+          );
+        }
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      }
+    } else {
+      try {
+        const response = await candidateRegistration(payload);
+        console.log("registration response", response);
+        CommonToaster("Register successfull!");
+        formReset();
+
+        setTimeout(() => {
+          checkCandidate(email);
+        }, 500);
+      } catch (error) {
+        console.log("registration error", error);
+        setLoading(false);
+        const Error = error?.response?.data?.details;
+
+        if (
+          Error.includes("for key 'mobile'") ||
+          Error.includes("for key 'candidates.mobile'")
+        ) {
+          CommonToaster("Mobile number already exists");
+        } else if (
+          Error.includes("for key 'email'") ||
+          Error.includes("for key 'candidates.email'")
+        ) {
+          CommonToaster("Email already exists");
+        } else {
+          CommonToaster(
+            error?.response?.data?.message || "Error while register"
+          );
+        }
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      }
     }
   };
 
@@ -876,18 +1061,6 @@ export default function CandidateRegister() {
     setResume("");
     setResumeError("");
     setPageSection(1);
-  };
-
-  const checkCandidate = async (email) => {
-    try {
-      const response = await checkCandidateRegisteredInPlacement(email);
-      console.log("check candidate registed in placement", response);
-      const regStatus = response?.data?.data || false;
-      localStorage.setItem("checkCandidateRegisteredInPlacement", regStatus);
-      dispatch(storePlacementRegisterStatus(regStatus));
-    } catch (error) {
-      console.log("check candidate", error);
-    }
   };
 
   return (
@@ -2060,12 +2233,23 @@ export default function CandidateRegister() {
                   />{" "}
                 </button>
               ) : (
-                <button
-                  className="candidate_forwardbutton"
-                  onClick={handleForward}
-                >
-                  <IoIosArrowForward size={26} color="#ffffff" />
-                </button>
+                <>
+                  {pageSection === 7 ? (
+                    <button
+                      className="placementregister_submitbutton"
+                      onClick={handleResumeSubmit}
+                    >
+                      {candidateId ? "Update" : "Register"}
+                    </button>
+                  ) : (
+                    <button
+                      className="candidate_forwardbutton"
+                      onClick={handleForward}
+                    >
+                      <IoIosArrowForward size={26} color="#ffffff" />
+                    </button>
+                  )}
+                </>
               )}
             </div>
           </Col>

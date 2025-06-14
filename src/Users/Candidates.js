@@ -232,7 +232,7 @@ export default function Candidates() {
       console.log("answers response", response);
       const reverseData = answers.reverse();
       if (reverseData.length >= 1) {
-        const addChildren = answers.map((item, index) => {
+        const addChildren = reverseData.map((item, index) => {
           const questionType = item.answers?.[0]?.question_type ?? "";
           return {
             ...item,
@@ -356,6 +356,8 @@ export default function Candidates() {
         });
         console.log("update answerItem", addChildren);
         setAnswersData(addChildren);
+      } else {
+        setAnswersData([]);
       }
     } catch (error) {
       console.log(error);
