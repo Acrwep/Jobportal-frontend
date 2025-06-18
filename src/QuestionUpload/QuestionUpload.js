@@ -308,6 +308,7 @@ export default function QuestionUpload() {
     setSectionFilterId(sec);
     if (sec === 1) {
       setCourseFilterId(null);
+      setTypeFilterId(null);
       getQuestionsData(sec, courseFilterId, courseData);
     } else {
       getQuestionsData(sec, courseFilterId, courseData, typeFilterId);
@@ -350,6 +351,7 @@ export default function QuestionUpload() {
     setQuestionTypeId(record.question_type_id);
     if (record.section_id === 1) {
       setDisableCourse(true);
+      setQuestionTypeId(null);
       setCourseId(null);
     } else {
       setDisableCourse(false);
@@ -366,10 +368,11 @@ export default function QuestionUpload() {
     const optionThreeValidate = selectValidator(optionThree);
     const optionFourValidate = selectValidator(optionFour);
     const sectionValidate = selectValidator(sectionId);
-    const questionTypeIdValidate = selectValidator(questionTypeId);
+    // const questionTypeIdValidate = selectValidator(questionTypeId);
 
     let courseValidate = "";
     let correctAnswerValidate = "";
+    let questionTypeIdValidate = "";
 
     if (correctAnswer === "") {
       correctAnswerValidate = " is required";
@@ -387,9 +390,11 @@ export default function QuestionUpload() {
     if (sectionId === 1) {
       setDisableCourse(true);
       courseValidate = "";
+      questionTypeIdValidate = "";
     } else {
       setDisableCourse(false);
       courseValidate = selectValidator(courseId);
+      questionTypeIdValidate = selectValidator(questionTypeId);
     }
 
     setQuestionError(questionvalidate);
@@ -507,7 +512,11 @@ export default function QuestionUpload() {
           (row) =>
             Array.isArray(row) &&
             row.some(
-              (cell) => cell !== undefined && cell !== null && cell !== ""
+              (cell) =>
+                cell !== undefined &&
+                cell !== null &&
+                cell !== "" &&
+                cell !== " "
             )
         );
         console.log("shetttt", data);
@@ -544,7 +553,7 @@ export default function QuestionUpload() {
       error.push({ error: "Question column is required" });
     } else {
       excelData.slice(1).map((row, rowIndex) => {
-        const qustion = row[questionIndex];
+        const qustion = row[questionIndex].toString();
 
         if (qustion) {
           let firstNameValidate = addressValidator(qustion);
@@ -560,7 +569,7 @@ export default function QuestionUpload() {
       error.push({ error: "Option 1 column is required" });
     } else {
       excelData.slice(1).map((row, rowIndex) => {
-        const option1 = row[option1Index];
+        const option1 = row[option1Index].toString();
 
         if (option1) {
           let option1Validate = selectValidator(option1);
@@ -579,7 +588,7 @@ export default function QuestionUpload() {
       error.push({ error: "Option 2 column is required" });
     } else {
       excelData.slice(1).map((row, rowIndex) => {
-        const option2 = row[option2Index];
+        const option2 = row[option2Index].toString();
 
         if (option2) {
           let option2Validate = selectValidator(option2);
@@ -598,7 +607,7 @@ export default function QuestionUpload() {
       error.push({ error: "Option 3 column is required" });
     } else {
       excelData.slice(1).map((row, rowIndex) => {
-        const option3 = row[option3Index];
+        const option3 = row[option3Index].toString();
 
         if (option3) {
           let option3Validate = selectValidator(option3);
@@ -617,7 +626,7 @@ export default function QuestionUpload() {
       error.push({ error: "Option 4 column is required" });
     } else {
       excelData.slice(1).map((row, rowIndex) => {
-        const option4 = row[option4Index];
+        const option4 = row[option4Index].toString();
 
         if (option4) {
           let option4Validate = selectValidator(option4);
@@ -636,7 +645,8 @@ export default function QuestionUpload() {
       error.push({ error: "Correct Answer column is required" });
     } else {
       excelData.slice(1).map((row, rowIndex) => {
-        updateExcelData[rowIndex + 1].correct_answer = row[correctAnswerIndex];
+        updateExcelData[rowIndex + 1].correct_answer =
+          row[correctAnswerIndex].toString();
         if (
           row[correctAnswerIndex] !== row[option1Index] &&
           row[correctAnswerIndex] !== row[option2Index] &&
@@ -761,14 +771,15 @@ export default function QuestionUpload() {
 
     const questions = rows.map((row) => {
       return {
-        question: row[0] || row.question,
-        option_a: row[1] || row.option_a,
-        option_b: row[2] || row.option_b,
-        option_c: row[3] || row.option_c,
-        option_d: row[4] || row.option_d,
-        correct_answer: row[5] || row.correct_answer,
+        question: row.question,
+        option_a: row.option_a,
+        option_b: row.option_b,
+        option_c: row.option_c,
+        option_d: row.option_d,
+        correct_answer: row.correct_answer,
         section_id: row.section_id,
         course_id: row.course_id,
+        question_type_id: row.question_type_id,
       };
     });
 
@@ -956,6 +967,7 @@ export default function QuestionUpload() {
               selectClassName="questionupload_filterselectfield"
               allowClear={true}
               value={typeFilterId}
+              disabled={sectionFilterId === 1 ? true : false}
               onChange={handleTypeFilter}
               hideError={true}
             />
@@ -1141,8 +1153,10 @@ export default function QuestionUpload() {
 
                   if (value === 1) {
                     setCourseId(null);
+                    setQuestionTypeId(null);
                     setDisableCourse(true);
                     setCourseIdError("");
+                    setQuestionTypeIdError("");
                   } else {
                     setDisableCourse(false);
                   }
@@ -1179,6 +1193,7 @@ export default function QuestionUpload() {
                 mandatory={true}
                 options={typeData}
                 value={questionTypeId}
+                disabled={disableCourse}
                 onChange={(value) => {
                   setQuestionTypeId(value);
                   if (validationTrigger) {

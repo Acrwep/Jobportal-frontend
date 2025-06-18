@@ -315,18 +315,18 @@ export default function CandidateRegister() {
       setCandidateId(regStatus.id);
       dispatch(storePlacementRegisterStatus(regStatus.is_exists));
       if (regStatus.is_exists === true) {
-        getCandidateDetails();
+        getCandidateDetails(regStatus.id);
       }
     } catch (error) {
       console.log("check candidate", error);
     }
   };
 
-  const getCandidateDetails = async () => {
+  const getCandidateDetails = async (candidateid) => {
     const loginUserId = localStorage.getItem("loginUserId");
     console.log("idddddddddd", loginUserId);
     try {
-      const response = await getCandidateById(parseInt(51));
+      const response = await getCandidateById(parseInt(candidateid));
       console.log("candidate response", response);
       const getCandidateArray = response?.data?.data || [];
       const details = getCandidateArray[0];
@@ -571,20 +571,20 @@ export default function CandidateRegister() {
   };
 
   const handleForward = () => {
-    setPageSection(pageSection + 1);
-    // if (pageSection === 1) {
-    //   handleContactInfoSubmit();
-    // } else if (pageSection === 2) {
-    //   handleExperienceSubmit();
-    // } else if (pageSection === 3) {
-    //   handleSkillsSubmit();
-    // } else if (pageSection === 4) {
-    //   handleEducationSubmit();
-    // } else if (pageSection === 5) {
-    //   handleCourseSubmit();
-    // } else if (pageSection === 6) {
-    //   handleProfileInfoSubmit();
-    // }
+    // setPageSection(pageSection + 1);
+    if (pageSection === 1) {
+      handleContactInfoSubmit();
+    } else if (pageSection === 2) {
+      handleExperienceSubmit();
+    } else if (pageSection === 3) {
+      handleSkillsSubmit();
+    } else if (pageSection === 4) {
+      handleEducationSubmit();
+    } else if (pageSection === 5) {
+      handleCourseSubmit();
+    } else if (pageSection === 6) {
+      handleProfileInfoSubmit();
+    }
   };
 
   const handleContactInfoSubmit = async () => {
@@ -905,6 +905,7 @@ export default function CandidateRegister() {
           : ">90",
       courseJoiningDate: convertToBackendFormat(formatJoingdate),
       createdAt: moment(today).format("YYYY-MM-DD HH:mm:ss"),
+      updatedAt: moment(today).format("YYYY-MM-DD HH:mm:ss"),
     };
     console.log("registration payload", payload);
     setLoading(true);

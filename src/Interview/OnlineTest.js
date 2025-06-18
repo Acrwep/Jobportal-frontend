@@ -148,7 +148,6 @@ export default function OnlineTest() {
   const getSectionAQuestionsData = async () => {
     const payload = {
       section_id: 1,
-      question_type_id: parseInt(location?.state?.questionTypeId),
     };
     try {
       const response = await getQuestions(payload);
