@@ -274,7 +274,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 125px;
+  width: 140px;
   height: 34px;
   cursor: pointer;
   font-weight: 600;
@@ -296,11 +296,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 125px;
+  width: 140px;
   height: 34px;
   cursor: default;
   font-weight: 600;
   opacity: 0.8;
+}
+.courses_videoupload_percent {
+  margin-left: 8px !important;
 }
 /* document styles */
 .courses_documenttitle {

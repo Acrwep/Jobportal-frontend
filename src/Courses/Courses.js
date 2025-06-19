@@ -137,6 +137,7 @@ export default function Courses() {
   const [loading, setLoading] = useState(true);
   const [buttonLoader, setButtonLoader] = useState(false);
   const [formValidationTrigger, setFormValidationTrigger] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const tabItems = [
     {
@@ -574,18 +575,22 @@ export default function Courses() {
     }
   };
 
-  const videoAndDocumentUpload = async (payload) => {
+  const videoAndDocumentUpload = async (payload, onUploadProgress) => {
     try {
-      const response = await api.post("/api/uploadContent", payload);
+      const response = await api.post("/api/uploadContent", payload, {
+        onUploadProgress,
+      });
       return response;
     } catch (error) {
       throw error;
     }
   };
 
-  const companyVideoAndDocumentUpload = async (payload) => {
+  const companyVideoAndDocumentUpload = async (payload, onUploadProgress) => {
     try {
-      const response = await api.post("/api/uploadCompanyContent", payload);
+      const response = await api.post("/api/uploadCompanyContent", payload, {
+        onUploadProgress,
+      });
       return response;
     } catch (error) {
       throw error;
@@ -666,9 +671,24 @@ export default function Courses() {
       let response;
       try {
         if (clickedCompanyId) {
-          response = await companyVideoAndDocumentUpload(formData);
+          response = await companyVideoAndDocumentUpload(
+            formData,
+            (progressEvent) => {
+              const percent = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              console.log("Upload Progress:", percent + "%");
+              setUploadProgress(percent); // 👈 Optional state to show progress bar
+            }
+          );
         } else {
-          response = await videoAndDocumentUpload(formData);
+          response = await videoAndDocumentUpload(formData, (progressEvent) => {
+            const percent = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            console.log("Upload Progress:", percent + "%");
+            setUploadProgress(percent); // 👈 Optional state to show progress bar
+          });
         }
         console.log(response, "reponse");
         CommonToaster("Video uploaded");
@@ -685,10 +705,15 @@ export default function Courses() {
         }, 300);
       } catch (error) {
         setButtonLoader(false);
+        setUploadProgress(0);
         CommonToaster(
           error?.response?.data?.message ||
             "Something went wrong. Try again later"
         );
+      } finally {
+        setTimeout(() => {
+          setUploadProgress(0);
+        }, 300);
       }
     } else {
       console.log("pdf array", pdfArray[0]);
@@ -890,6 +915,10 @@ export default function Courses() {
     }
   };
 
+  const handleInprogress = () => {
+    CommonToaster("Upload in progress. Do not close or refresh the window.");
+    return;
+  };
   //reset fields function
   const formReset = () => {
     setAddTopicModal(false);
@@ -1602,7 +1631,11 @@ export default function Courses() {
       {/* create content drawer */}
       <Drawer
         open={contentDrawer}
-        onClose={formReset}
+        onClose={
+          uploadProgress > 0 && uploadProgress <= 100
+            ? handleInprogress
+            : formReset
+        }
         width="36%"
         title="Add Content"
         closable
@@ -1710,6 +1743,16 @@ export default function Courses() {
                   className="courses_addtopicbutton_spin"
                   indicator={<LoadingOutlined spin color="#fff" />}
                 />{" "}
+                {youtubeLink === "" && uploadProgress >= 1 && (
+                  <p
+                    className="courses_videoupload_percent"
+                    style={{ fontSize: "12px" }}
+                  >
+                    {uploadProgress >= 100
+                      ? "Compressing..."
+                      : "Uploading " + uploadProgress + "%"}
+                  </p>
+                )}
               </>
             </button>
           ) : (
