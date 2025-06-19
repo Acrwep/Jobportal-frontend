@@ -537,6 +537,7 @@ export default function CandidateRegister() {
   const handleResumeAttachment = ({ file }) => {
     console.log("fileee", file);
     const ValidType = file.type === "application/pdf";
+    const isValidSize = file.size <= 1 * 1024 * 1024; // 1MB in bytes
 
     if (file.status === "uploading" || file.status === "removed") {
       setResume("");
@@ -544,16 +545,22 @@ export default function CandidateRegister() {
       return;
     }
     if (ValidType) {
-      console.log("fileeeee", file);
-      setResumeArray([file]);
-      CommonToaster("Attachment uploaded");
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64String = reader.result.split(",")[1]; // Extract Base64 content
-        setResume(base64String); // Store in state
-        setResumeError(selectValidator(base64String));
-      };
+      if (isValidSize) {
+        console.log("fileeeee", file);
+        setResumeArray([file]);
+        CommonToaster("Attachment uploaded");
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const base64String = reader.result.split(",")[1]; // Extract Base64 content
+          setResume(base64String); // Store in state
+          setResumeError(selectValidator(base64String));
+        };
+      } else {
+        CommonToaster("File size must be 1MB or less");
+        setResume("");
+        setResumeArray([]);
+      }
     } else {
       CommonToaster("Accept only .pdf");
       setResume("");
