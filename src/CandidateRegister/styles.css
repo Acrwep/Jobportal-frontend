@@ -572,3 +572,44 @@
 .placementregister_submitbutton:hover {
   opacity: 0.7;
 }
+.placementreg_resume_viewbutton {
+  box-sizing: border-box;
+  background: none transparent;
+  appearance: none;
+  text-align: start;
+  text-decoration: none;
+  border: 1px solid rgb(212, 210, 208);
+  cursor: pointer;
+  width: max-content;
+  font-weight: 600;
+  border-radius: 6px;
+  color: #0056b3;
+  padding: 4px 12px;
+  margin-top: 6px;
+  border-color: #0056b3 !important;
+}
+.placementreg_resume_viewbutton:hover {
+  background-color: #0057b32a !important;
+  color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
+.placemntreg_resumepagination_leftarrowContainer {
+  position: absolute;
+  top: 50%;
+  left: -12px;
+  border-radius: 50%;
+  padding: 12px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  cursor: pointer;
+  z-index: 99;
+}
+.placemntreg_resumepagination_rightarrowContainer {
+  position: absolute;
+  top: 50%;
+  right: -12px;
+  border-radius: 50%;
+  padding: 12px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  cursor: pointer;
+  z-index: 99;
+}

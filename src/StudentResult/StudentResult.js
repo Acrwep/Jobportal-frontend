@@ -29,12 +29,13 @@ export default function StudentResult() {
       const reverseData = answers.reverse();
       if (reverseData.length >= 1) {
         const addChildren = reverseData.map((item, index) => {
+          const lastIndex = item.answers.length - 1;
+          const lastQuestionType =
+            item.answers?.[lastIndex]?.question_type ?? "";
           return {
             ...item,
             key: index + 1,
-            label: `${
-              item.question_type ? item.question_type : `Attempt ${index + 1}`
-            }`,
+            label: `${lastQuestionType}`,
             children: (
               <div>
                 <Row style={{ marginBottom: "12px" }}>

@@ -13,6 +13,7 @@ import {
   Input,
   Spin,
   Avatar,
+  Modal,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import CommonDatePicker from "../Common/CommonDatePicker";
@@ -53,6 +54,13 @@ import {
 } from "../Redux/slice";
 import { useNavigate } from "react-router-dom";
 import PortalMenu from "../Common/PortalMenu";
+import { pdfjs, Document, Page } from "react-pdf";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.mjs",
+  import.meta.url
+).toString();
 
 export default function CandidateRegister() {
   const api = axios.create({
@@ -272,6 +280,10 @@ export default function CandidateRegister() {
   const [profileInfoValidationTrigger, setProfileInfoValidationTrigger] =
     useState(false);
   const [resumeValidationTrigger, setResumeValidationTrigger] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [uploadedResume, setUploadedResume] = useState("");
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
     const countries = Country.getAllCountries();
@@ -419,6 +431,9 @@ export default function CandidateRegister() {
       //resume fetch
       setResumeArray([{ name: "Resume.pdf" }]);
       setResume(details.resume);
+      const pdfDataUrl = `data:application/pdf;base64,${details.resume}`;
+      setUploadedResume(pdfDataUrl);
+
       // setCandidateData(response?.data?.data);
     } catch (error) {
       console.log(error);
@@ -1069,6 +1084,10 @@ export default function CandidateRegister() {
     setResume("");
     setResumeError("");
     setPageSection(1);
+  };
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
   };
 
   return (
@@ -2206,6 +2225,24 @@ export default function CandidateRegister() {
                       </div>
                     </div>
                   </Dragger>
+                  {uploadedResume && (
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        marginTop: "12px",
+                      }}
+                    >
+                      <button
+                        className="placementreg_resume_viewbutton"
+                        onClick={() => {
+                          setIsModalOpen(true);
+                        }}
+                      >
+                        View Resume
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
@@ -2260,6 +2297,59 @@ export default function CandidateRegister() {
                 </>
               )}
             </div>
+
+            {/* resume view modal */}
+            <Modal
+              open={isModalOpen}
+              onCancel={() => {
+                setIsModalOpen(false);
+                setPageNumber(1);
+              }}
+              footer={false}
+              width="50%"
+              centered={false}
+              style={{ top: 20 }}
+            >
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Document
+                  file={uploadedResume}
+                  onLoadSuccess={onDocumentLoadSuccess}
+                >
+                  <Page pageNumber={pageNumber} />
+                </Document>
+
+                {pageNumber >= 2 ? (
+                  <button
+                    className="placemntreg_resumepagination_leftarrowContainer"
+                    disabled={pageNumber <= 1}
+                    onClick={() => setPageNumber(pageNumber - 1)}
+                  >
+                    <FaAngleLeft size={20} />
+                  </button>
+                ) : (
+                  ""
+                )}
+
+                {pageNumber >= numPages ? (
+                  ""
+                ) : (
+                  <button
+                    className="placemntreg_resumepagination_rightarrowContainer"
+                    disabled={pageNumber >= numPages}
+                    onClick={() => setPageNumber(pageNumber + 1)}
+                  >
+                    <FaAngleRight size={20} />
+                  </button>
+                )}
+              </div>
+            </Modal>
           </Col>
         </Row>
       </div>

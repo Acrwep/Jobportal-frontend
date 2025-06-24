@@ -951,7 +951,7 @@ export default function QuestionUpload() {
             />
             <PortalSelectField
               options={courseData}
-              style={{ width: "35%" }}
+              style={{ width: "40%" }}
               placeholder="Select Course"
               selectClassName="questionupload_filterselectfield"
               allowClear={true}
@@ -962,7 +962,7 @@ export default function QuestionUpload() {
             />
             <PortalSelectField
               options={typeData}
-              style={{ width: "35%" }}
+              style={{ width: "40%" }}
               placeholder="Select Type"
               selectClassName="questionupload_filterselectfield"
               allowClear={true}

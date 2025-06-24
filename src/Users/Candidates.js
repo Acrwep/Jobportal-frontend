@@ -233,11 +233,13 @@ export default function Candidates() {
       const reverseData = answers.reverse();
       if (reverseData.length >= 1) {
         const addChildren = reverseData.map((item, index) => {
-          const questionType = item.answers?.[0]?.question_type ?? "";
+          const lastIndex = item.answers.length - 1;
+          const lastQuestionType =
+            item.answers?.[lastIndex]?.question_type ?? "";
           return {
             ...item,
             key: index + 1,
-            label: `${questionType}`,
+            label: `${lastQuestionType}`,
             children: (
               <div>
                 <Row style={{ marginBottom: "12px" }}>
