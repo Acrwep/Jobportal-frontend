@@ -4,7 +4,16 @@ import { IoCloseSharp } from "react-icons/io5";
 import { IoIosArrowForward } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa";
 import "./styles.css";
-import { Row, Col, Divider, Modal, Pagination, Checkbox, Button } from "antd";
+import {
+  Row,
+  Col,
+  Divider,
+  Modal,
+  Pagination,
+  Checkbox,
+  Button,
+  Spin,
+} from "antd";
 import {
   addToFavorite,
   createFolder,
@@ -167,6 +176,7 @@ export default function Admin() {
   const [candidates, setCandidates] = useState([]);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [favoritesList, setFavoritesList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getFavoritesData();
@@ -278,6 +288,10 @@ export default function Admin() {
       }));
     } catch (error) {
       console.log(error);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     }
   };
 
@@ -1167,217 +1181,238 @@ export default function Admin() {
           </div>
         </Col>
         <Col span={18}>
-          <Row
-            style={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
-              <p
-                className="admin_profilefound_heading"
-                onClick={() => console.log(selectedCandidates)}
-              >
-                {totalProfileCount} Profile found
-              </p>
-            </Col>
-            <Col
-              xs={24}
-              sm={24}
-              md={24}
-              lg={12}
-              xl={12}
-              xxl={12}
-              style={{ display: "flex", justifyContent: "flex-end" }}
+          {loading ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+              }}
             >
-              <Pagination
-                current={pagination.currentPage}
-                total={pagination.totalRecords}
-                pageSize={pagination.limit}
-                onChange={(page, pageSize) => {
-                  console.log("pageee", page, pageSize);
-                  setPagination({
-                    ...pagination,
-                    currentPage: page,
-                    limit: pageSize,
-                  });
-                }}
-                showSizeChanger
-                pageSizeOptions={["20", "40", "80", "160"]}
-              />
-            </Col>
-          </Row>
-
-          <Row gutter={16} className="admin_savetofoldersdiv">
-            <Col xs={24} sm={24} md={24} lg={12}>
-              {candidates.length >= 1 && (
-                <Checkbox
-                  onChange={handleSelectall}
-                  style={{ backgroundColor: "transparent" }}
-                  value={selectAllValue}
-                >
-                  Select All
-                </Checkbox>
-              )}
-            </Col>
-            <Col xs={24} sm={24} md={24} lg={12}>
-              <div
+              <Spin />
+            </div>
+          ) : (
+            <>
+              <Row
                 style={{
                   display: "flex",
-                  justifyContent: "flex-end",
-                  width: "100%",
+                  alignItems: "center",
                 }}
               >
-                <button
-                  className="admin_savetofoldersbutton"
-                  onClick={() => setFolderModal(true)}
+                <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
+                  <p
+                    className="admin_profilefound_heading"
+                    onClick={() => console.log(selectedCandidates)}
+                  >
+                    {totalProfileCount} Profile found
+                  </p>
+                </Col>
+                <Col
+                  xs={24}
+                  sm={24}
+                  md={24}
+                  lg={12}
+                  xl={12}
+                  xxl={12}
+                  style={{ display: "flex", justifyContent: "flex-end" }}
                 >
-                  Save to folders
-                </button>
-              </div>
-            </Col>
-          </Row>
-          {candidates.length >= 1 ? (
-            <>
-              {candidates.map((item, index) => {
-                const profileBase64String = `data:image/jpeg;base64,${item.profileImage}`;
-                const isFavorite = favoritesList.some(
-                  (fav) => fav.candidateId === item.id
-                );
-                return (
-                  <React.Fragment key={index}>
-                    <div className="admin_candidatesDetailscard">
-                      <div className="admin_checkiconContainer">
-                        <Checkbox
-                          onChange={(e) => handleCandidateSelect(e, item.id)}
-                          checked={item.isSelect ? item.isSelect : false}
-                        />
-                        <div className="admin_eligiblecandidateContainer">
-                          <p className="admin_eligibleheading">Black List</p>
-                          <Checkbox
-                            onChange={(e) => {
-                              setEligibleCandidateStatus(e.target.checked);
-                              setEligibleCandidateId(item.id);
-                              setEligibleModal(true);
-                            }}
-                            className="admin_blacklistcheckbox"
-                            checked={
-                              item.eligibleCandidates === 0 ? false : true
-                            }
-                          />
-                        </div>
-                      </div>
-                      <Row
-                        gutter={16}
-                        className="admin_candidatesDetailsmainContainer"
-                      >
-                        <Col
-                          xs={24}
-                          sm={24}
-                          md={24}
-                          lg={12}
-                          xl={12}
-                          xxl={12}
-                          style={{ borderRight: "1px solid #0e0c0c33" }}
-                        >
-                          <Row>
-                            <Col span={6}>
-                              {item.profileImage ? (
-                                <img
-                                  src={profileBase64String}
-                                  className="admin_candidateprofileimage"
-                                />
-                              ) : (
-                                <FaRegUser size={55} color="#212121" />
-                              )}
-                            </Col>
-                            <Col span={18}>
-                              <p
-                                className="admin_candidatename"
-                                onClick={() =>
-                                  navigate("/profiledetails", {
-                                    state: { candidateId: item.id },
-                                  })
-                                }
-                              >
-                                <>
-                                  {highlightTextSafe(item.firstName)}{" "}
-                                  {highlightTextSafe(item.lastName)}
-                                </>
+                  <Pagination
+                    current={pagination.currentPage}
+                    total={pagination.totalRecords}
+                    pageSize={pagination.limit}
+                    onChange={(page, pageSize) => {
+                      console.log("pageee", page, pageSize);
+                      setPagination({
+                        ...pagination,
+                        currentPage: page,
+                        limit: pageSize,
+                      });
+                    }}
+                    showSizeChanger
+                    pageSizeOptions={["20", "40", "80", "160"]}
+                  />
+                </Col>
+              </Row>
+
+              <Row gutter={16} className="admin_savetofoldersdiv">
+                <Col xs={24} sm={24} md={24} lg={12}>
+                  {candidates.length >= 1 && (
+                    <Checkbox
+                      onChange={handleSelectall}
+                      style={{ backgroundColor: "transparent" }}
+                      value={selectAllValue}
+                    >
+                      Select All
+                    </Checkbox>
+                  )}
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={12}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      width: "100%",
+                    }}
+                  >
+                    <button
+                      className="admin_savetofoldersbutton"
+                      onClick={() => setFolderModal(true)}
+                    >
+                      Save to folders
+                    </button>
+                  </div>
+                </Col>
+              </Row>
+              {candidates.length >= 1 ? (
+                <>
+                  {candidates.map((item, index) => {
+                    const profileBase64String = `data:image/jpeg;base64,${item.profileImage}`;
+                    const isFavorite = favoritesList.some(
+                      (fav) => fav.candidateId === item.id
+                    );
+                    return (
+                      <React.Fragment key={index}>
+                        <div className="admin_candidatesDetailscard">
+                          <div className="admin_checkiconContainer">
+                            <Checkbox
+                              onChange={(e) =>
+                                handleCandidateSelect(e, item.id)
+                              }
+                              checked={item.isSelect ? item.isSelect : false}
+                            />
+                            <div className="admin_eligiblecandidateContainer">
+                              <p className="admin_eligibleheading">
+                                Black List
                               </p>
-
-                              <div className="admin_candidateprofdiv">
-                                <MdOutlineMailOutline
-                                  color="#333"
-                                  size={16}
-                                  className="admin_candidatecard_icons"
-                                />
-                                <p className="admin_candidategender">
-                                  {highlightTextSafe(item.email)}
-                                </p>
-                              </div>
-
-                              <div className="admin_candidateprofdiv">
-                                <PiPhoneCallLight
-                                  color="#333"
-                                  size={16}
-                                  className="admin_candidatecard_icons"
-                                />
-                                <p className="admin_candidategender">
-                                  {highlightTextSafe(item.mobile)}
-                                </p>
-                              </div>
-
-                              {item.gender === "Male" ? (
-                                <div className="admin_candidateprofdiv">
-                                  <BsGenderMale
-                                    size={15}
-                                    color="#333"
-                                    className="admin_candidatecard_icons"
-                                  />
-                                  <p className="admin_candidategender">
-                                    {highlightTextSafe(item.gender)}
+                              <Checkbox
+                                onChange={(e) => {
+                                  setEligibleCandidateStatus(e.target.checked);
+                                  setEligibleCandidateId(item.id);
+                                  setEligibleModal(true);
+                                }}
+                                className="admin_blacklistcheckbox"
+                                checked={
+                                  item.eligibleCandidates === 0 ? false : true
+                                }
+                              />
+                            </div>
+                          </div>
+                          <Row
+                            gutter={16}
+                            className="admin_candidatesDetailsmainContainer"
+                          >
+                            <Col
+                              xs={24}
+                              sm={24}
+                              md={24}
+                              lg={12}
+                              xl={12}
+                              xxl={12}
+                              style={{ borderRight: "1px solid #0e0c0c33" }}
+                            >
+                              <Row>
+                                <Col span={6}>
+                                  {item.profileImage ? (
+                                    <img
+                                      src={profileBase64String}
+                                      className="admin_candidateprofileimage"
+                                    />
+                                  ) : (
+                                    <FaRegUser size={55} color="#212121" />
+                                  )}
+                                </Col>
+                                <Col span={18}>
+                                  <p
+                                    className="admin_candidatename"
+                                    onClick={() => {
+                                      // navigate("/profiledetails", {
+                                      //   state: { candidateId: item.id },
+                                      // })
+                                      const url = `/profiledetails?candidateId=${item.id}`;
+                                      window.open(url, "_blank"); // Opens in new tab
+                                    }}
+                                  >
+                                    <>
+                                      {highlightTextSafe(item.firstName)}{" "}
+                                      {highlightTextSafe(item.lastName)}
+                                    </>
                                   </p>
-                                </div>
-                              ) : (
-                                <div className="admin_candidateprofdiv">
-                                  <BsGenderFemale
-                                    size={15}
-                                    color="#333"
-                                    className="admin_candidatecard_icons"
-                                  />
-                                  <p className="admin_candidategender">
-                                    {highlightTextSafe(item.gender)}
-                                  </p>
-                                </div>
-                              )}
 
-                              {item.designation && (
-                                <div className="admin_candidateprofdiv">
-                                  <HiOutlineUserCircle
-                                    size={16}
-                                    color="#333"
-                                    className="admin_candidatecard_icons"
-                                  />
-                                  <p className="admin_candidatedesignation">
-                                    {highlightTextSafe(
-                                      item.designation.charAt(0).toUpperCase() +
-                                        item.designation.slice(1)
-                                    )}
-                                  </p>
-                                </div>
-                              )}
+                                  <div className="admin_candidateprofdiv">
+                                    <MdOutlineMailOutline
+                                      color="#333"
+                                      size={16}
+                                      className="admin_candidatecard_icons"
+                                    />
+                                    <p className="admin_candidategender">
+                                      {highlightTextSafe(item.email)}
+                                    </p>
+                                  </div>
 
-                              {item.companyName && (
-                                <div className="admin_candidateprofdiv">
-                                  <BsBuildings className="admin_candidatecard_icons" />
-                                  <p className="admin_candidategender">
-                                    {highlightTextSafe(item.companyName)}
-                                  </p>
-                                </div>
-                              )}
+                                  <div className="admin_candidateprofdiv">
+                                    <PiPhoneCallLight
+                                      color="#333"
+                                      size={16}
+                                      className="admin_candidatecard_icons"
+                                    />
+                                    <p className="admin_candidategender">
+                                      {highlightTextSafe(item.mobile)}
+                                    </p>
+                                  </div>
 
-                              {/* <div
+                                  {item.gender === "Male" ? (
+                                    <div className="admin_candidateprofdiv">
+                                      <BsGenderMale
+                                        size={15}
+                                        color="#333"
+                                        className="admin_candidatecard_icons"
+                                      />
+                                      <p className="admin_candidategender">
+                                        {highlightTextSafe(item.gender)}
+                                      </p>
+                                    </div>
+                                  ) : (
+                                    <div className="admin_candidateprofdiv">
+                                      <BsGenderFemale
+                                        size={15}
+                                        color="#333"
+                                        className="admin_candidatecard_icons"
+                                      />
+                                      <p className="admin_candidategender">
+                                        {highlightTextSafe(item.gender)}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {item.designation && (
+                                    <div className="admin_candidateprofdiv">
+                                      <HiOutlineUserCircle
+                                        size={16}
+                                        color="#333"
+                                        className="admin_candidatecard_icons"
+                                      />
+                                      <p className="admin_candidatedesignation">
+                                        {highlightTextSafe(
+                                          item.designation
+                                            .charAt(0)
+                                            .toUpperCase() +
+                                            item.designation.slice(1)
+                                        )}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {item.companyName && (
+                                    <div className="admin_candidateprofdiv">
+                                      <BsBuildings className="admin_candidatecard_icons" />
+                                      <p className="admin_candidategender">
+                                        {highlightTextSafe(item.companyName)}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {/* <div
                                 style={{
                                   display: "flex",
                                 }}
@@ -1409,297 +1444,309 @@ export default function Admin() {
                                       )}
                                 </p>
                               </div> */}
-                            </Col>
-                          </Row>
-
-                          <Row style={{ marginTop: "6px" }}>
-                            <Col span={6}>
-                              <p className="admin_candidate_lefttext">
-                                Location:
-                              </p>
-                            </Col>
-                            <Col span={18}>
-                              <p className="admin_candidate_locationtext">
-                                {highlightTextSafe(
-                                  item.city
-                                    ? item.city.charAt(0).toUpperCase() +
-                                        item.city.slice(1)
-                                    : "-"
-                                )}
-                              </p>
-                            </Col>
-                          </Row>
-
-                          <Row style={{ marginTop: "12px" }}>
-                            <Col span={6}>
-                              <p className="admin_candidate_lefttext">
-                                Pref. location:
-                              </p>
-                            </Col>
-                            <Col span={18}>
-                              <p className="admin_candidate_locationtext">
-                                {item.preferredJobLocations.length >= 1
-                                  ? item.preferredJobLocations
-                                      .map(
-                                        (location) =>
-                                          location.charAt(0).toUpperCase() +
-                                          location.slice(1)
-                                      )
-                                      .join(", ")
-                                  : "-"}
-                              </p>
-                            </Col>
-                          </Row>
-
-                          <Row style={{ marginTop: "12px" }}>
-                            <Col span={6}>
-                              <p className="admin_candidate_lefttext">
-                                Nationality:
-                              </p>
-                            </Col>
-                            <Col span={18}>
-                              <p className="admin_candidate_locationtext">
-                                {highlightTextSafe(
-                                  item.country.charAt(0).toUpperCase() +
-                                    item.country.slice(1)
-                                )}
-                              </p>
-                            </Col>
-                          </Row>
-
-                          <Row style={{ marginTop: "12px" }}>
-                            <Col span={6}>
-                              <p className="admin_candidate_lefttext">
-                                Education:
-                              </p>
-                            </Col>
-                            <Col span={18}>
-                              <div style={{ display: "flex" }}>
-                                <PiGraduationCapDuotone
-                                  size={15}
-                                  className="admin_candidatecard_icons"
-                                />
-                                <p className="admin_candidate_locationtext">
-                                  <>
-                                    {highlightTextSafe(item.qualification)} at{" "}
-                                    {highlightTextSafe(item.university)} in{" "}
-                                    {highlightTextSafe(item.graduateYear)}
-                                  </>
-                                </p>
-                              </div>
-                            </Col>
-                          </Row>
-
-                          <Row style={{ marginTop: "12px" }}>
-                            <Col span={6}>
-                              <p className="admin_candidate_lefttext">
-                                Skills:
-                              </p>
-                            </Col>
-                            <Col span={18}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexWrap: "wrap",
-                                  gap: "0px",
-                                }}
-                              >
-                                {item.skills.map((item, index) => {
-                                  return (
-                                    <React.Fragment key={index}>
-                                      <div className="admin_candidateskills_container">
-                                        <p>
-                                          {highlightTextSafe(
-                                            item.charAt(0).toUpperCase() +
-                                              item.slice(1)
-                                          )}
-                                        </p>
-                                      </div>
-                                    </React.Fragment>
-                                  );
-                                })}
-                              </div>
-                            </Col>
-                          </Row>
-
-                          <Row
-                            gutter={16}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              marginTop: "16px",
-                            }}
-                          >
-                            <Col
-                              xs={24}
-                              sm={24}
-                              md={24}
-                              lg={12}
-                              xl={12}
-                              xxl={12}
-                            >
-                              <p className="admin_candidate_lefttext">
-                                Created At:{" "}
-                                {moment(item.createdAt).format("DD/MM/YYYY")}
-                              </p>
-                            </Col>
-                            <Col
-                              xs={24}
-                              sm={24}
-                              md={24}
-                              lg={12}
-                              xl={12}
-                              xxl={12}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "flex-end",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <button
-                                  className="admin_favoritesbutton"
-                                  onClick={() =>
-                                    handleAddfavorite(item.id, isFavorite)
-                                  }
-                                >
-                                  {isFavorite ? (
-                                    <IoBookmark
-                                      color="#FFC107"
-                                      size={16}
-                                      style={{ marginRight: "6px" }}
-                                    />
-                                  ) : (
-                                    <IoBookmarkOutline
-                                      size={16}
-                                      style={{ marginRight: "6px" }}
-                                    />
-                                  )}
-                                  Favorite
-                                </button>
-                              </div>
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
-                          <div
-                            style={{
-                              position: "relative",
-                              height: "100%",
-                              padding: "0px 6px",
-                            }}
-                          >
-                            <p className="admin_candidate_profilesummaryheading">
-                              Profile Summary
-                            </p>
-                            {item.profileSummary ? (
-                              <p className="admin_candidate_profilesummary">
-                                {item.profileSummary}
-                              </p>
-                            ) : (
-                              <p className="admin_candidate_nosummary">
-                                No data found
-                              </p>
-                            )}
-                            <Row
-                              gutter={16}
-                              className="admin_profilesummaryrow"
-                            >
-                              <Col span={8}>
-                                <p className="admin_experienceheading">
-                                  Total Experience
-                                </p>
-                                <p className="admin_ctctext">
-                                  {item.yearsOfExperience === 0 &&
-                                  item.monthOfExperience === 0 ? (
-                                    "Fresher"
-                                  ) : (
-                                    <>
-                                      {highlightTextSafe(
-                                        item.yearsOfExperience.toString()
-                                      )}{" "}
-                                      {highlightTextSafe(
-                                        item.monthOfExperience.toString()
-                                      )}{" "}
-                                    </>
-                                  )}
-                                </p>
-                              </Col>
-                              <Col span={8}>
-                                <p className="admin_experienceheading">
-                                  CTC Anually
-                                </p>
-                                <p className="admin_ctctext">
-                                  {item.currentCTC
-                                    ? highlightTextSafe(item.currentCTC)
-                                    : "-"}
-                                </p>
-                              </Col>
-                              <Col span={8}>
-                                <p className="admin_experienceheading">
-                                  Notice period
-                                </p>
-                                <p className="admin_ctctext">
-                                  {highlightTextSafe(item.noticePeriod)}
-                                </p>
-                              </Col>
-                            </Row>
-
-                            <div className="admin_contactinfo_buttondiv">
-                              <Row style={{ width: "100%" }}>
-                                <Col span={12}>
-                                  <button
-                                    className="admin_viewresumebutton"
-                                    onClick={() => {
-                                      const pdfDataUrl = `data:application/pdf;base64,${item.resume}`;
-                                      setResumeBase64(pdfDataUrl);
-                                      setResumeViewerModal(true);
-                                    }}
-                                  >
-                                    <FaRegFileAlt
-                                      style={{ marginRight: "6px" }}
-                                    />
-                                    View Resume
-                                  </button>
-                                </Col>
-                                <Col
-                                  span={12}
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "flex-end",
-                                  }}
-                                >
-                                  <button
-                                    className="admin_contactinfo_button"
-                                    onClick={() =>
-                                      handleContactInfoModal(
-                                        item.firstName,
-                                        item.lastName,
-                                        item.mobile,
-                                        item.email,
-                                        item.linkedinURL,
-                                        item.resume
-                                      )
-                                    }
-                                  >
-                                    Contact Info
-                                  </button>
                                 </Col>
                               </Row>
-                            </div>
-                          </div>
-                        </Col>
-                      </Row>
-                    </div>
-                  </React.Fragment>
-                );
-              })}
+
+                              <Row style={{ marginTop: "6px" }}>
+                                <Col span={6}>
+                                  <p className="admin_candidate_lefttext">
+                                    Location:
+                                  </p>
+                                </Col>
+                                <Col span={18}>
+                                  <p className="admin_candidate_locationtext">
+                                    {highlightTextSafe(
+                                      item.city
+                                        ? item.city.charAt(0).toUpperCase() +
+                                            item.city.slice(1)
+                                        : "-"
+                                    )}
+                                  </p>
+                                </Col>
+                              </Row>
+
+                              <Row style={{ marginTop: "12px" }}>
+                                <Col span={6}>
+                                  <p className="admin_candidate_lefttext">
+                                    Pref. location:
+                                  </p>
+                                </Col>
+                                <Col span={18}>
+                                  <p className="admin_candidate_locationtext">
+                                    {item.preferredJobLocations.length >= 1
+                                      ? item.preferredJobLocations
+                                          .map(
+                                            (location) =>
+                                              location.charAt(0).toUpperCase() +
+                                              location.slice(1)
+                                          )
+                                          .join(", ")
+                                      : "-"}
+                                  </p>
+                                </Col>
+                              </Row>
+
+                              <Row style={{ marginTop: "12px" }}>
+                                <Col span={6}>
+                                  <p className="admin_candidate_lefttext">
+                                    Nationality:
+                                  </p>
+                                </Col>
+                                <Col span={18}>
+                                  <p className="admin_candidate_locationtext">
+                                    {highlightTextSafe(
+                                      item.country.charAt(0).toUpperCase() +
+                                        item.country.slice(1)
+                                    )}
+                                  </p>
+                                </Col>
+                              </Row>
+
+                              <Row style={{ marginTop: "12px" }}>
+                                <Col span={6}>
+                                  <p className="admin_candidate_lefttext">
+                                    Education:
+                                  </p>
+                                </Col>
+                                <Col span={18}>
+                                  <div style={{ display: "flex" }}>
+                                    <PiGraduationCapDuotone
+                                      size={15}
+                                      className="admin_candidatecard_icons"
+                                    />
+                                    <p className="admin_candidate_locationtext">
+                                      <>
+                                        {highlightTextSafe(item.qualification)}{" "}
+                                        at {highlightTextSafe(item.university)}{" "}
+                                        in{" "}
+                                        {highlightTextSafe(item.graduateYear)}
+                                      </>
+                                    </p>
+                                  </div>
+                                </Col>
+                              </Row>
+
+                              <Row style={{ marginTop: "12px" }}>
+                                <Col span={6}>
+                                  <p className="admin_candidate_lefttext">
+                                    Skills:
+                                  </p>
+                                </Col>
+                                <Col span={18}>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexWrap: "wrap",
+                                      gap: "0px",
+                                    }}
+                                  >
+                                    {item.skills.map((item, index) => {
+                                      return (
+                                        <React.Fragment key={index}>
+                                          <div className="admin_candidateskills_container">
+                                            <p>
+                                              {highlightTextSafe(
+                                                item.charAt(0).toUpperCase() +
+                                                  item.slice(1)
+                                              )}
+                                            </p>
+                                          </div>
+                                        </React.Fragment>
+                                      );
+                                    })}
+                                  </div>
+                                </Col>
+                              </Row>
+
+                              <Row
+                                gutter={16}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  marginTop: "16px",
+                                }}
+                              >
+                                <Col
+                                  xs={24}
+                                  sm={24}
+                                  md={24}
+                                  lg={12}
+                                  xl={12}
+                                  xxl={12}
+                                >
+                                  <p className="admin_candidate_lefttext">
+                                    Created At:{" "}
+                                    {moment(item.createdAt).format(
+                                      "DD/MM/YYYY"
+                                    )}
+                                  </p>
+                                </Col>
+                                <Col
+                                  xs={24}
+                                  sm={24}
+                                  md={24}
+                                  lg={12}
+                                  xl={12}
+                                  xxl={12}
+                                >
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <button
+                                      className="admin_favoritesbutton"
+                                      onClick={() =>
+                                        handleAddfavorite(item.id, isFavorite)
+                                      }
+                                    >
+                                      {isFavorite ? (
+                                        <IoBookmark
+                                          color="#FFC107"
+                                          size={16}
+                                          style={{ marginRight: "6px" }}
+                                        />
+                                      ) : (
+                                        <IoBookmarkOutline
+                                          size={16}
+                                          style={{ marginRight: "6px" }}
+                                        />
+                                      )}
+                                      Favorite
+                                    </button>
+                                  </div>
+                                </Col>
+                              </Row>
+                            </Col>
+                            <Col
+                              xs={24}
+                              sm={24}
+                              md={24}
+                              lg={12}
+                              xl={12}
+                              xxl={12}
+                            >
+                              <div
+                                style={{
+                                  position: "relative",
+                                  height: "100%",
+                                  padding: "0px 6px",
+                                }}
+                              >
+                                <p className="admin_candidate_profilesummaryheading">
+                                  Profile Summary
+                                </p>
+                                {item.profileSummary ? (
+                                  <p className="admin_candidate_profilesummary">
+                                    {item.profileSummary}
+                                  </p>
+                                ) : (
+                                  <p className="admin_candidate_nosummary">
+                                    No data found
+                                  </p>
+                                )}
+                                <Row
+                                  gutter={16}
+                                  className="admin_profilesummaryrow"
+                                >
+                                  <Col span={8}>
+                                    <p className="admin_experienceheading">
+                                      Total Experience
+                                    </p>
+                                    <p className="admin_ctctext">
+                                      {item.yearsOfExperience === 0 &&
+                                      item.monthOfExperience === 0 ? (
+                                        "Fresher"
+                                      ) : (
+                                        <>
+                                          {highlightTextSafe(
+                                            item.yearsOfExperience.toString()
+                                          )}{" "}
+                                          {highlightTextSafe(
+                                            item.monthOfExperience.toString()
+                                          )}{" "}
+                                        </>
+                                      )}
+                                    </p>
+                                  </Col>
+                                  <Col span={8}>
+                                    <p className="admin_experienceheading">
+                                      CTC Anually
+                                    </p>
+                                    <p className="admin_ctctext">
+                                      {item.currentCTC
+                                        ? highlightTextSafe(item.currentCTC)
+                                        : "-"}
+                                    </p>
+                                  </Col>
+                                  <Col span={8}>
+                                    <p className="admin_experienceheading">
+                                      Notice period
+                                    </p>
+                                    <p className="admin_ctctext">
+                                      {highlightTextSafe(item.noticePeriod)}
+                                    </p>
+                                  </Col>
+                                </Row>
+
+                                <div className="admin_contactinfo_buttondiv">
+                                  <Row style={{ width: "100%" }}>
+                                    <Col span={12}>
+                                      <button
+                                        className="admin_viewresumebutton"
+                                        onClick={() => {
+                                          const pdfDataUrl = `data:application/pdf;base64,${item.resume}`;
+                                          setResumeBase64(pdfDataUrl);
+                                          setResumeViewerModal(true);
+                                        }}
+                                      >
+                                        <FaRegFileAlt
+                                          style={{ marginRight: "6px" }}
+                                        />
+                                        View Resume
+                                      </button>
+                                    </Col>
+                                    <Col
+                                      span={12}
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                      }}
+                                    >
+                                      <button
+                                        className="admin_contactinfo_button"
+                                        onClick={() =>
+                                          handleContactInfoModal(
+                                            item.firstName,
+                                            item.lastName,
+                                            item.mobile,
+                                            item.email,
+                                            item.linkedinURL,
+                                            item.resume
+                                          )
+                                        }
+                                      >
+                                        Contact Info
+                                      </button>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              </div>
+                            </Col>
+                          </Row>
+                        </div>
+                      </React.Fragment>
+                    );
+                  })}
+                </>
+              ) : (
+                <div className="admin_candidatenodatadiv">
+                  <p>No data found</p>
+                </div>
+              )}
             </>
-          ) : (
-            <div className="admin_candidatenodatadiv">
-              <p>No data found</p>
-            </div>
           )}
         </Col>
       </Row>

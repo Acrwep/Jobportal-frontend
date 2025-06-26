@@ -300,11 +300,10 @@ export default function Courses() {
       const response = await getTopics(parseInt(selectedCourseId));
       const coursetopics = response?.data?.topics || [];
       if (coursetopics.length >= 1) {
-        const reverseData = coursetopics.reverse();
-        console.log("course topics", reverseData);
-        setActiveTopicTabId(reverseData[0].id);
-        topicid = reverseData[0].id;
-        setCourseTopicsData(reverseData);
+        console.log("course topics", coursetopics);
+        setActiveTopicTabId(coursetopics[0].id);
+        topicid = coursetopics[0].id;
+        setCourseTopicsData(coursetopics);
       } else {
         topicid = null;
         setActiveTopicTabId(null);

@@ -44,7 +44,27 @@
   transform: scale(0.9);
   box-shadow: 3px 2px 22px 1px #027cff73;
 }
-
+.questionupload_deletebutton {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #c92828 !important;
+  border-radius: 6px !important;
+  outline: 0 !important;
+  border: none;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 7px 19px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.questionupload_deletebutton:hover {
+  opacity: 0.8;
+}
+.questionupload_deletebutton:active {
+  transform: scale(0.9);
+  box-shadow: 3px 2px 22px 1px #027cff73;
+}
 .uploadquestion_drawerheading {
   font-size: 20px;
   font-weight: 600;
@@ -116,6 +136,7 @@
 .questionupload_table_actionContainer {
   display: flex;
   gap: 26px;
+  margin-left: 12px;
 }
 .questionupload_actionicons {
   cursor: pointer;

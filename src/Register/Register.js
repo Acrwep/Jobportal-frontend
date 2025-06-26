@@ -175,7 +175,9 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setValidationTrigger(true);
-    const formatJoingdate = formatDateTimeIST(new Date(coursejoingDate));
+    const formatJoingdate = coursejoingDate
+      ? formatDateTimeIST(new Date(coursejoingDate))
+      : null;
 
     const nameValidate = nameValidator(name);
     const emailValidate = emailValidator(email);

@@ -150,6 +150,28 @@
   transform: scale(0.9);
   box-shadow: 3px 2px 22px 1px #027cff73;
 }
+.candidate_downloadresultbutton {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #0056b3 !important;
+  border-radius: 6px !important;
+  outline: 0 !important;
+  border: none;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 180px;
+  padding: 7px 0px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.candidate_downloadresultbutton:hover {
+  opacity: 0.8;
+}
+.candidate_downloadresultbutton:active {
+  transform: scale(0.9);
+  box-shadow: 3px 2px 22px 1px #027cff73;
+}
 .candidate_disablesendrequestbutton {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   background-color: #0056b3 !important;
@@ -165,4 +187,25 @@
   cursor: default;
   font-weight: 600;
   opacity: 0.7;
+}
+.interview_confirmmodal_iconContainer {
+  border-radius: 50%;
+  padding: 11px;
+  background-color: #ffbf0029;
+}
+.interview_confirmmail_text {
+  text-align: center;
+  padding: 12px 0px;
+  line-height: 26px;
+}
+.interview_suremail_text {
+  text-align: center;
+  line-height: 26px;
+}
+.interview_confirmmodal_sendbutton {
+  color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
+.interview_confirmmodal_sendbutton:hover {
+  opacity: 0.8;
 }

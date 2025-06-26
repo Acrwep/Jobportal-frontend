@@ -15,6 +15,7 @@ import CommonTable from "../Common/CommonTable";
 import { IoIosSend } from "react-icons/io";
 import { CommonToaster } from "../Common/CommonToaster";
 import {
+  downloadResult,
   getAllUsers,
   getAssessmentAnswers,
   getCandidates,
@@ -32,11 +33,15 @@ import { PiCheckFatFill } from "react-icons/pi";
 import CommonNodataFound from "../Common/CommonNodataFound";
 import { addressValidator, selectValidator } from "../Common/Validation";
 import PortalInputField from "../Common/PortalInputField";
+import { MdDelete } from "react-icons/md";
+import { PiWarningCircleFill } from "react-icons/pi";
+import DownloadTableAsCSV from "../Common/DownloadTableAsCSV";
 const { Search } = Input;
 
 export default function Candidates() {
   const navigate = useNavigate();
   const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [data, setData] = useState([]);
   const [tableLoading, setTableLoading] = useState(true);
   const [requestLoading, setRequestLoading] = useState(false);
@@ -54,6 +59,7 @@ export default function Candidates() {
   const [courseId, setCourseId] = useState(null);
   const [selectedDates, setSelectedDates] = useState([]);
   const [resultDrawer, setResultDrawer] = useState(false);
+  const [collapseDefaultKey, setCollapseDefaultKey] = useState(["1"]);
   const [answersData, setAnswersData] = useState([]);
   const [questionTypeModal, setQuestionTypeModal] = useState(false);
   const [questionType, setQuestionType] = useState("");
@@ -61,6 +67,13 @@ export default function Candidates() {
   const [validationTrigger, setValidationTrigger] = useState(false);
   const [typeData, setTypeData] = useState([]);
   const [callTypeApi, setCallTypeApi] = useState(true);
+  const [mailConfirmModal, setMailConfirmModal] = useState(false);
+  const [placementRegisteredCandidates, setPlacementRegisteredCandidates] =
+    useState(null);
+  const [
+    nonPlacementRegisteredCandidates,
+    setNonPlacementRegisteredCandidates,
+  ] = useState(null);
 
   const columns = [
     { title: "Name", key: "name", dataIndex: "name", width: 200 },
@@ -229,6 +242,10 @@ export default function Candidates() {
     try {
       const response = await getAssessmentAnswers(payload);
       const answers = response?.data?.data || [];
+      if (answers.length <= 0) {
+        setAnswersData([]);
+        return;
+      }
       console.log("answers response", response);
       const reverseData = answers.reverse();
       if (reverseData.length >= 1) {
@@ -239,11 +256,26 @@ export default function Candidates() {
           return {
             ...item,
             key: index + 1,
-            label: `${lastQuestionType}`,
+            // label: `${lastQuestionType}`,
+            label: (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                <span>{lastQuestionType}</span>
+                <p style={{ color: "gray" }}>
+                  Date:{" "}
+                  <span>{moment(item.attempt_date).format("DD-MM-YYYY")}</span>
+                </p>{" "}
+              </div>
+            ),
             children: (
               <div>
                 <Row style={{ marginBottom: "12px" }}>
-                  <Col span={12}>
+                  <Col span={8}>
                     <p>
                       Date:{" "}
                       <span>
@@ -251,22 +283,25 @@ export default function Candidates() {
                       </span>
                     </p>
                   </Col>
-                  <Col span={12}>
-                    <p>Total Questions: {item.total_questions}</p>
+                  <Col span={8}>
+                    <p>Total Questions: 50</p>
+                  </Col>
+                  <Col span={8}>
+                    <p>Attemted Questions: {item.total_questions}</p>
                   </Col>
                 </Row>
 
                 <Row style={{ marginBottom: "20px" }}>
-                  <Col span={12}>
+                  <Col span={8}>
                     <p>
                       Correct Answer: <span>{item.correct_answers}</span>
                     </p>
                   </Col>
                   <Col span={12}>
                     <p>
-                      Remark :{" "}
+                      Precentage :{" "}
                       <span style={{ fontWeight: 600, color: "#0056b3" }}>
-                        {item.grade}
+                        {item.percentage + "%"}
                       </span>
                     </p>
                   </Col>
@@ -368,19 +403,68 @@ export default function Candidates() {
 
   const handleSelectedRow = (row) => {
     console.log("selected rowwww", row);
+    const keys = row.map((item) => item.id); // or your unique row key
+    setSelectedRowKeys(keys);
     setSelectedRows(row);
   };
 
   const checkCandidateRegisterInPlacement = () => {
+    console.log("selected rowssss", selectedRows);
     if (selectedRows.length >= 1) {
+      const filterPlacementCandidates = selectedRows.filter(
+        (f) => f.is_placement_registered === 1
+      );
+      setPlacementRegisteredCandidates(filterPlacementCandidates.length);
       const filterNonPlacementCandidates = selectedRows.filter(
         (f) => f.is_placement_registered === 0
       );
 
+      console.log("filterPlacementCandidates", filterPlacementCandidates);
+      setSelectedRows(filterPlacementCandidates);
+      setNonPlacementRegisteredCandidates(filterNonPlacementCandidates.length);
+
       if (filterNonPlacementCandidates.length >= 1) {
-        CommonToaster("Select Only Placement Registered Candidates");
+        setMailConfirmModal(true);
+        // CommonToaster("Select Only Placement Registered Candidates");
       } else {
         setQuestionTypeModal(true);
+      }
+    } else {
+      setSelectedRows([]);
+      CommonToaster("Please select candidate");
+    }
+  };
+
+  const handleDownloadResult = async () => {
+    const columns = [
+      { title: "Name", dataIndex: "name" },
+      { title: "Branch", dataIndex: "branch" },
+      { title: "Course Name", dataIndex: "course_name" },
+      { title: "Test Attempt Date", dataIndex: "attempt_date" },
+      { title: "Test Attempt Number", dataIndex: "attempt_number" },
+      { title: "Total Questions", dataIndex: "totalnumberof_questions" },
+      { title: "Attempted Questions", dataIndex: "total_questions" },
+      { title: "Percentage", dataIndex: "percentage" },
+    ];
+    if (selectedRows.length >= 1) {
+      console.log("sell", selectedRows);
+      let userIds = [];
+      selectedRows.map((item) => {
+        userIds.push(item.id);
+      });
+
+      const payload = {
+        ids: userIds,
+      };
+      try {
+        const response = await downloadResult(payload);
+        const result = response?.data?.data || [];
+        console.log("result response", result);
+        DownloadTableAsCSV(result, columns, "Assessment Result.csv");
+        setSelectedRows([]);
+        setSelectedRowKeys([]);
+      } catch (error) {
+        console.log("error", error);
       }
     } else {
       CommonToaster("Please select candidate");
@@ -411,6 +495,8 @@ export default function Candidates() {
     console.log("payloaddd", payload);
     try {
       await sendInterviewRequest(payload);
+      setSelectedRows([]);
+      setSelectedRowKeys([]);
       CommonToaster("Request sent to email successfully!");
     } catch (error) {
       formReset();
@@ -432,6 +518,7 @@ export default function Candidates() {
     setQuestionType("");
     setQuestionTypeError("");
     setValidationTrigger(false);
+    setMailConfirmModal(false);
   };
 
   // onchange functions
@@ -511,21 +598,23 @@ export default function Candidates() {
             display: "flex",
             justifyContent: "flex-end",
             alignItems: "center",
+            gap: "12px",
           }}
         >
           <button
             className="candidate_sendrequestbutton"
-            // onClick={() => {
-            //   if (selectedRows.length >= 1) {
-            //     setQuestionTypeModal(true);
-            //   } else {
-            //     CommonToaster("Please select candidate");
-            //   }
-            // }}
             onClick={checkCandidateRegisterInPlacement}
           >
             <IoIosSend size={19} style={{ marginRight: "4px" }} />
             Send Interview Request
+          </button>
+
+          <button
+            className="candidate_downloadresultbutton"
+            onClick={handleDownloadResult}
+          >
+            <IoIosSend size={19} style={{ marginRight: "4px" }} />
+            Download Result
           </button>
         </Col>
       </Row>
@@ -541,13 +630,17 @@ export default function Candidates() {
           size="small"
           className="questionupload_table"
           selectedDatas={handleSelectedRow}
+          selectedRowKeys={selectedRowKeys}
         />
       </div>
 
       <Drawer
         title="Result"
         open={resultDrawer}
-        onClose={() => setResultDrawer(false)}
+        onClose={() => {
+          setResultDrawer(false);
+          setCollapseDefaultKey(["1"]);
+        }}
         width="45%"
         closable
       >
@@ -555,7 +648,11 @@ export default function Candidates() {
           <Collapse
             className="assesmntresult_collapse"
             items={answersData}
-            defaultActiveKey={["1"]}
+            activeKey={collapseDefaultKey}
+            onChange={(keys) => {
+              setCollapseDefaultKey(keys);
+              console.log("keyyyy", keys);
+            }}
           ></Collapse>
         ) : (
           <CommonNodataFound title="No result found" />
@@ -604,6 +701,66 @@ export default function Candidates() {
             }}
             error={questionTypeError}
           />
+        </div>
+      </Modal>
+
+      {/* mail confirm modal */}
+
+      <Modal
+        open={mailConfirmModal}
+        onCancel={formReset}
+        title="Confirm Mail Sending"
+        footer={false}
+        width={500}
+      >
+        <div className="questionupload_deletemodalContainer">
+          <div className="interview_confirmmodal_iconContainer">
+            <PiWarningCircleFill size={20} color="#fabb00" />
+          </div>
+
+          <p className="question_deletemodal_confirmdeletetext">
+            Confirm Mail Sending
+          </p>
+
+          <p className="interview_confirmmail_text">
+            You have selected{" "}
+            <span style={{ fontWeight: 600, color: "#0056b3" }}>
+              {placementRegisteredCandidates} placement-registered
+            </span>{" "}
+            candidates and{" "}
+            <span style={{ fontWeight: 600, color: "rgb(227 47 47)" }}>
+              {nonPlacementRegisteredCandidates} non-placement-registered
+            </span>{" "}
+            candidates.
+          </p>
+
+          <p className="interview_suremail_text">
+            Are you sure you want to send the mail only to the{" "}
+            <span style={{ fontWeight: 600, color: "#0056b3" }}>
+              {placementRegisteredCandidates} placement-registered
+            </span>{" "}
+            candidates?
+          </p>
+
+          <div className="question_deletemodal_footerContainer">
+            <Button
+              className="question_deletemodal_cancelbutton"
+              onClick={() => {
+                setMailConfirmModal(false);
+              }}
+            >
+              No
+            </Button>
+            <Button
+              className="interview_confirmmodal_sendbutton"
+              onClick={() => {
+                setMailConfirmModal(false);
+                setQuestionTypeModal(true);
+              }}
+            >
+              Yes
+            </Button>
+          </div>
         </div>
       </Modal>
     </div>

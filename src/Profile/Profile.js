@@ -23,6 +23,7 @@ export default function Profile() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const params = new URLSearchParams(location.search);
   const [candidateData, setCandidateData] = useState([]);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -33,7 +34,8 @@ export default function Profile() {
   }, []);
 
   const getCandidateData = async () => {
-    const candidateId = location?.state?.candidateId || null;
+    const candidateId = params.get("candidateId");
+    console.log("eeeeeeee", candidateId);
     if (candidateId) {
       try {
         const response = await getCandidateById(candidateId);

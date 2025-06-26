@@ -13,6 +13,7 @@ const CommonTable = ({
   paginationStatus,
   size,
   className,
+  selectedRowKeys,
 }) => {
   const [tableParams, setTableParams] = useState({
     pagination: {
@@ -50,7 +51,8 @@ const CommonTable = ({
     checkBox === "false"
       ? null
       : {
-          onChange: (selectedRowKeys, selectedRows) => {
+          selectedRowKeys,
+          onChange: (selectedKeys, selectedRows) => {
             if (selectedDatas) {
               selectedDatas(selectedRows);
             }
@@ -70,7 +72,7 @@ const CommonTable = ({
       loading={loading}
       size={size}
       className={className}
-      rowKey={(record) => record.id}
+      rowKey={(record, index) => (record.id ? record.id : record.question_id)}
     />
   );
 };

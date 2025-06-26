@@ -16,7 +16,7 @@ export default function OnlineTest() {
   const [userId, setUserId] = useState(null);
   const [courseId, setCourseId] = useState(null);
   const [started, setStarted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(45 * 60); // 45 minutes in seconds
   const [warningCount, setWarningCount] = useState(0);
   const [timerAlert, setTimerAlert] = useState(false);
   const [sectionAQuetions, setSectionAQuetions] = useState([]);
@@ -140,7 +140,7 @@ export default function OnlineTest() {
     getSectionAQuestionsData();
   }, []);
 
-  const getRandomItems = (array, count = 10) => {
+  const getRandomItems = (array, count) => {
     const shuffled = [...array].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
   };
@@ -153,7 +153,7 @@ export default function OnlineTest() {
       const response = await getQuestions(payload);
       console.log("questions", response);
       const questionsdata = response?.data?.data || [];
-      const randomTen = getRandomItems(questionsdata, 10);
+      const randomTen = getRandomItems(questionsdata, 20);
       setSectionAQuetions(randomTen);
     } catch (error) {
       CommonToaster(
@@ -177,7 +177,7 @@ export default function OnlineTest() {
       const response = await getQuestions(payload);
       console.log("questions", response);
       const questionsdata = response?.data?.data || [];
-      const randomTen = getRandomItems(questionsdata, 10);
+      const randomTen = getRandomItems(questionsdata, 30);
       setSectionBQuetions(randomTen);
     } catch (error) {
       CommonToaster(

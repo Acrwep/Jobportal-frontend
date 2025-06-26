@@ -410,9 +410,9 @@ export const getQuestions = async (payload) => {
   }
 };
 
-export const deleteQuestion = async (questionId) => {
+export const deleteQuestion = async (payload) => {
   try {
-    const response = await api.delete(`/api/deleteQuestions?id=${questionId}`);
+    const response = await api.post(`/api/deleteQuestions`, payload);
     return response;
   } catch (error) {
     throw error;
@@ -564,6 +564,15 @@ export const getAssessmentAnswers = async (payload) => {
     const response = await api.get("/api/user-attempts", {
       params: payload,
     });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const downloadResult = async (payload) => {
+  try {
+    const response = await api.post("/api/getResults", payload);
     return response;
   } catch (error) {
     throw error;

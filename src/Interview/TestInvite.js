@@ -163,7 +163,7 @@ export default function TestInvite() {
 
                   <div>
                     <p className="testinvite_detailstext">Online Assessment</p>
-                    <p className="testinvite_detailstext">30 Minutes</p>
+                    <p className="testinvite_detailstext">45 Minutes</p>
                     <p className="testinvite_detailstext">
                       {moment(today).format("DD MMMM YYYY")}
                     </p>
@@ -185,8 +185,8 @@ export default function TestInvite() {
                     <p className="testinvite_sectiontableheading">
                       No. of Questions
                     </p>
-                    <p className="testinvite_sectiontabledatas">10</p>
-                    <p className="testinvite_sectiontabledatas">10</p>
+                    <p className="testinvite_sectiontabledatas">20</p>
+                    <p className="testinvite_sectiontabledatas">30</p>
                   </div>
 
                   <div>
@@ -261,6 +261,52 @@ export default function TestInvite() {
                     )}
                   </div>
                 </form>
+              </div>
+
+              <div className="testinvite_importantnoteContainer">
+                <p style={{ fontWeight: 600, fontSize: "15px" }}>
+                  Important Note
+                </p>
+
+                <p className="testinvite_notesheading">
+                  1. Use Your Acte Registered Email ID
+                </p>
+                <ul>
+                  <li>
+                    Please make sure to log in and take the test using the email
+                    ID registered with ACTE. Tests submitted using unregistered
+                    email IDs will be deemed invalid.
+                  </li>
+                </ul>
+
+                <p className="testinvite_notesheading">
+                  2. Do Not Switch Tabs or Minimize the Window
+                </p>
+                <ul>
+                  <li>
+                    Avoid switching tabs or minimizing your browser. If you do
+                    this more than twice, your test will be automatically
+                    submitted.
+                  </li>
+                  <li>
+                    Stay focused on the test screen throughout the entire
+                    duration.
+                  </li>
+                </ul>
+
+                <p className="testinvite_notesheading">
+                  3. Total Test Duration: 45 Minutes
+                </p>
+                <ul>
+                  <li>
+                    You will have exactly <strong>45 minutes</strong> to
+                    complete the test.
+                  </li>
+                  <li>
+                    Once the time is up, the test will be automatically
+                    submitted, even if not all questions have been answered.
+                  </li>
+                </ul>
               </div>
             </Col>
           </Row>

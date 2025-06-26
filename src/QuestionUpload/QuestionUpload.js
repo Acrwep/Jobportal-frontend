@@ -37,6 +37,8 @@ import * as XLSX from "xlsx";
 const { Dragger } = Upload;
 
 export default function QuestionUpload() {
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [open, setOpen] = useState(false);
   const [bulkUploadModal, setBulkUploadModal] = useState(false);
   const [bulkUploadErrorModal, setBulkUploadErrorModal] = useState(false);
@@ -80,6 +82,7 @@ export default function QuestionUpload() {
   const [typeData, setTypeData] = useState([]);
   const [typeFilterId, setTypeFilterId] = useState(null);
   const [callTypeApi, setCallTypeApi] = useState(true);
+  const [isEnableDelete, setIsEnableDelete] = useState(false);
 
   const columns = [
     { title: "Question", key: "question", dataIndex: "question", width: 300 },
@@ -134,15 +137,6 @@ export default function QuestionUpload() {
                 className="questionupload_actionicons"
               />
             </div>
-            <RiDeleteBinLine
-              size={20}
-              color="#d32215"
-              className="questionupload_actionicons"
-              onClick={() => {
-                setDeleteModal(true);
-                setQuestionId(record.question_id);
-              }}
-            />
           </div>
         );
       },
@@ -837,8 +831,17 @@ export default function QuestionUpload() {
 
   //handle delete
   const handleDelete = async () => {
+    let questionIds = [];
+
+    selectedRows.map((item) => {
+      questionIds.push(item.question_id);
+    });
+    console.log("idssss", questionIds);
+    const payload = {
+      ids: questionIds,
+    };
     try {
-      const response = await deleteQuestion(questionId);
+      const response = await deleteQuestion(payload);
       console.log("question delete response", response);
 
       CommonToaster("Question deleted");
@@ -846,6 +849,9 @@ export default function QuestionUpload() {
       setTableLoading(true);
       setQuestionId(null);
       setTimeout(() => {
+        setSelectedRows([]);
+        setSelectedRowKeys([]);
+        setIsEnableDelete(false);
         getQuestionsData(
           sectionFilterId,
           courseFilterId,
@@ -925,6 +931,18 @@ export default function QuestionUpload() {
     setQuestionTypeError("");
   };
 
+  const handleSelectedRow = (row) => {
+    console.log("selected rowwww", row);
+    setSelectedRows(row);
+    const keys = row.map((item) => item.question_id); // or your unique row key
+    setSelectedRowKeys(keys);
+    if (row.length >= 1) {
+      setIsEnableDelete(true);
+    } else {
+      setIsEnableDelete(false);
+    }
+  };
+
   return (
     <div>
       <div className="portal_headinContainer">
@@ -985,27 +1003,38 @@ export default function QuestionUpload() {
             gap: "16px",
           }}
         >
-          <button
-            className="questionupload_button"
-            onClick={() => setAddTypeModal(true)}
-          >
-            <IoMdAdd size={19} style={{ marginRight: "5px" }} />
-            Add Type
-          </button>
-          <button
-            className="questionupload_button"
-            onClick={() => setOpen(true)}
-          >
-            <MdFileUpload size={19} style={{ marginRight: "5px" }} />
-            Upload
-          </button>
-          <button
-            className="questionupload_button"
-            onClick={() => setBulkUploadModal(true)}
-          >
-            <MdFileUpload size={19} style={{ marginRight: "5px" }} />
-            Bulk Upload
-          </button>
+          {isEnableDelete ? (
+            <button
+              className="questionupload_deletebutton"
+              onClick={() => setDeleteModal(true)}
+            >
+              Delete
+            </button>
+          ) : (
+            <>
+              <button
+                className="questionupload_button"
+                onClick={() => setAddTypeModal(true)}
+              >
+                <IoMdAdd size={19} style={{ marginRight: "5px" }} />
+                Add Type
+              </button>
+              <button
+                className="questionupload_button"
+                onClick={() => setOpen(true)}
+              >
+                <MdFileUpload size={19} style={{ marginRight: "5px" }} />
+                Upload
+              </button>
+              <button
+                className="questionupload_button"
+                onClick={() => setBulkUploadModal(true)}
+              >
+                <MdFileUpload size={19} style={{ marginRight: "5px" }} />
+                Bulk Upload
+              </button>
+            </>
+          )}
         </Col>
       </Row>
       <div style={{ marginTop: "22px" }}>
@@ -1015,9 +1044,11 @@ export default function QuestionUpload() {
           dataSource={questionsData}
           dataPerPage={10}
           loading={tableLoading}
-          checkBox="false"
+          checkBox="true"
           size="small"
           className="questionupload_table"
+          selectedDatas={handleSelectedRow}
+          selectedRowKeys={selectedRowKeys}
         />
       </div>
 
@@ -1325,7 +1356,7 @@ export default function QuestionUpload() {
           </p>
 
           <p className="question_deletemodal_text">
-            Are you sure want to delete the question?
+            Are you sure want to delete the questions?
           </p>
 
           <div className="question_deletemodal_footerContainer">

@@ -147,7 +147,7 @@
   padding: 40px;
 }
 .testinvite_logo {
-  width: 220px;
+  width: 235px;
 }
 .testinvite_sessionheading {
   font-weight: 600;
@@ -196,14 +196,14 @@
 .testinvite_formbutton {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   background-color: #0056b3 !important;
-  border-radius: 9px !important;
+  border-radius: 6px !important;
   outline: 0 !important;
   border: none;
   color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 112px;
+  width: 120px;
   height: 35px;
   cursor: pointer;
   font-weight: 600;
@@ -234,7 +234,22 @@
   margin-top: 30px;
   opacity: 0.7;
 }
-
+.testinvite_importantnoteContainer {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding: 0px 19px;
+}
+.testinvite_notesheading {
+  font-weight: 600;
+  margin-top: 9px !important;
+}
+.testinvite_importantnoteContainer ul {
+  padding: 0px 42px;
+  margin-top: 6px;
+}
+.testinvite_importantnoteContainer li {
+  padding: 4px 0px;
+}
 /* test expired styles */
 .testexpired_mainContainer {
   display: flex;
