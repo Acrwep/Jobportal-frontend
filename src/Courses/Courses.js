@@ -342,9 +342,10 @@ export default function Courses() {
         const filterCourseDocuments = videos.filter(
           (f) => f.content_type === "document"
         );
-        console.log("course documents", filterCourseDocuments);
-        dispatch(storeCourseVideos(filterCourseVideos));
-        dispatch(storeCourseDocuments(filterCourseDocuments));
+        const reverseVideos = filterCourseVideos.reverse();
+        const reverseDocs = filterCourseDocuments.reverse();
+        dispatch(storeCourseVideos(reverseVideos));
+        dispatch(storeCourseDocuments(reverseDocs));
       } else {
         dispatch(storeCourseVideos([]));
         dispatch(storeCourseDocuments([]));
@@ -383,8 +384,11 @@ export default function Courses() {
           (f) => f.content_type === "document"
         );
         console.log("all docs", filterCourseDocuments);
-        dispatch(storeCompanyVideos(filterCourseVideos));
-        dispatch(storeCompanyDocuments(filterCourseDocuments));
+        const reverseVideos = filterCourseVideos.reverse();
+        const reverseDocs = filterCourseDocuments.reverse();
+
+        dispatch(storeCompanyVideos(reverseVideos));
+        dispatch(storeCompanyDocuments(reverseDocs));
       } else {
         dispatch(storeCompanyVideos([]));
         dispatch(storeCompanyDocuments([]));

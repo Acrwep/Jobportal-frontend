@@ -45,12 +45,16 @@ export default function CourseVideos({ courseId, topicid, roleId, loading }) {
           (f) => f.content_type != "document"
         );
         console.log("all videos", filterCourseVideos);
+
         const filterCourseDocuments = videos.filter(
           (f) => f.content_type === "document"
         );
 
-        dispatch(storeCourseVideos(filterCourseVideos));
-        dispatch(storeCourseDocuments(filterCourseDocuments));
+        const reverseVideos = filterCourseVideos.reverse();
+        const reverseDocs = filterCourseDocuments.reverse();
+
+        dispatch(storeCourseVideos(reverseVideos));
+        dispatch(storeCourseDocuments(reverseDocs));
       } else {
         dispatch(storeCourseVideos([]));
         dispatch(storeCourseDocuments([]));

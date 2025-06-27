@@ -35,6 +35,7 @@ import "react-pdf/dist/esm/Page/TextLayer.css";
 import CommonMultiSelect from "../Common/CommonMultiSelect";
 import { addressValidator } from "../Common/Validation";
 import PrismaZoom from "react-prismazoom";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 export default function Favorites() {
   pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -157,6 +158,8 @@ export default function Favorites() {
   const [skillsList, setSkillsList] = useState([]);
   const [candidates, setCandidates] = useState([]);
   const [favoritesList, setFavoritesList] = useState([]);
+  const [profileImageModal, setProfileImageModal] = useState(false);
+  const [viewProfile, setViewProfile] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1066,10 +1069,22 @@ export default function Favorites() {
                               <Row>
                                 <Col span={6}>
                                   {item.profileImage ? (
-                                    <img
-                                      src={profileBase64String}
-                                      className="admin_candidateprofileimage"
-                                    />
+                                    <div className="admin_profileimage_container">
+                                      <img
+                                        src={profileBase64String}
+                                        className="admin_candidateprofileimage"
+                                      />
+
+                                      <MdOutlineRemoveRedEye
+                                        className="admin_profileimage_viewicon"
+                                        color="#fff"
+                                        size={16}
+                                        onClick={() => {
+                                          setProfileImageModal(true);
+                                          setViewProfile(profileBase64String);
+                                        }}
+                                      />
+                                    </div>
                                   ) : (
                                     <FaRegUser size={55} color="#212121" />
                                   )}
@@ -1877,6 +1892,26 @@ export default function Favorites() {
           >
             <MdArrowForwardIos size={12} style={{ marginTop: "2px" }} />
           </button>
+        </div>
+      </Modal>
+
+      {/* profileimage modal */}
+
+      <Modal
+        open={profileImageModal}
+        className="admin_candidateview_profilemodal"
+        onCancel={() => {
+          {
+            setProfileImageModal(false);
+            setViewProfile("");
+          }
+        }}
+        closeIcon={false}
+        footer={false}
+        width={300}
+      >
+        <div>
+          <img src={viewProfile} className="admin_candidateviewprofileimage" />
         </div>
       </Modal>
     </div>

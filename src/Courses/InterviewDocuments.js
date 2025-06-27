@@ -79,7 +79,9 @@ export default function InterviewDocuments({ roleId, companyLoading }) {
         (f) => f.content_type === "document"
       );
       if (filterDocuments.length >= 1) {
-        dispatch(storeCompanyDocuments(filterDocuments));
+        const reverseDocs = filterDocuments.reverse();
+
+        dispatch(storeCompanyDocuments(reverseDocs));
       } else {
         dispatch(storeCompanyDocuments([]));
       }

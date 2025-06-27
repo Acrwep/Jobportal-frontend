@@ -19,6 +19,23 @@
   border-bottom: 1px solid rgba(128, 128, 128, 0.384);
   padding: 0px 0px 24px 0px;
 }
+.profile_profileimage_container {
+  position: relative;
+}
+.profile_profileimage_container:hover .admin_candidateprofileimage {
+  opacity: 0.5;
+}
+.profile_profileimage_container:hover .profile_profileimage_viewicon {
+  opacity: 1;
+}
+.profile_profileimage_viewicon {
+  position: absolute;
+  top: 25%;
+  left: 38%;
+  cursor: pointer;
+  z-index: 1;
+  opacity: 0;
+}
 .profile_candidateprofileimage {
   width: 94px;
   height: 94px;

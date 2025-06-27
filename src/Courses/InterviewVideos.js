@@ -40,7 +40,9 @@ export default function InterviewVideos({ roleId, companyLoading }) {
         const filterCourseVideos = videos.filter(
           (f) => f.content_type != "document"
         );
-        dispatch(storeCompanyVideos(filterCourseVideos));
+        const reverseVideos = filterCourseVideos.reverse();
+
+        dispatch(storeCompanyVideos(reverseVideos));
       } else {
         dispatch(storeCompanyVideos([]));
       }

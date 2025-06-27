@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Row, Col, Divider } from "antd";
+import { Row, Col, Divider, Modal } from "antd";
 import { IoCallOutline } from "react-icons/io5";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { IoBookOutline } from "react-icons/io5";
@@ -14,6 +14,7 @@ import Header from "../Header/Header";
 import { getCandidateById } from "../Common/action";
 import moment from "moment";
 import PrismaZoom from "react-prismazoom";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 export default function Profile() {
   pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -27,6 +28,8 @@ export default function Profile() {
   const [candidateData, setCandidateData] = useState([]);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
+  const [profileImageModal, setProfileImageModal] = useState(false);
+  const [viewProfile, setViewProfile] = useState("");
 
   useEffect(() => {
     console.log(location, "locccc");
@@ -34,13 +37,27 @@ export default function Profile() {
   }, []);
 
   const getCandidateData = async () => {
+    // const candidateId = location?.state?.candidateId || null;
     const candidateId = params.get("candidateId");
-    console.log("eeeeeeee", candidateId);
     if (candidateId) {
       try {
         const response = await getCandidateById(candidateId);
         console.log("candidate response", response);
-        setCandidateData(response?.data?.data);
+        const candidateDetails = response?.data?.data;
+        if (candidateDetails.length >= 1) {
+          const updateCandidateDetails = candidateDetails.map((c) => {
+            return {
+              ...c,
+              attempt_result: c.attempt_result.filter(
+                (f) => f.attempt_number != 0
+              ),
+            };
+          });
+          console.log("updateCandidateDetails", updateCandidateDetails);
+          setCandidateData(updateCandidateDetails);
+        } else {
+          setCandidateData([]);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -77,10 +94,21 @@ export default function Profile() {
                   <div className="profile_profilecard">
                     <div className="profilecard_imageContainer">
                       {item.profileImage ? (
-                        <img
-                          src={profileBase64String}
-                          className="profile_candidateprofileimage"
-                        />
+                        <div className="profile_profileimage_container">
+                          <img
+                            src={profileBase64String}
+                            className="admin_candidateprofileimage"
+                          />
+                          <MdOutlineRemoveRedEye
+                            className="profile_profileimage_viewicon"
+                            color="#fff"
+                            size={16}
+                            onClick={() => {
+                              setProfileImageModal(true);
+                              setViewProfile(profileBase64String);
+                            }}
+                          />
+                        </div>
                       ) : (
                         <FaRegUser size={55} color="#212121" />
                       )}
@@ -542,7 +570,11 @@ export default function Profile() {
                       <button
                         disabled={pageNumber <= 1}
                         onClick={() => setPageNumber(pageNumber - 1)}
-                        className="admin_resumemodal_paginationbutton"
+                        className={
+                          pageNumber <= 1
+                            ? "admin_resumemodal_disablepaginationbutton"
+                            : "admin_resumemodal_paginationbutton"
+                        }
                       >
                         <MdArrowBackIosNew
                           size={12}
@@ -555,7 +587,11 @@ export default function Profile() {
                       <button
                         disabled={pageNumber >= numPages}
                         onClick={() => setPageNumber(pageNumber + 1)}
-                        className="admin_resumemodal_paginationbutton"
+                        className={
+                          pageNumber >= numPages
+                            ? "admin_resumemodal_disablepaginationbutton"
+                            : "admin_resumemodal_paginationbutton"
+                        }
                       >
                         <MdArrowForwardIos
                           size={12}
@@ -570,6 +606,24 @@ export default function Profile() {
           );
         })}
       </div>
+
+      <Modal
+        open={profileImageModal}
+        className="admin_candidateview_profilemodal"
+        onCancel={() => {
+          {
+            setProfileImageModal(false);
+            setViewProfile("");
+          }
+        }}
+        closeIcon={false}
+        footer={false}
+        width={300}
+      >
+        <div>
+          <img src={viewProfile} className="admin_candidateviewprofileimage" />
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -49,6 +49,7 @@ import { addressValidator } from "../Common/Validation";
 import { useDispatch } from "react-redux";
 import { storePortalMenuStatus, storeLogoutMenuStatus } from "../Redux/slice";
 import PrismaZoom from "react-prismazoom";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 export default function Admin() {
   pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -176,6 +177,8 @@ export default function Admin() {
   const [candidates, setCandidates] = useState([]);
   const [selectedCandidates, setSelectedCandidates] = useState([]);
   const [favoritesList, setFavoritesList] = useState([]);
+  const [profileImageModal, setProfileImageModal] = useState(false);
+  const [viewProfile, setViewProfile] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1314,10 +1317,22 @@ export default function Admin() {
                               <Row>
                                 <Col span={6}>
                                   {item.profileImage ? (
-                                    <img
-                                      src={profileBase64String}
-                                      className="admin_candidateprofileimage"
-                                    />
+                                    <div className="admin_profileimage_container">
+                                      <img
+                                        src={profileBase64String}
+                                        className="admin_candidateprofileimage"
+                                      />
+
+                                      <MdOutlineRemoveRedEye
+                                        className="admin_profileimage_viewicon"
+                                        color="#fff"
+                                        size={16}
+                                        onClick={() => {
+                                          setProfileImageModal(true);
+                                          setViewProfile(profileBase64String);
+                                        }}
+                                      />
+                                    </div>
                                   ) : (
                                     <FaRegUser size={55} color="#212121" />
                                   )}
@@ -2207,6 +2222,26 @@ export default function Admin() {
               ? "Are you sure you want to blacklist this candidate?"
               : "Are you sure you want to remove this candidate from the blacklist?"}
           </p>
+        </div>
+      </Modal>
+
+      {/* profileimage modal */}
+
+      <Modal
+        open={profileImageModal}
+        className="admin_candidateview_profilemodal"
+        onCancel={() => {
+          {
+            setProfileImageModal(false);
+            setViewProfile("");
+          }
+        }}
+        closeIcon={false}
+        footer={false}
+        width={300}
+      >
+        <div>
+          <img src={viewProfile} className="admin_candidateviewprofileimage" />
         </div>
       </Modal>
     </div>
