@@ -27,6 +27,7 @@ export default function OnlineTest() {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [warningModal, setWarningModal] = useState(false);
   const [assessmentToken, setAssessmentToken] = useState("");
+  const [questionsLoaded, setQuestionsLoaded] = useState(false);
   const API_URL = process.env.REACT_APP_API_URL;
 
   const handleFullscreenStart = () => {
@@ -69,6 +70,10 @@ export default function OnlineTest() {
               location?.state?.courseId,
               "eeeeeeeeeeeee"
             );
+            if (!questionsLoaded) {
+              console.warn("Questions not yet loaded. Skipping auto submit.");
+              return updated;
+            }
             handleSubmitAnswers(
               location?.state?.userId || null,
               location?.state?.courseId || null
@@ -85,7 +90,7 @@ export default function OnlineTest() {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, []);
+  }, [questionsLoaded]);
 
   useEffect(() => {
     console.log("hrefff", window.location.href);
@@ -154,6 +159,7 @@ export default function OnlineTest() {
       console.log("questions", response);
       const questionsdata = response?.data?.data || [];
       const randomTen = getRandomItems(questionsdata, 20);
+      console.log("queryionssss", randomTen);
       setSectionAQuetions(randomTen);
     } catch (error) {
       CommonToaster(
@@ -184,6 +190,8 @@ export default function OnlineTest() {
         error?.response?.data?.message ||
           "Something went wrong. Try again later"
       );
+    } finally {
+      setQuestionsLoaded(true);
     }
   };
 
@@ -219,6 +227,7 @@ export default function OnlineTest() {
   };
 
   const handleSubmitAnswers = async (userid, courseid) => {
+    console.log("ansssss", sectionAQuetions, sectionBQuetions);
     setButtonLoading(true);
     let mergeSections = [];
 
@@ -229,14 +238,19 @@ export default function OnlineTest() {
     sectionBQuetions.map((item) => {
       mergeSections.push(item);
     });
-    console.log(mergeSections);
+    console.log("mergeeee", mergeSections);
 
-    const answers = mergeSections.map((item) => {
+    const filterAttemptQuestions = mergeSections.filter(
+      (f) => f.selectedOption && f.selectedOption != ""
+    );
+
+    const answers = filterAttemptQuestions.map((item) => {
       return {
         question_id: item.question_id,
         selected_option: item.selectedOption ? item.selectedOption : "",
       };
     });
+    console.log("finallll answersssss", answers);
 
     const payload = {
       user_id:
@@ -249,6 +263,7 @@ export default function OnlineTest() {
           ? courseid
           : courseId,
       answers: answers,
+      question_type_id: location?.state?.questionTypeId,
       assesmentLink: `${
         API_URL === "http://localhost:3000"
           ? "http://localhost:3001/test-invite/"

@@ -250,9 +250,6 @@ export default function Candidates() {
       const reverseData = answers.reverse();
       if (reverseData.length >= 1) {
         const addChildren = reverseData.map((item, index) => {
-          const lastIndex = item.answers.length - 1;
-          const lastQuestionType =
-            item.answers?.[lastIndex]?.question_type ?? "";
           return {
             ...item,
             key: index + 1,
@@ -265,7 +262,11 @@ export default function Candidates() {
                   width: "100%",
                 }}
               >
-                <span>{lastQuestionType}</span>
+                <span>
+                  {item.question_type
+                    ? item.question_type
+                    : `Attempt ${index + 1}`}
+                </span>
                 <p style={{ color: "gray" }}>
                   Date:{" "}
                   <span>{moment(item.attempt_date).format("DD-MM-YYYY")}</span>
@@ -300,7 +301,7 @@ export default function Candidates() {
                   <Col span={12}>
                     <p>
                       Precentage :{" "}
-                      <span style={{ fontWeight: 600, color: "#0056b3" }}>
+                      <span style={{ fontWeight: 700, color: "#0056b3" }}>
                         {item.percentage + "%"}
                       </span>
                     </p>
@@ -442,6 +443,7 @@ export default function Candidates() {
       { title: "Course Name", dataIndex: "course_name" },
       { title: "Test Attempt Date", dataIndex: "attempt_date" },
       { title: "Test Attempt Number", dataIndex: "attempt_number" },
+      { title: "Question Type", dataIndex: "question_type" },
       { title: "Total Questions", dataIndex: "totalnumberof_questions" },
       { title: "Attempted Questions", dataIndex: "total_questions" },
       { title: "Percentage", dataIndex: "percentage" },

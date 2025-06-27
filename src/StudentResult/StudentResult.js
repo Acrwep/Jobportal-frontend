@@ -29,17 +29,16 @@ export default function StudentResult() {
       const reverseData = answers.reverse();
       if (reverseData.length >= 1) {
         const addChildren = reverseData.map((item, index) => {
-          const lastIndex = item.answers.length - 1;
-          const lastQuestionType =
-            item.answers?.[lastIndex]?.question_type ?? "";
           return {
             ...item,
             key: index + 1,
-            label: `${lastQuestionType}`,
+            label: `${
+              item.question_type ? item.question_type : `Attempt ${index + 1}`
+            }`,
             children: (
               <div>
                 <Row style={{ marginBottom: "12px" }}>
-                  <Col span={12}>
+                  <Col span={8}>
                     <p>
                       Date:{" "}
                       <span>
@@ -47,21 +46,24 @@ export default function StudentResult() {
                       </span>
                     </p>
                   </Col>
-                  <Col span={12}>
-                    <p>Total Questions: {item.total_questions}</p>
+                  <Col span={8}>
+                    <p>Total Questions: 50</p>
+                  </Col>
+                  <Col span={8}>
+                    <p>Attemted Questions: {item.total_questions}</p>
                   </Col>
                 </Row>
 
                 <Row style={{ marginBottom: "20px" }}>
-                  <Col span={12}>
+                  <Col span={8}>
                     <p>
                       Correct Answer: <span>{item.correct_answers}</span>
                     </p>
                   </Col>
-                  <Col span={12}>
+                  <Col span={8}>
                     <p>
                       Percentage:{" "}
-                      <span style={{ fontWeight: 600, color: "#0056b3" }}>
+                      <span style={{ fontWeight: 700, color: "#0056b3" }}>
                         {item.percentage}%
                       </span>
                     </p>

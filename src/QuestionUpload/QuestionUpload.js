@@ -89,7 +89,7 @@ export default function QuestionUpload() {
     { title: "Option A", key: "option_a", dataIndex: "option_a", width: 190 },
     { title: "Option B", key: "option_b", dataIndex: "option_b", width: 190 },
     { title: "Option C", key: "option_c", dataIndex: "option_c", width: 190 },
-    { title: "Option C", key: "option_d", dataIndex: "option_d", width: 190 },
+    { title: "Option D", key: "option_d", dataIndex: "option_d", width: 190 },
     {
       title: "Correct Answer",
       key: "correct_answer",
