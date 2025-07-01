@@ -69,11 +69,14 @@ export default function Candidates() {
   const [callTypeApi, setCallTypeApi] = useState(true);
   const [mailConfirmModal, setMailConfirmModal] = useState(false);
   const [placementRegisteredCandidates, setPlacementRegisteredCandidates] =
-    useState(null);
+    useState([]);
   const [
     nonPlacementRegisteredCandidates,
     setNonPlacementRegisteredCandidates,
-  ] = useState(null);
+  ] = useState([]);
+  const [candidateName, setCandidateName] = useState("");
+  const [candidateCourse, setCandidateCourse] = useState("");
+  const [candidateBranch, setCandidateBranch] = useState("");
 
   const columns = [
     { title: "Name", key: "name", dataIndex: "name", width: 200 },
@@ -111,7 +114,7 @@ export default function Candidates() {
       render: (text, record) => {
         return (
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <p>{text === 1 ? "Yes" : "Not Yet"}</p>
+            <p>{text === 1 ? "Yes" : "No"}</p>
           </div>
         );
       },
@@ -149,7 +152,14 @@ export default function Candidates() {
         return (
           <div
             className="assesmntresult_viewContainer"
-            onClick={() => getAnswersData(text.id)}
+            onClick={() =>
+              getAnswersData(
+                text.id,
+                record.name,
+                record.course_location,
+                record.course_name
+              )
+            }
           >
             <AiOutlineEye size={20} />
           </div>
@@ -234,8 +244,17 @@ export default function Candidates() {
     }
   };
 
-  const getAnswersData = async (userId) => {
+  const getAnswersData = async (
+    userId,
+    candidateName,
+    courseLocation,
+    courseName
+  ) => {
+    console.log(userId, candidateName, courseLocation, courseName);
     setResultDrawer(true);
+    setCandidateName(candidateName);
+    setCandidateCourse(courseName);
+    setCandidateBranch(courseLocation);
     const payload = {
       user_id: userId,
     };
@@ -248,6 +267,7 @@ export default function Candidates() {
       }
       console.log("answers response", response);
       const reverseData = answers.reverse();
+
       if (reverseData.length >= 1) {
         const addChildren = reverseData.map((item, index) => {
           return {
@@ -415,14 +435,12 @@ export default function Candidates() {
       const filterPlacementCandidates = selectedRows.filter(
         (f) => f.is_placement_registered === 1
       );
-      setPlacementRegisteredCandidates(filterPlacementCandidates.length);
+      setPlacementRegisteredCandidates(filterPlacementCandidates);
       const filterNonPlacementCandidates = selectedRows.filter(
         (f) => f.is_placement_registered === 0
       );
 
-      console.log("filterPlacementCandidates", filterPlacementCandidates);
-      setSelectedRows(filterPlacementCandidates);
-      setNonPlacementRegisteredCandidates(filterNonPlacementCandidates.length);
+      setNonPlacementRegisteredCandidates(filterNonPlacementCandidates);
 
       if (filterNonPlacementCandidates.length >= 1) {
         setMailConfirmModal(true);
@@ -483,7 +501,7 @@ export default function Candidates() {
     if (typeValidate) return;
 
     setRequestLoading(true);
-    const filterData = selectedRows.map((item) => {
+    const filterData = placementRegisteredCandidates.map((item) => {
       return {
         id: item.id,
         course_id: item.course_id,
@@ -499,6 +517,8 @@ export default function Candidates() {
       await sendInterviewRequest(payload);
       setSelectedRows([]);
       setSelectedRowKeys([]);
+      setPlacementRegisteredCandidates([]);
+      setNonPlacementRegisteredCandidates([]);
       CommonToaster("Request sent to email successfully!");
     } catch (error) {
       formReset();
@@ -509,7 +529,12 @@ export default function Candidates() {
     } finally {
       setTimeout(() => {
         formReset();
-        getCandidatesData();
+        getCandidatesData(
+          branchId,
+          courseId,
+          selectedDates.length >= 1 ? selectedDates[0] : null,
+          selectedDates.length >= 1 ? selectedDates[1] : null
+        );
       }, 500);
     }
   };
@@ -641,11 +666,34 @@ export default function Candidates() {
         open={resultDrawer}
         onClose={() => {
           setResultDrawer(false);
+          setCandidateName("");
+          setCandidateCourse("");
+          setCandidateBranch("");
           setCollapseDefaultKey(["1"]);
         }}
         width="45%"
         closable
       >
+        <Row style={{ padding: "0px 16px" }}>
+          <Col span={12}>
+            <p>
+              Name: <span style={{ fontWeight: 600 }}>{candidateName}</span>
+            </p>
+          </Col>
+          <Col span={12}>
+            <p>
+              Branch: <span style={{ fontWeight: 600 }}>{candidateBranch}</span>
+            </p>
+          </Col>
+        </Row>
+
+        <Row style={{ marginTop: "12px", padding: "0px 16px" }}>
+          <Col span={12}>
+            <p>
+              Course: <span style={{ fontWeight: 600 }}>{candidateCourse}</span>
+            </p>
+          </Col>
+        </Row>
         {answersData.length >= 1 ? (
           <Collapse
             className="assesmntresult_collapse"
@@ -727,11 +775,11 @@ export default function Candidates() {
           <p className="interview_confirmmail_text">
             You have selected{" "}
             <span style={{ fontWeight: 600, color: "#0056b3" }}>
-              {placementRegisteredCandidates} placement-registered
+              {placementRegisteredCandidates.length} placement-registered
             </span>{" "}
             candidates and{" "}
             <span style={{ fontWeight: 600, color: "rgb(227 47 47)" }}>
-              {nonPlacementRegisteredCandidates} non-placement-registered
+              {nonPlacementRegisteredCandidates.length} non-placement-registered
             </span>{" "}
             candidates.
           </p>
@@ -739,7 +787,7 @@ export default function Candidates() {
           <p className="interview_suremail_text">
             Are you sure you want to send the mail only to the{" "}
             <span style={{ fontWeight: 600, color: "#0056b3" }}>
-              {placementRegisteredCandidates} placement-registered
+              {placementRegisteredCandidates.length} placement-registered
             </span>{" "}
             candidates?
           </p>

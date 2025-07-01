@@ -15,6 +15,7 @@ import { CiBullhorn } from "react-icons/ci";
 import { GrNotes } from "react-icons/gr";
 import { getCourseByTrainers, getCourses } from "../Common/action";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { CgNotes } from "react-icons/cg";
 import { useSelector } from "react-redux";
 
 export default function SideMenu() {
@@ -101,6 +102,11 @@ export default function SideMenu() {
             icon: <PiStudentFill size={17} />,
             label: "Candidates",
           },
+          {
+            key: "assessmentlogs",
+            icon: <CgNotes size={17} />,
+            label: "Assessment Logs",
+          },
         ];
       } else {
         defaultItems = [];
@@ -119,6 +125,11 @@ export default function SideMenu() {
             key: "candidates",
             icon: <PiStudentFill size={17} />,
             label: "Candidates",
+          },
+          {
+            key: "assessmentlogs",
+            icon: <CgNotes size={17} />,
+            label: "Assessment Logs",
           },
         ];
       } else {

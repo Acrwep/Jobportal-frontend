@@ -271,13 +271,17 @@ export default function Users() {
     setIsEdit(true);
     setUserId(item.id);
     const base64String = item.profile;
-    const fileObject = {
-      uid: "-1", // any unique id
-      name: "profile.png",
-      status: "done",
-      url: `data:image/png;base64,${base64String}`, // Full Data URL
-    };
-    setProfilePictureArray([fileObject]);
+    if (base64String) {
+      const fileObject = {
+        uid: "-1", // any unique id
+        name: "profile.png",
+        status: "done",
+        url: `data:image/png;base64,${base64String}`, // Full Data URL
+      };
+      setProfilePictureArray([fileObject]);
+    } else {
+      setProfilePictureArray([]);
+    }
     setProfilePicture(base64String);
     setPreviewImage(`data:image/png;base64,${base64String}`);
     setName(item.name);

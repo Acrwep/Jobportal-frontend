@@ -673,3 +673,12 @@ export const checkTestCompleted = async (test_link) => {
     throw error;
   }
 };
+
+export const getAssessmentLogs = async (payload) => {
+  try {
+    const response = await api.get(`/api/getDateWiseTest`, { params: payload });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

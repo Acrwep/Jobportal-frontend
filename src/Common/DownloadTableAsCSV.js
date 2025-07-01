@@ -25,6 +25,13 @@ const DownloadTableAsCSV = (data, columns, fileName) => {
         if (column.dataIndex === "percentage") {
           return row[column.dataIndex] + "%";
         }
+        if (column.dataIndex === "is_completed") {
+          if (row[column.dataIndex] === 1) {
+            return "Completed";
+          } else {
+            return "Not Completed";
+          }
+        }
         return row[column.dataIndex]; // other fields
       })
     ), // data rows

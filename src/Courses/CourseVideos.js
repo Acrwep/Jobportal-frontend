@@ -110,9 +110,17 @@ export default function CourseVideos({ courseId, topicid, roleId, loading }) {
       setDeleteModal(false);
       getVideosAndDocumentsData();
     } catch (error) {
+      const videoDeleteError = error?.response?.data;
+      if (
+        videoDeleteError.details.includes(
+          "EBUSY: resource busy or locked, unlink"
+        )
+      ) {
+        CommonToaster("Compression in progress. Please try again later.");
+        return;
+      }
       CommonToaster(
-        error?.response?.data?.message ||
-          "Something went wrong. Try again later"
+        videoDeleteError?.message || "Something went wrong. Try again later"
       );
     }
   };

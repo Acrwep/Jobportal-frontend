@@ -7,10 +7,32 @@
 .folders_innercontainer {
   padding: 26px 32px;
 }
+.folders_headingContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
 .folders_heading {
   font-weight: 600;
   font-size: 18px;
-  margin-bottom: 16px !important;
+}
+.folders_createfolder_button {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  background-color: #0056b3 !important;
+  border-radius: 6px !important;
+  outline: 0 !important;
+  border: none;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 19px;
+  height: 34px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.folders_createfolder_button:hover {
+  opacity: 0.7;
 }
 .folders_listContainer {
   border: 1px solid rgba(128, 128, 128, 0.384);
@@ -51,7 +73,6 @@
   background-color: #d32215 !important;
   color: white !important;
 }
-
 /* folder profiles styles */
 .folderprofiles_mainContainer {
   height: 100%;

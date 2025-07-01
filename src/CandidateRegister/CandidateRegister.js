@@ -55,6 +55,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import PortalMenu from "../Common/PortalMenu";
 import { pdfjs, Document, Page } from "react-pdf";
+import * as pdfjsLib from "pdfjs-dist";
+import mammoth from "mammoth";
+import { IoIosWarning } from "react-icons/io";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -282,6 +285,7 @@ export default function CandidateRegister() {
   const [resumeValidationTrigger, setResumeValidationTrigger] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [uploadedResume, setUploadedResume] = useState("");
+  const [resumeWarningModal, setResumeWarningModal] = useState(false);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
 
@@ -549,9 +553,10 @@ export default function CandidateRegister() {
   };
 
   //resume function
-  const handleResumeAttachment = ({ file }) => {
+  const handleResumeAttachment = async ({ file }) => {
     console.log("fileee", file);
-    const ValidType = file.type === "application/pdf";
+    const isPDF = file.type === "application/pdf";
+    const isDOCX = file.name.endsWith(".docx");
     const isValidSize = file.size <= 1 * 1024 * 1024; // 1MB in bytes
 
     if (file.status === "uploading" || file.status === "removed") {
@@ -559,11 +564,27 @@ export default function CandidateRegister() {
       setResumeArray([]);
       return;
     }
-    if (ValidType) {
+    if (isPDF || isDOCX) {
       if (isValidSize) {
         console.log("fileeeee", file);
         setResumeArray([file]);
-        CommonToaster("Attachment uploaded");
+        let text = "";
+
+        if (isPDF) {
+          text = await extractTextFromPDF(file);
+        } else if (isDOCX) {
+          text = await extractTextFromDocx(file);
+        }
+
+        const keywordResult = checkKeyword(text);
+        console.log("keywordResult", keywordResult);
+        if (keywordResult === false) {
+          setResumeWarningModal(true);
+          setResume("");
+          setResumeArray([]);
+          return;
+        }
+        CommonToaster("Resume uploaded");
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => {
@@ -577,10 +598,43 @@ export default function CandidateRegister() {
         setResumeArray([]);
       }
     } else {
-      CommonToaster("Accept only .pdf");
+      CommonToaster("Only .pdf and .docx files are accepted");
       setResume("");
       setResumeError(" is required");
       setResumeArray([]);
+    }
+  };
+
+  const extractTextFromPDF = async (file) => {
+    const reader = new FileReader();
+    return new Promise((resolve) => {
+      reader.onload = async function () {
+        const typedArray = new Uint8Array(this.result);
+        const pdf = await pdfjsLib.getDocument(typedArray).promise;
+        let text = "";
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          text += content.items.map((s) => s.str).join(" ");
+        }
+        resolve(text);
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
+  const extractTextFromDocx = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer });
+    return result.value;
+  };
+
+  const checkKeyword = (text) => {
+    const keyword = "acte technologies";
+    if (text.toLowerCase().includes(keyword)) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -2203,6 +2257,7 @@ export default function CandidateRegister() {
                     className="registration_draganddropcontainer"
                     multiple={false}
                     onChange={handleResumeAttachment}
+                    accept=".pdf,.docx"
                     beforeUpload={(file) => {
                       console.log(file);
                       return false; // Prevent auto-upload
@@ -2348,6 +2403,45 @@ export default function CandidateRegister() {
                     <FaAngleRight size={20} />
                   </button>
                 )}
+              </div>
+            </Modal>
+
+            <Modal
+              open={resumeWarningModal}
+              onCancel={() => {
+                setResumeWarningModal(false);
+              }}
+              footer={false}
+              centered={true}
+              style={{ top: 20 }}
+            >
+              <div className="onlinetest_warningmodalContainer">
+                <div className="onlinetest_warningmodal_iconContainer">
+                  <IoIosWarning size={20} color="#faad14" />
+                </div>
+
+                <p className="question_deletemodal_confirmdeletetext">
+                  Warning
+                </p>
+
+                <p
+                  className="question_deletemodal_text"
+                  style={{ textAlign: "center" }}
+                >
+                  Please mention that you completed the course at{" "}
+                  <strong>ACTE Technologies</strong> in your resume.
+                </p>
+
+                <div className="question_deletemodal_footerContainer">
+                  <Button
+                    className="onlinetest_warningmodal_okbutton"
+                    onClick={() => {
+                      setResumeWarningModal(false);
+                    }}
+                  >
+                    Ok
+                  </Button>
+                </div>
               </div>
             </Modal>
           </Col>

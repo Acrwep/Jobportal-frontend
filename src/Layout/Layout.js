@@ -53,6 +53,7 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import Assessments from "../StudentResult/Assessments";
 import ForgotPassword from "../Login/ForgotPassword";
 import Dummy from "../Login/Dummy";
+import AssessmentsLogs from "../AssessmentLogs/AssessmentLogs";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
@@ -282,7 +283,8 @@ const MainSideMenu = () => {
       pathName === "question-upload" ||
       pathName === "candidates" ||
       pathName === "assessments" ||
-      pathName === "assessment-results"
+      pathName === "assessment-results" ||
+      pathName === "assessmentlogs"
     ) {
       dispatch(storeCurrentPortalName("interview"));
     } else {
@@ -682,6 +684,10 @@ const MainSideMenu = () => {
                     <Route element={<Candidates />} path="/candidates" />
                     <Route element={<Courses />} path="/courses/:courseName" />
                     <Route element={<Assessments />} path="/assessments" />
+                    <Route
+                      element={<AssessmentsLogs />}
+                      path="/assessmentlogs"
+                    />
                     <Route
                       element={<StudentResult />}
                       path="/assessment-results"

@@ -194,7 +194,9 @@ export default function InterviewDocuments({ roleId, companyLoading }) {
                             size={20}
                             style={{ cursor: "pointer", marginRight: "12px" }}
                             onClick={() => {
-                              setSelectedDocument(item.content_data);
+                              setSelectedDocument(
+                                `${API_URL + item.file_path}`
+                              );
                               setSelectedDocumentName(item.title);
                               setIsOpen(true);
                             }}
@@ -237,7 +239,7 @@ export default function InterviewDocuments({ roleId, companyLoading }) {
       >
         <div className="admin_resumemodal_resumeview">
           <Document
-            file={`data:application/pdf;base64,${selectedDocument}`}
+            file={selectedDocument}
             onLoadSuccess={onDocumentLoadSuccess}
           >
             <Page pageNumber={pageNumber} />
@@ -259,6 +261,7 @@ export default function InterviewDocuments({ roleId, companyLoading }) {
           <button className="admin_resumemodal_activepaginationbutton">
             {pageNumber}
           </button>
+          <p className="admin_resumemodal_totalpagenumber">/ {numPages}</p>
           <button
             disabled={pageNumber >= numPages}
             onClick={() => setPageNumber(pageNumber + 1)}

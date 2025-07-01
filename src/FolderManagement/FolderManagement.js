@@ -4,13 +4,7 @@ import Header from "../Header/Header";
 import "./styles.css";
 import { Row, Col, Modal, Button } from "antd";
 import { TbEdit } from "react-icons/tb";
-import {
-  deleteFolder,
-  getFolders,
-  getMultipleCandidatesById,
-  updateFolder,
-} from "../Common/action";
-import { storeFolderProfiles } from "../Redux/slice";
+import { deleteFolder, getFolders, updateFolder } from "../Common/action";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import CommonInputField from "../Common/CommonInputField";
@@ -70,7 +64,7 @@ export default function FolderManagement() {
     // }
   };
 
-  const handleEdit = async () => {
+  const handleCreateAndUpdate = async () => {
     const nameValidate = addressValidator(folderName);
 
     setFolderNameError(nameValidate);
@@ -83,8 +77,8 @@ export default function FolderManagement() {
     };
 
     try {
-      const response = await updateFolder(payload);
-      CommonToaster("updated");
+      await updateFolder(payload);
+      CommonToaster("Updated");
       setIsModalOpen(false);
       getFoldersData();
     } catch (error) {
@@ -94,7 +88,7 @@ export default function FolderManagement() {
 
   const handleDelete = async () => {
     try {
-      const response = await deleteFolder(deleteFolderId);
+      await deleteFolder(deleteFolderId);
       CommonToaster("Folder deleted");
       setIsDeleteModalOpen(false);
       setDeleteFolderId(null);
@@ -105,12 +99,35 @@ export default function FolderManagement() {
     }
   };
 
+  const formReset = () => {
+    setFolderId(null);
+    setFolderName("");
+    setFolderNameError("");
+    setIsModalOpen(false);
+    setIsDeleteModalOpen(false);
+  };
+
   return (
     <div className="folder_mainContainer">
       <Header />
 
       <div className="folders_innercontainer">
-        <p className="folders_heading">Folder Management</p>
+        <Row className="folders_headingContainer">
+          <Col span={12}>
+            <p className="folders_heading">Folder Management</p>
+          </Col>
+          <Col
+            span={12}
+            style={{ display: "flex", justifyContent: "flex-end" }}
+          >
+            <button
+              className="folders_createfolder_button"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Create Folder
+            </button>
+          </Col>
+        </Row>
         {folders.length >= 1 ? (
           <>
             {folders.map((item, index) => {
@@ -146,6 +163,7 @@ export default function FolderManagement() {
                           onClick={() => {
                             setIsModalOpen(true);
                             setFolderId(item.id);
+                            setFolderName(item.name);
                           }}
                           style={{ cursor: "pointer", marginRight: "16px" }}
                         />
@@ -173,14 +191,15 @@ export default function FolderManagement() {
       </div>
 
       <Modal
-        title="Update Folder"
+        title={`${folderId ? "Update Folder" : "Create Folder"}`}
         open={isModalOpen}
-        onOk={handleEdit}
-        onCancel={() => {
-          setIsModalOpen(false);
-        }}
+        onOk={handleCreateAndUpdate}
+        onCancel={formReset}
         footer={[
-          <button className="admin_modalsubmitbutton" onClick={handleEdit}>
+          <button
+            className="admin_modalsubmitbutton"
+            onClick={handleCreateAndUpdate}
+          >
             Submit
           </button>,
         ]}

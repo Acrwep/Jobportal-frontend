@@ -1881,6 +1881,7 @@ export default function Favorites() {
           <button className="admin_resumemodal_activepaginationbutton">
             {pageNumber}
           </button>
+          <p className="admin_resumemodal_totalpagenumber">/ {numPages}</p>
           <button
             disabled={pageNumber >= numPages}
             onClick={() => setPageNumber(pageNumber + 1)}
