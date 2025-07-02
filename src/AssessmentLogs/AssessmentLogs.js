@@ -89,10 +89,11 @@ export default function AssessmentsLogs() {
         <span style={{ fontSize: "22px" }}>{`( ${logData.length} )`}</span>
       </p>
 
-      <Row style={{ marginTop: "12px" }}>
+      <Row style={{ marginTop: "12px", alignItems: "center" }}>
         <Col xs={24} sm={24} md={24} lg={12}>
           <PortalSelectField
             placeholder="Select status"
+            selectClassName="questionupload_filterselectfield"
             options={statusOptions}
             value={status}
             onChange={handleStatus}
@@ -108,7 +109,7 @@ export default function AssessmentsLogs() {
           lg={12}
           style={{ display: "flex", justifyContent: "flex-end" }}
         >
-          <div style={{ width: "35%" }}>
+          <div style={{ width: "35%", height: "34px" }}>
             <PortalDatePicker value={date} onChange={handleRequestDate} />
           </div>
           <button

@@ -79,3 +79,13 @@
   background-color: rgba(128, 128, 128, 0.11);
   position: relative;
 }
+.folderprofiles_deletebuttonContainer {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.folderprofiles_deletebuttonContainer:hover {
+  transform: scale(1.1);
+}

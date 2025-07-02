@@ -20,8 +20,10 @@ import {
   deleteFavorite,
   getCandidates,
   getFavorites,
+  getFolders,
   searchByKeyword,
   updateEligibleCandidate,
+  updateFolder,
 } from "../Common/action";
 import { CommonToaster } from "../Common/CommonToaster";
 import moment from "moment";
@@ -45,7 +47,7 @@ import Header from "../Header/Header";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import CommonMultiSelect from "../Common/CommonMultiSelect";
-import { addressValidator } from "../Common/Validation";
+import { addressValidator, selectValidator } from "../Common/Validation";
 import { useDispatch } from "react-redux";
 import { storePortalMenuStatus, storeLogoutMenuStatus } from "../Redux/slice";
 import PrismaZoom from "react-prismazoom";
@@ -96,8 +98,10 @@ export default function Admin() {
   const [degree, setDegree] = useState("");
   const [passedOut, setPassedOut] = useState("");
   const [resumeBase64, setResumeBase64] = useState("");
-  const [folderName, setFolderName] = useState("");
-  const [folderNameError, setFolderNameError] = useState("");
+  const [folderOptions, setFolderOptions] = useState("");
+  const [folderId, setFolderId] = useState("");
+  const [folderIdError, setFolderIdError] = useState("");
+  const [folderCandidateIds, setFolderCandidateIds] = useState([]);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [eligibleCandidateId, setEligibleCandidateId] = useState(null);
@@ -496,24 +500,39 @@ export default function Admin() {
 
   const handleFolderModal = async () => {
     console.log("folderss", new Date());
-    const folderNameValidate = addressValidator(folderName);
+    const folderNameValidate = selectValidator(folderId);
 
-    setFolderNameError(folderNameValidate);
+    setFolderIdError(folderNameValidate);
 
     if (folderNameValidate) return;
+
     const userId = localStorage.getItem("loginUserId");
 
-    const payload = {
-      name: folderName,
-      userId: userId,
-      candidateIds: selectedCandidates,
-    };
+    let selectedIds = [...selectedCandidates];
+    console.log("folderCandidateIds", folderCandidateIds);
 
+    if (folderCandidateIds && folderCandidateIds.length >= 1) {
+      folderCandidateIds.map((item) => {
+        selectedIds.push(item);
+      });
+    }
+
+    const uniqueNumbers = [...new Set(selectedIds)];
+
+    const findSelectFolder = folderOptions.find((f) => f.id === folderId);
+
+    const payload = {
+      name: findSelectFolder.name,
+      folderId: folderId,
+      userId: userId,
+      candidateIds: uniqueNumbers,
+    };
+    console.log("payloaddd", payload);
     try {
-      const response = await createFolder(payload);
+      const response = await updateFolder(payload);
       console.log("folder response", response);
       CommonToaster("Saved to folders");
-      setFolderName("");
+      setFolderId("");
       setFolderModal(false);
     } catch (error) {
       console.log("error", error);
@@ -813,6 +832,7 @@ export default function Admin() {
   };
 
   const handleCandidateSelect = (e, Id) => {
+    console.log(Id);
     const updateData = candidates.map((item) => {
       if (item.id === Id) {
         return { ...item, isSelect: e.target.checked };
@@ -820,12 +840,11 @@ export default function Admin() {
         return { ...item };
       }
     });
-    console.log(updateData);
     setCandidates(updateData);
     const filterIds = updateData
       .filter((item) => item.isSelect === true)
       .map((item) => item.id);
-
+    console.log("selecteditemmm", filterIds);
     setSelectedCandidates(filterIds);
   };
 
@@ -875,6 +894,23 @@ export default function Admin() {
         <React.Fragment key={i}>{part}</React.Fragment>
       );
     });
+  };
+
+  const handleSaveToFolder = async () => {
+    if (selectedCandidates.length <= 0) {
+      CommonToaster("Please select candidates");
+      return;
+    }
+    const userId = localStorage.getItem("loginUserId");
+    try {
+      const response = await getFolders(userId);
+      console.log("get folders response", response);
+      const data = response?.data?.data || [];
+      setFolderOptions(data);
+      setFolderModal(true);
+    } catch (error) {
+      console.log("get folder error", error);
+    }
   };
 
   return (
@@ -1260,7 +1296,7 @@ export default function Admin() {
                   >
                     <button
                       className="admin_savetofoldersbutton"
-                      onClick={() => setFolderModal(true)}
+                      onClick={handleSaveToFolder}
                     >
                       Save to folders
                     </button>
@@ -2064,11 +2100,13 @@ export default function Admin() {
 
       {/* folders modal */}
       <Modal
-        title="Save folder"
+        title="Select folder"
         open={folderModal}
         onOk={handleFolderModal}
         onCancel={() => {
           setFolderModal(false);
+          setFolderId("");
+          setFolderIdError("");
         }}
         footer={[
           <button
@@ -2080,14 +2118,20 @@ export default function Admin() {
         ]}
       >
         <div style={{ marginTop: "16px" }}>
-          <CommonInputField
-            label="Name"
+          <CommonSelectField
+            label="Folder"
             mandatory={true}
-            value={folderName}
-            error={folderNameError}
-            onChange={(e) => {
-              setFolderName(e.target.value);
-              setFolderNameError(addressValidator(e.target.value));
+            options={folderOptions}
+            value={folderId}
+            error={folderIdError}
+            onChange={(value) => {
+              setFolderId(value);
+              setFolderIdError(selectValidator(value));
+              const findSelectFolder = folderOptions.find(
+                (f) => f.id === value
+              );
+              const convertAsjson = JSON.parse(findSelectFolder.candidateIds);
+              setFolderCandidateIds(convertAsjson);
             }}
           />
         </div>

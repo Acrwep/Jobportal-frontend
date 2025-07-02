@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../Header/Header";
 import "./styles.css";
-import { Row, Col, Modal, Divider, Pagination, Spin } from "antd";
+import { Row, Col, Modal, Divider, Pagination, Spin, Button } from "antd";
 import CommonInputField from "../Common/CommonInputField";
 import CommonSelectField from "../Common/CommonSelectField";
 import CommonMultiSelect from "../Common/CommonMultiSelect";
@@ -27,12 +27,14 @@ import {
   deleteFavorite,
   getFavorites,
   getMultipleCandidatesById,
+  updateFolder,
 } from "../Common/action";
 import { IoCloseSharp } from "react-icons/io5";
 import { IoIosArrowForward, IoMdArrowRoundUp } from "react-icons/io";
 import { IoBookmarkOutline, IoBookmark } from "react-icons/io5";
 import PrismaZoom from "react-prismazoom";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 export default function FolderProfiles() {
   const routelocation = useLocation();
@@ -48,6 +50,7 @@ export default function FolderProfiles() {
     totalPages: 0,
     limit: 40,
   });
+  const [folderId, setFolderId] = useState(null);
   const [folderName, setFolderName] = useState("");
 
   const [candidatesList, setCandidatesList] = useState([]);
@@ -151,6 +154,8 @@ export default function FolderProfiles() {
   const [favoritesList, setFavoritesList] = useState([]);
   const [profileImageModal, setProfileImageModal] = useState(false);
   const [viewProfile, setViewProfile] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteProfileId, setDeleteProfileId] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -170,6 +175,7 @@ export default function FolderProfiles() {
   useEffect(() => {
     // setCandidatesList(candidates);
     setFolderName(routelocation.state.folderName);
+    setFolderId(routelocation.state.folderId);
     getCandidatesData();
   }, [pagination.currentPage, pagination.limit]);
 
@@ -189,10 +195,14 @@ export default function FolderProfiles() {
     gen,
     companyName,
     designation,
-    skills
+    skills,
+    candidatesIds
   ) => {
     const payload = {
-      candidateIds: routelocation.state.candidateIds,
+      candidateIds: candidatesIds
+        ? candidatesIds
+        : routelocation.state.candidateIds,
+      // candidateIds: [41],
       yearsOfExperience:
         yearsOfExperience != undefined ? yearsOfExperience : experienceYear,
       monthOfExperience:
@@ -660,6 +670,53 @@ export default function FolderProfiles() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleFolderProfileDelete = async () => {
+    const removeClikedProfile = candidatesList.filter(
+      (f) => f.id != deleteProfileId
+    );
+    let getOnlyIds = [];
+    removeClikedProfile.map((item) => {
+      getOnlyIds.push(item.id);
+    });
+    console.log("delete result", getOnlyIds);
+    const userId = localStorage.getItem("loginUserId");
+
+    const payload = {
+      name: folderName,
+      folderId: folderId,
+      userId: userId,
+      candidateIds: getOnlyIds,
+    };
+    console.log("payloaddd", payload);
+    try {
+      await updateFolder(payload);
+      CommonToaster("Profile removed");
+      setIsDeleteModalOpen(false);
+      if (getOnlyIds.length >= 1) {
+        getCandidatesData(
+          experienceYear,
+          experienceMonth,
+          noticePeriods,
+          salary,
+          phone,
+          location,
+          degree,
+          passedOut,
+          gender,
+          CompanyName,
+          Designation,
+          skillsFilter,
+          getOnlyIds
+        );
+      } else {
+        setCandidatesList([]);
+        setTotalProfileCount(0);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   return (
     <div
       className="folderprofiles_mainContainer"
@@ -1031,6 +1088,18 @@ export default function FolderProfiles() {
                     return (
                       <React.Fragment key={index}>
                         <div className="admin_candidatesDetailscard">
+                          <div
+                            className="folderprofiles_deletebuttonContainer"
+                            onClick={() => {
+                              setDeleteProfileId(item.id);
+                              setIsDeleteModalOpen(true);
+                            }}
+                          >
+                            <RiDeleteBinLine
+                              color="rgb(211, 34, 21)"
+                              size={22}
+                            />
+                          </div>
                           <Row
                             gutter={16}
                             className="admin_candidatesDetailsmainContainer"
@@ -1850,6 +1919,40 @@ export default function FolderProfiles() {
       >
         <div>
           <img src={viewProfile} className="admin_candidateviewprofileimage" />
+        </div>
+      </Modal>
+
+      {/* delete modal */}
+      <Modal
+        open={isDeleteModalOpen}
+        onOk={handleFolderProfileDelete}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setDeleteProfileId(null);
+        }}
+        footer={[
+          <Button
+            className="folders_modalcancelbutton"
+            onClick={() => {
+              setIsDeleteModalOpen(false);
+              setDeleteProfileId(null);
+            }}
+            style={{ marginRight: "16px" }}
+          >
+            No
+          </Button>,
+          <Button
+            className="folders_modalsubmitbutton"
+            onClick={handleFolderProfileDelete}
+          >
+            Yes
+          </Button>,
+        ]}
+      >
+        <div style={{ marginTop: "6px" }}>
+          <p style={{ fontWeight: 500, fontSize: "16px" }}>
+            Are you sure you want to remove the profile?
+          </p>
         </div>
       </Modal>
     </div>

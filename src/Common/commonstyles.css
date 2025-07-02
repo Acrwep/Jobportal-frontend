@@ -27,7 +27,7 @@
 }
 
 .portalInputfield {
-  height: 35px;
+  height: 34px;
   background-color: transparent;
   background-image: none;
   border-width: 1px;
@@ -61,10 +61,10 @@
   height: 36px !important;
 }
 .portalSelectfield_error {
-  height: 35px !important;
+  height: 34px !important;
 }
 .portalSelectfield {
-  height: 35px;
+  height: 34px;
   border-radius: 6px;
   transition: all 0.2s;
   width: 100%;
@@ -136,7 +136,7 @@
   box-shadow: 0 0 0 2px #ff4d501c !important;
 }
 .portalInputfield_error {
-  height: 35px;
+  height: 34px;
   background-color: transparent;
   background-image: none;
   border-width: 1px;

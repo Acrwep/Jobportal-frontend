@@ -4,7 +4,12 @@ import Header from "../Header/Header";
 import "./styles.css";
 import { Row, Col, Modal, Button } from "antd";
 import { TbEdit } from "react-icons/tb";
-import { deleteFolder, getFolders, updateFolder } from "../Common/action";
+import {
+  createFolder,
+  deleteFolder,
+  getFolders,
+  updateFolder,
+} from "../Common/action";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import CommonInputField from "../Common/CommonInputField";
@@ -22,6 +27,7 @@ export default function FolderManagement() {
   const [deleteFolderId, setDeleteFolderId] = useState(null);
   const [folderName, setFolderName] = useState("");
   const [folderNameError, setFolderNameError] = useState("");
+  const [candidates, setCandidates] = useState([]);
 
   useEffect(() => {
     getFoldersData();
@@ -47,6 +53,7 @@ export default function FolderManagement() {
       navigate("/folderprofiles", {
         state: {
           folderName: item.name,
+          folderId: item.id,
           candidateIds: JSON.parse(item.candidateIds),
         },
       });
@@ -71,18 +78,33 @@ export default function FolderManagement() {
 
     if (nameValidate) return;
 
+    const userId = localStorage.getItem("loginUserId");
+
     const payload = {
       name: folderName,
-      folderId: folderId,
+      userId: userId,
+      ...(folderId && { folderId: folderId }),
+      ...(folderId && { candidateIds: candidates }),
     };
 
-    try {
-      await updateFolder(payload);
-      CommonToaster("Updated");
-      setIsModalOpen(false);
-      getFoldersData();
-    } catch (error) {
-      console.log(error);
+    if (folderId) {
+      try {
+        await updateFolder(payload);
+        CommonToaster("Updated");
+        setIsModalOpen(false);
+        getFoldersData();
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        await createFolder(payload);
+        CommonToaster("Created");
+        setIsModalOpen(false);
+        getFoldersData();
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -161,6 +183,8 @@ export default function FolderManagement() {
                         <TbEdit
                           size={24}
                           onClick={() => {
+                            const candidateIds = JSON.parse(item.candidateIds);
+                            setCandidates(candidateIds);
                             setIsModalOpen(true);
                             setFolderId(item.id);
                             setFolderName(item.name);
@@ -239,7 +263,7 @@ export default function FolderManagement() {
       >
         <div style={{ marginTop: "6px" }}>
           <p style={{ fontWeight: 500, fontSize: "16px" }}>
-            Are you sure you want to delete?
+            Are you sure you want to delete the folder?
           </p>
         </div>
       </Modal>

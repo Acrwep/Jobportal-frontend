@@ -5,11 +5,11 @@
   border-radius: 6px;
   border-width: 1px;
   display: flex;
-  height: 35px;
+  height: 34px;
   justify-content: center;
   margin-left: 12px;
   margin-right: 12px;
-  width: 35px;
+  width: 34px;
 }
 .logs_downloadbutton:hover {
   border-color: #0056b3;
