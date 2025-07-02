@@ -49,14 +49,16 @@ export default function AssessmentsLogs() {
   useEffect(() => {
     const today = new Date();
     setDate(today);
-    getLogsData(today, status);
+    getLogsData(today, null);
   }, []);
 
   const getLogsData = async (requestDate, requestStatus) => {
     setTableLoading(true);
     const payload = {
       date: moment(requestDate).format("YYYY-MM-DD"),
-      ...(status && { is_completed: requestStatus === "Completed" ? 1 : 0 }),
+      ...(requestStatus && {
+        is_completed: requestStatus === "Completed" ? 1 : 0,
+      }),
     };
     try {
       const response = await getAssessmentLogs(payload);

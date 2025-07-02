@@ -82,6 +82,15 @@ export default function Candidates() {
     { title: "Name", key: "name", dataIndex: "name", width: 200 },
     { title: "Email", key: "email", dataIndex: "email", width: 260 },
     {
+      title: "Mobile",
+      key: "mobile",
+      dataIndex: "mobile",
+      width: 140,
+      render: (text) => {
+        return <p>{text ? text : "-"}</p>;
+      },
+    },
+    {
       title: "Branch",
       key: "course_location",
       dataIndex: "course_location",
@@ -648,7 +657,7 @@ export default function Candidates() {
 
       <div style={{ marginTop: "22px" }}>
         <CommonTable
-          scroll={{ x: 1800 }}
+          scroll={{ x: 1950 }}
           columns={columns}
           dataSource={data}
           dataPerPage={10}
