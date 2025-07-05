@@ -631,11 +631,13 @@ export default function CandidateRegister() {
 
   const checkKeyword = (text) => {
     const keyword = "acte technologies";
-    if (text.toLowerCase().includes(keyword)) {
-      return true;
-    } else {
-      return false;
-    }
+    const normalizedText = text
+      .toLowerCase()
+      .replace(/\u2013|\u2014|\u2012|\u2011|\u00A0/g, " ") // Replace en dash, em dash, figure dash, non-breaking space with space
+      .replace(/\s+/g, " ") // Replace multiple spaces with a single space
+      .trim();
+
+    return normalizedText.includes(keyword);
   };
 
   const handleBackward = () => {
