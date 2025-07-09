@@ -23,7 +23,11 @@ const DownloadTableAsCSV = (data, columns, fileName) => {
           return "50";
         }
         if (column.dataIndex === "percentage") {
-          return row[column.dataIndex] + "%";
+          if (row[column.dataIndex]) {
+            return row[column.dataIndex] + "%";
+          } else {
+            return "";
+          }
         }
         if (column.dataIndex === "is_completed") {
           if (row[column.dataIndex] === 1) {

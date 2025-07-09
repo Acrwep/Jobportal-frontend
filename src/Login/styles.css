@@ -7,7 +7,7 @@
 .loginpage_leftContainer {
   display: flex;
   justify-content: center;
-  padding: 0px 90px;
+  padding: 0px 60px;
   flex-direction: column;
   height: 100%;
   position: relative;
@@ -22,16 +22,72 @@
     padding: 30px;
   }
 }
-.loginpage_leftheading {
-  font-size: 38px;
-  font-weight: 700;
+.loginpage_leftheadingContainer {
+  background-color: #acc9e981;
+  /* background-color: rgb(62, 73, 185); */
+  /* background-color: rgb(70 75 124); */
+  border-radius: 9px;
+  padding: 3px 19px;
+  width: max-content;
+  /* color: rgba(0, 0, 0, 0.849); */
   color: #fff;
-  line-height: 1.4;
-  margin-bottom: 16px !important;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loginpage_leftheading {
+  font-size: 29px;
+  font-weight: 700;
+  /* color: #fff; */
+  line-height: 1.5;
+  margin-bottom: 6px !important;
+}
+@media (min-width: 300px) and (max-width: 374px) {
+  .loginpage_leftheading {
+    font-size: 17px;
+  }
+}
+@media (min-width: 375px) and (max-width: 424px) {
+  .loginpage_leftheading {
+    font-size: 20px;
+  }
+}
+@media (min-width: 425px) and (max-width: 500px) {
+  .loginpage_leftheading {
+    font-size: 23px;
+  }
+}
+@media (min-width: 1000px) and (max-width: 1105px) {
+  .loginpage_leftheading {
+    font-size: 28px;
+  }
 }
 @media (min-width: 1900px) and (max-width: 3000px) {
   .loginpage_leftheading {
-    font-size: 85px;
+    font-size: 45px;
+  }
+}
+.loginpage_headingtag {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 14px !important;
+  margin-bottom: 16px !important;
+}
+@media (min-width: 300px) and (max-width: 425px) {
+  .loginpage_headingtag {
+    font-size: 12px;
+  }
+}
+@media (min-width: 1900px) and (max-width: 3000px) {
+  .loginpage_headingtag {
+    font-size: 24px;
+  }
+}
+@media (min-width: 300px) and (max-width: 767px) {
+  .loginpage_points {
+    display: none;
   }
 }
 .loginpage_points h3 {
@@ -121,24 +177,17 @@
 }
 .loginpage_leftbackground_imageContainer {
   position: absolute;
-  top: 142px;
+  top: 116px;
   left: 10%;
   height: 100%;
   opacity: 0.2;
   z-index: 0;
-  height: calc(100% - 142px); /* Prevent overflow */
+  height: calc(100% - 116px); /* Prevent overflow */
   object-fit: cover;
 }
-@media (min-width: 320px) and (max-width: 768px) {
+@media (min-width: 320px) and (max-width: 767px) {
   .loginpage_leftbackground_imageContainer {
-    left: 0%;
-  }
-}
-@media (min-width: 521px) and (max-width: 768px) {
-  .loginpage_leftbackground_imageContainer {
-    left: 8%;
-    top: 102px;
-    height: calc(100% - 102px);
+    display: none;
   }
 }
 @media (min-width: 1000px) and (max-width: 1300px) {
@@ -175,7 +224,7 @@
 }
 .loginpage_leftbuttonContainer {
   position: absolute;
-  top: 20%;
+  top: 24%;
   right: 0px;
   z-index: 999;
 }

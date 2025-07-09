@@ -9,6 +9,7 @@ import {
   Divider,
   Modal,
   Button,
+  Radio,
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import CommonTable from "../Common/CommonTable";
@@ -31,17 +32,21 @@ import { AiOutlineEye } from "react-icons/ai";
 import { ImCross } from "react-icons/im";
 import { PiCheckFatFill } from "react-icons/pi";
 import CommonNodataFound from "../Common/CommonNodataFound";
+import { CgSoftwareDownload } from "react-icons/cg";
 import { addressValidator, selectValidator } from "../Common/Validation";
 import PortalInputField from "../Common/PortalInputField";
 import { MdDelete } from "react-icons/md";
 import { PiWarningCircleFill } from "react-icons/pi";
 import DownloadTableAsCSV from "../Common/DownloadTableAsCSV";
+import { LuListFilter } from "react-icons/lu";
+import { FiFilter } from "react-icons/fi";
 const { Search } = Input;
 
 export default function Candidates() {
   const navigate = useNavigate();
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [nameSearch, setNameSearch] = useState("");
   const [data, setData] = useState([]);
   const [tableLoading, setTableLoading] = useState(true);
   const [requestLoading, setRequestLoading] = useState(false);
@@ -77,6 +82,8 @@ export default function Candidates() {
   const [candidateName, setCandidateName] = useState("");
   const [candidateCourse, setCandidateCourse] = useState("");
   const [candidateBranch, setCandidateBranch] = useState("");
+  const [filterModal, setFilterModal] = useState(false);
+  const [filterValue, setFilterValue] = useState(1);
 
   const columns = [
     { title: "Name", key: "name", dataIndex: "name", width: 200 },
@@ -195,14 +202,28 @@ export default function Candidates() {
       console.log("course error", error);
     } finally {
       setTimeout(() => {
-        getCandidatesData(null, null);
+        getCandidatesData(null, null, null, null, null);
       }, 300);
     }
   };
 
-  const getCandidatesData = async (branchid, courseid, fromDate, toDate) => {
+  const getCandidatesData = async (
+    nameSearch,
+    branchid,
+    courseid,
+    fromDate,
+    toDate
+  ) => {
     setTableLoading(true);
+    console.log("filtervaa", filterValue);
     const payload = {
+      ...(nameSearch && filterValue === 1
+        ? { name: nameSearch }
+        : nameSearch && filterValue === 2
+        ? { email: nameSearch }
+        : nameSearch && filterValue === 3
+        ? { mobile: nameSearch }
+        : {}),
       course_location: branchid,
       course_id: courseid,
       from_date: fromDate,
@@ -373,7 +394,7 @@ export default function Candidates() {
                               ) : (
                                 ""
                               )}
-                              <p>{optin.value}</p>
+                              <p style={{ width: "60%" }}>{optin.value}</p>
 
                               {optin.value === answer.correct_answer &&
                               answer.correct_answer ===
@@ -558,9 +579,22 @@ export default function Candidates() {
   };
 
   // onchange functions
+  const handleSearch = (e) => {
+    console.log("search", e.target.value);
+    setNameSearch(e.target.value);
+    getCandidatesData(
+      e.target.value,
+      branchId,
+      courseId,
+      selectedDates.length >= 1 ? selectedDates[0] : null,
+      selectedDates.length >= 1 ? selectedDates[1] : null
+    );
+  };
+
   const handleBranchFilter = (value) => {
     setBranchId(value);
     getCandidatesData(
+      nameSearch,
       value,
       courseId,
       selectedDates.length >= 1 ? selectedDates[0] : null,
@@ -571,6 +605,7 @@ export default function Candidates() {
   const handleCourseFilter = (value) => {
     setCourseId(value);
     getCandidatesData(
+      nameSearch,
       branchId,
       value,
       selectedDates.length >= 1 ? selectedDates[0] : null,
@@ -583,57 +618,31 @@ export default function Candidates() {
     const startDate = dateStrings[0];
     const endDate = dateStrings[1];
     if (dateStrings[0] != "" && dateStrings[1] != "") {
-      getCandidatesData(branchId, courseId, startDate, endDate);
+      getCandidatesData(nameSearch, branchId, courseId, startDate, endDate);
     } else {
-      getCandidatesData(branchId, courseId, null, null);
+      getCandidatesData(nameSearch, branchId, courseId, null, null);
     }
   };
 
   return (
     <div>
-      <p className="portal_mainheadings">
-        Candidates{" "}
-        <span style={{ fontSize: "22px" }}>{`( ${data.length} )`}</span>
-      </p>
-      <Row style={{ marginTop: "22px" }}>
-        <Col xs={24} sm={24} md={24} lg={14}>
-          <div className="questionupload_filterContainer">
-            <PortalSelectField
-              options={branchOptions}
-              style={{ width: "34%" }}
-              placeholder="Select Branch"
-              selectClassName="questionupload_filterselectfield"
-              allowClear={true}
-              onChange={handleBranchFilter}
-              value={branchId}
-              hideError={true}
-            />
-            <PortalSelectField
-              options={courseOptions}
-              style={{ width: "34%" }}
-              placeholder="Select Course"
-              selectClassName="questionupload_filterselectfield"
-              allowClear={true}
-              onChange={handleCourseFilter}
-              value={courseId}
-              hideError={true}
-            />
-            {/* <CommonDoubleDatePicker /> */}
-            <PortalDoubleDatePicker
-              value={selectedDates}
-              onChange={handleDateChange}
-            />
-          </div>
+      <Row>
+        <Col xs={24} sm={24} md={24} lg={12}>
+          <p className="portal_mainheadings">
+            Candidates{" "}
+            <span style={{ fontSize: "22px" }}>{`( ${data.length} )`}</span>
+          </p>
         </Col>
         <Col
           xs={24}
           sm={24}
           md={24}
-          lg={10}
+          lg={12}
           style={{
             display: "flex",
             justifyContent: "flex-end",
             alignItems: "center",
+            marginTop: "4px",
             gap: "12px",
           }}
         >
@@ -649,9 +658,65 @@ export default function Candidates() {
             className="candidate_downloadresultbutton"
             onClick={handleDownloadResult}
           >
-            <IoIosSend size={19} style={{ marginRight: "4px" }} />
+            <CgSoftwareDownload size={19} style={{ marginRight: "4px" }} />
             Download Result
           </button>
+        </Col>
+      </Row>
+
+      <Row style={{ marginTop: "22px" }}>
+        <Col xs={24} sm={24} md={24} lg={20}>
+          <div className="questionupload_filterContainer">
+            <div style={{ position: "relative", width: "36%" }}>
+              <PortalInputField
+                placeholder={
+                  filterValue === 1
+                    ? "Search by name"
+                    : filterValue === 2
+                    ? "Search by email"
+                    : "Search by mobile"
+                }
+                // enterButton
+                prefix={false}
+                suffix={false}
+                className="candidates_searchinput"
+                onChange={handleSearch}
+                hideError={true}
+              />{" "}
+              <div
+                className="candidates_filterIconContainer"
+                onClick={() => setFilterModal(true)}
+              >
+                <LuListFilter size={18} />
+              </div>
+            </div>
+            <PortalSelectField
+              options={branchOptions}
+              style={{ width: "28%" }}
+              placeholder="Select Branch"
+              selectClassName="questionupload_filterselectfield"
+              allowClear={true}
+              onChange={handleBranchFilter}
+              value={branchId}
+              hideError={true}
+            />
+            <PortalSelectField
+              options={courseOptions}
+              style={{ width: "30%" }}
+              placeholder="Select Course"
+              selectClassName="questionupload_filterselectfield"
+              allowClear={true}
+              onChange={handleCourseFilter}
+              value={courseId}
+              hideError={true}
+            />
+            {/* <CommonDoubleDatePicker /> */}
+            <PortalDoubleDatePicker
+              style={{ width: "40%" }}
+              value={selectedDates}
+              onChange={handleDateChange}
+            />
+          </div>
         </Col>
       </Row>
 
@@ -821,6 +886,35 @@ export default function Candidates() {
             </Button>
           </div>
         </div>
+      </Modal>
+
+      {/* filter modal */}
+      <Modal
+        open={filterModal}
+        onCancel={() => setFilterModal(false)}
+        title="Filter"
+        footer={false}
+        width={440}
+      >
+        <Radio.Group
+          onChange={(e) => {
+            setFilterValue(e.target.value);
+            setFilterModal(false);
+          }}
+          value={filterValue}
+        >
+          <Row className="candidates_filter_radioContainer">
+            <Col span={12}>
+              <Radio value={1}>Search by name</Radio>
+            </Col>
+            <Col span={12}>
+              <Radio value={2}>Search by email</Radio>
+            </Col>
+            <Col span={12} style={{ marginTop: "18px" }}>
+              <Radio value={3}>Search by mobile</Radio>
+            </Col>
+          </Row>
+        </Radio.Group>
       </Modal>
     </div>
   );

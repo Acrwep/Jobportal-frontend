@@ -18,6 +18,7 @@ const PortalInputField = ({
   type,
   suffix,
   disabled,
+  allowClear,
 }) => {
   return (
     <div style={style} className="commonInputfield_container">
@@ -47,6 +48,7 @@ const PortalInputField = ({
         type={type}
         suffix={suffix}
         disabled={disabled}
+        allowClear={allowClear}
       />
       <div
         className={

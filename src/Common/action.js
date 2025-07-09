@@ -570,6 +570,17 @@ export const getAssessmentAnswers = async (payload) => {
   }
 };
 
+export const getUserAnswers = async (payload) => {
+  try {
+    const response = await api.get("/api/getUserAnswers", {
+      params: payload,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const downloadResult = async (payload) => {
   try {
     const response = await api.post("/api/getResults", payload);
@@ -677,6 +688,15 @@ export const checkTestCompleted = async (test_link) => {
 export const getAssessmentLogs = async (payload) => {
   try {
     const response = await api.get(`/api/getDateWiseTest`, { params: payload });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getFilterResults = async (payload) => {
+  try {
+    const response = await api.post(`/api/getFilterResults`, payload);
     return response;
   } catch (error) {
     throw error;

@@ -6,7 +6,12 @@ import "./commonstyles.css";
 import { CommonToaster } from "./CommonToaster";
 const { RangePicker } = DatePicker;
 
-export default function PortalDoubleDatePicker({ onChange, value, label }) {
+export default function PortalDoubleDatePicker({
+  onChange,
+  value,
+  label,
+  style,
+}) {
   const handleRangePickerChange = (dates, dateStrings) => {
     // If dates are selected
     if (dates && dates.length === 2) {
@@ -29,7 +34,7 @@ export default function PortalDoubleDatePicker({ onChange, value, label }) {
     return current && current > moment().endOf("day");
   };
   return (
-    <div className="commonInputfield_container">
+    <div className="commonInputfield_container" style={style}>
       <div style={{ display: "flex" }}>
         {label && (
           <label

@@ -20,7 +20,7 @@ import { FaUsers } from "react-icons/fa";
 import InterviewIcon from "../images/login-interview.png";
 import { TbArrowBadgeRight } from "react-icons/tb";
 import ActeLogo from "../images/old-acte-logo.png";
-import StudentImage from "../images/banner-girl.png";
+import StudentImage from "../images/login-banner.png";
 import { useDispatch } from "react-redux";
 import {
   storeCurrentPortalName,
@@ -166,12 +166,14 @@ export default function LmsLogin() {
           style={{ backgroundColor: "#555ca3", position: "relative" }}
         >
           <div className="loginpage_leftContainer">
-            <p className="loginpage_leftheading">
-              Login Once.
-              <br />
-              Access 3 Portals.
-            </p>
-
+            <div className="loginpage_leftheadingContainer">
+              <p className="loginpage_leftheading">
+                AI-Powered Placement Portal
+                {/* <br />
+              Placement Portal */}
+              </p>
+            </div>
+            <p className="loginpage_headingtag">{`( Login once access 3 portal )`}</p>
             <div className="loginpage_points">
               <div className="loginpage_subheadingContainer">
                 <MdMenuBook color="#ffffff" size={20} />
