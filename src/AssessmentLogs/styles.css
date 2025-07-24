@@ -15,3 +15,98 @@
   border-color: #0056b3;
   color: #0056b3;
 }
+
+/* scheduler styles */
+.fc-button {
+  background-color: #0056b3 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  font-weight: 600 !important;
+  margin-right: 12px !important;
+  font-size: 13px !important;
+}
+
+/* week button styles */
+.fc-timeGridWeek-button {
+  background-color: transparent !important;
+  color: #333 !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  font-weight: bold !important;
+  padding: 4px 12px !important;
+  transition: all 0.2s ease-in-out !important;
+}
+.fc-timeGridWeek-button:hover {
+  border-color: #0056b3 !important;
+}
+.active-week-btn {
+  background-color: #0056b3 !important;
+  color: #fff !important;
+  border: 1px solid #0056b3 !important;
+  border-radius: 4px !important;
+  font-weight: bold !important;
+  padding: 4px 12px !important;
+  transition: all 0.2s ease-in-out !important;
+}
+.active-week-btn:active {
+  transform: scale(0.9) !important;
+}
+.active-week-btn:focus {
+  box-shadow: none !important;
+}
+/* Month button styles */
+.fc-dayGridMonth-button {
+  background-color: transparent !important;
+  color: #333 !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  font-weight: bold !important;
+  padding: 4px 12px !important;
+  transition: all 0.2s ease-in-out !important;
+}
+.fc-dayGridMonth-button:hover {
+  border-color: #0056b3 !important;
+}
+.fc-dayGridMonth-button.fc-button-active {
+  background-color: #0056b3 !important;
+  color: #fff !important;
+  border: 1px solid #0056b3 !important;
+  border-radius: 4px !important;
+  font-weight: bold !important;
+  padding: 4px 12px !important;
+  transition: all 0.2s ease-in-out !important;
+}
+.fc-dayGridMonth-button.fc-button-active:active {
+  transform: scale(0.9) !important;
+}
+.fc-dayGridMonth-button.fc-button-active:focus {
+  box-shadow: none !important;
+}
+/* previous and nxt button styles */
+.fc-myPrev-button,
+.fc-myNext-button {
+  background-color: transparent !important;
+  color: #333 !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  font-weight: bold !important;
+  padding: 4px 12px !important;
+  transition: all 0.2s ease-in-out !important;
+}
+.fc-myPrev-button:focus,
+.fc-myNext-button:focus {
+  box-shadow: none !important;
+}
+.fc-myPrev-button:hover,
+.fc-myNext-button:hover {
+  border-color: #0056b3 !important;
+}
+.fc .fc-col-header-cell-cushion {
+  cursor: default !important;
+  color: #333 !important;
+}
+.fc .fc-col-header-cell-cushion:hover {
+  color: #333 !important;
+}

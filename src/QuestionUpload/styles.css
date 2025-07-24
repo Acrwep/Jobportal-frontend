@@ -24,7 +24,9 @@
   height: 32px !important;
 }
 .questionupload_button {
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  /* box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; */
+  font-size: 13px;
+  box-shadow: 0 2px 0 #5805ff0f;
   background-color: #0056b3 !important;
   border-radius: 6px !important;
   outline: 0 !important;
@@ -43,6 +45,13 @@
 .questionupload_button:active {
   transform: scale(0.9);
   box-shadow: 3px 2px 22px 1px #027cff73;
+}
+.questionupload_addbutton_container {
+  padding: 7px;
+  border: 1px solid #6c757d;
+  color: #6c757d;
+  border-radius: 6px;
+  cursor: pointer;
 }
 .questionupload_deletebutton {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
@@ -74,15 +83,14 @@
   background-color: #0056b3;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   font-size: 14px;
-  height: 36px;
-  width: 130px;
+  height: 34px;
+  width: 120px;
   font-weight: 600;
-  border-radius: 9px;
+  border-radius: 6px;
   margin-top: 34px;
   outline: 0 !important;
   cursor: pointer;
   border: none;
-  font-size: 15px;
 }
 .questionupload_submitbutton:hover {
   opacity: 0.8;

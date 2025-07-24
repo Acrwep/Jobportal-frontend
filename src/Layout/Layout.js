@@ -54,6 +54,7 @@ import Assessments from "../StudentResult/Assessments";
 import ForgotPassword from "../Login/ForgotPassword";
 import Dummy from "../Login/Dummy";
 import AssessmentsLogs from "../AssessmentLogs/AssessmentLogs";
+import AssessmentScheduler from "../AssessmentLogs/AssessmentScheduler";
 const { Header, Sider, Content } = Layout;
 
 const MainSideMenu = () => {
@@ -284,7 +285,8 @@ const MainSideMenu = () => {
       pathName === "candidates" ||
       pathName === "assessments" ||
       pathName === "assessment-results" ||
-      pathName === "assessmentlogs"
+      pathName === "assessmentlogs" ||
+      pathName === "assessment-scheduler"
     ) {
       dispatch(storeCurrentPortalName("interview"));
     } else {
@@ -687,6 +689,10 @@ const MainSideMenu = () => {
                     <Route
                       element={<AssessmentsLogs />}
                       path="/assessmentlogs"
+                    />
+                    <Route
+                      element={<AssessmentScheduler />}
+                      path="/assessment-scheduler"
                     />
                     <Route
                       element={<StudentResult />}

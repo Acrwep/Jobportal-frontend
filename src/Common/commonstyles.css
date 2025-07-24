@@ -9,7 +9,7 @@
   background-image: none;
   border-width: 1px;
   border-style: solid;
-  border-color: #a3a3a3;
+  border-color: #a3a3a3c7;
   border-radius: 6px;
   transition: all 0.2s;
   width: 100%;
@@ -32,7 +32,7 @@
   background-image: none;
   border-width: 1px;
   border-style: solid;
-  border-color: #a3a3a3;
+  border-color: #a3a3a3c7;
   border-radius: 6px;
   transition: all 0.2s;
   width: 100%;
@@ -82,7 +82,7 @@
   box-shadow: 0 0 0 2px #0057b31c;
 }
 .ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
-  border-color: #a3a3a3 !important;
+  border-color: #a3a3a3c7 !important;
   background-color: transparent !important;
 }
 .ant-select-outlined.ant-select-status-error:not(.ant-select-customize-input)
@@ -434,4 +434,9 @@
   padding: 1px 7px;
   justify-content: center;
   border-radius: 50%;
+}
+
+/* commontime picker styles */
+.commontimepicker_ashtetik {
+  margin-left: 4px !important;
 }

@@ -342,9 +342,10 @@
   justify-content: center;
   align-items: center;
   border: none;
-  padding: 6px 16px;
+  padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 13px;
 }
 .admin_contactinfo_button:hover {
   background-color: #0056b3 !important;
@@ -368,12 +369,13 @@
 }
 .admin_savetofoldersbutton {
   border-radius: 6px;
-  padding: 7px 16px;
+  padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
   background-color: transparent;
   border: 1px solid #0056b3;
   color: #0056b3;
+  font-size: 13px;
 }
 .admin_savetofoldersbutton:hover {
   background-color: #0056b3;
@@ -390,9 +392,10 @@
   justify-content: center;
   align-items: center;
   border: none;
-  padding: 6px 22px;
   border-radius: 6px;
-  cursor: pointer;
+  width: 90px;
+  height: 32px;
+  font-size: 13px;
   margin-top: 12px;
 }
 .admin_modalsubmitbutton:hover {
@@ -416,9 +419,10 @@
   justify-content: center;
   align-items: center;
   border: none;
-  padding: 6px 16px;
+  padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 13px;
 }
 .admin_viewresumebutton:hover {
   background-color: #0056b3 !important;
@@ -494,7 +498,7 @@
   background-image: none;
   /* border-width: 1px; */
   /* border-style: solid; */
-  /* border-color: #a3a3a3; */
+  /* border-color: #a3a3a3c7; */
   border-radius: 6px;
   transition: all 0.2s;
   width: 100%;
@@ -549,7 +553,7 @@
 .adminsearch_button {
   box-sizing: border-box;
   background-color: #0056b3;
-  width: 140px;
+  width: 110px;
   appearance: none;
   text-align: start;
   text-decoration: none;
@@ -558,8 +562,8 @@
   border-radius: 6px;
   color: #ffffff;
   border-color: #0056b3 !important;
-  padding: 17px 0px;
-  font-size: 16px;
+  padding: 16px 0px;
+  font-size: 14px;
 }
 .adminsearch_button:hover {
   background-color: #0056b3 !important;
@@ -570,7 +574,7 @@
 .adminsearch_loadingbutton {
   box-sizing: border-box;
   background-color: #0056b3;
-  width: 140px;
+  width: 110px;
   appearance: none;
   text-align: start;
   text-decoration: none;
@@ -579,8 +583,8 @@
   border-radius: 6px;
   color: #ffffff;
   border-color: #0056b3 !important;
-  padding: 17px 0px;
-  font-size: 15px;
+  padding: 16px 0px;
+  font-size: 12px;
   opacity: 0.7;
 }
 .adminsearch_loadingbutton:hover {

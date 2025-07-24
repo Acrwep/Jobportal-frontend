@@ -17,6 +17,7 @@ import { getCourseByTrainers, getCourses } from "../Common/action";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { CgNotes } from "react-icons/cg";
 import { useSelector } from "react-redux";
+import { LuAlarmClock } from "react-icons/lu";
 
 export default function SideMenu() {
   const location = useLocation();
@@ -106,6 +107,11 @@ export default function SideMenu() {
             key: "assessmentlogs",
             icon: <CgNotes size={17} />,
             label: "Assessment Logs",
+          },
+          {
+            key: "assessment-scheduler",
+            icon: <LuAlarmClock size={18} />,
+            label: "Scheduler",
           },
         ];
       } else {

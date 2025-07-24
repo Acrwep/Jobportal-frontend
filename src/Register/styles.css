@@ -46,7 +46,7 @@
   background-image: none;
   border-width: 1px;
   border-style: solid;
-  border-color: #a3a3a3;
+  border-color: #a3a3a3c7;
   border-radius: 16px;
   transition: all 0.2s;
   width: 100%;
@@ -88,7 +88,7 @@
   background-image: none;
   border-width: 1px;
   border-style: solid;
-  border-color: #a3a3a3;
+  border-color: #a3a3a3c7;
   border-radius: 16px;
   transition: all 0.2s;
   width: 100%;

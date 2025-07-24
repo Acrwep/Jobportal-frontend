@@ -302,8 +302,7 @@ export default function QuestionUpload() {
     setSectionFilterId(sec);
     if (sec === 1) {
       setCourseFilterId(null);
-      setTypeFilterId(null);
-      getQuestionsData(sec, courseFilterId, courseData);
+      getQuestionsData(sec, null, courseData, typeFilterId);
     } else {
       getQuestionsData(sec, courseFilterId, courseData, typeFilterId);
     }
@@ -345,7 +344,6 @@ export default function QuestionUpload() {
     setQuestionTypeId(record.question_type_id);
     if (record.section_id === 1) {
       setDisableCourse(true);
-      setQuestionTypeId(null);
       setCourseId(null);
     } else {
       setDisableCourse(false);
@@ -384,13 +382,11 @@ export default function QuestionUpload() {
     if (sectionId === 1) {
       setDisableCourse(true);
       courseValidate = "";
-      questionTypeIdValidate = "";
     } else {
       setDisableCourse(false);
       courseValidate = selectValidator(courseId);
-      questionTypeIdValidate = selectValidator(questionTypeId);
     }
-
+    questionTypeIdValidate = selectValidator(questionTypeId);
     setQuestionError(questionvalidate);
     setOptionOneError(optionOneValidate);
     setOptionTwoError(optionTwoValidate);
@@ -547,14 +543,24 @@ export default function QuestionUpload() {
       error.push({ error: "Question column is required" });
     } else {
       excelData.slice(1).map((row, rowIndex) => {
-        const qustion = row[questionIndex].toString();
+        const rawqustion = row[questionIndex];
 
-        if (qustion) {
+        if (
+          rawqustion !== undefined &&
+          rawqustion !== null &&
+          rawqustion !== ""
+        ) {
+          const qustion = rawqustion.toString();
           let firstNameValidate = addressValidator(qustion);
           updateExcelData[rowIndex + 1].question = qustion;
           if (firstNameValidate) {
             error.push({ error: firstNameValidate, row: rowIndex + 2 });
           }
+        } else {
+          error.push({
+            error: `Question is required`,
+            row: rowIndex + 2,
+          });
         }
       });
     }
@@ -563,9 +569,14 @@ export default function QuestionUpload() {
       error.push({ error: "Option 1 column is required" });
     } else {
       excelData.slice(1).map((row, rowIndex) => {
-        const option1 = row[option1Index].toString();
+        const rawOption1 = row[option1Index];
 
-        if (option1) {
+        if (
+          rawOption1 !== undefined &&
+          rawOption1 !== null &&
+          rawOption1 !== ""
+        ) {
+          const option1 = rawOption1.toString();
           let option1Validate = selectValidator(option1);
           updateExcelData[rowIndex + 1].option_a = option1;
           if (option1Validate) {
@@ -574,6 +585,11 @@ export default function QuestionUpload() {
               row: rowIndex + 2,
             });
           }
+        } else {
+          error.push({
+            error: `Option 1 is required`,
+            row: rowIndex + 2,
+          });
         }
       });
     }
@@ -582,9 +598,14 @@ export default function QuestionUpload() {
       error.push({ error: "Option 2 column is required" });
     } else {
       excelData.slice(1).map((row, rowIndex) => {
-        const option2 = row[option2Index].toString();
+        const rawOption2 = row[option2Index];
 
-        if (option2) {
+        if (
+          rawOption2 !== undefined &&
+          rawOption2 !== null &&
+          rawOption2 !== ""
+        ) {
+          const option2 = rawOption2.toString();
           let option2Validate = selectValidator(option2);
           updateExcelData[rowIndex + 1].option_b = option2;
           if (option2Validate) {
@@ -593,6 +614,11 @@ export default function QuestionUpload() {
               row: rowIndex + 2,
             });
           }
+        } else {
+          error.push({
+            error: `Option 2 is required`,
+            row: rowIndex + 2,
+          });
         }
       });
     }
@@ -601,9 +627,14 @@ export default function QuestionUpload() {
       error.push({ error: "Option 3 column is required" });
     } else {
       excelData.slice(1).map((row, rowIndex) => {
-        const option3 = row[option3Index].toString();
+        const rawOption2 = row[option3Index];
 
-        if (option3) {
+        if (
+          rawOption2 !== undefined &&
+          rawOption2 !== null &&
+          rawOption2 !== ""
+        ) {
+          const option3 = rawOption2.toString();
           let option3Validate = selectValidator(option3);
           updateExcelData[rowIndex + 1].option_c = option3;
           if (option3Validate) {
@@ -612,6 +643,11 @@ export default function QuestionUpload() {
               row: rowIndex + 2,
             });
           }
+        } else {
+          error.push({
+            error: `Option 3 is required`,
+            row: rowIndex + 2,
+          });
         }
       });
     }
@@ -620,9 +656,14 @@ export default function QuestionUpload() {
       error.push({ error: "Option 4 column is required" });
     } else {
       excelData.slice(1).map((row, rowIndex) => {
-        const option4 = row[option4Index].toString();
+        const rawOption4 = row[option4Index];
 
-        if (option4) {
+        if (
+          rawOption4 !== undefined &&
+          rawOption4 !== null &&
+          rawOption4 !== ""
+        ) {
+          const option4 = rawOption4.toString();
           let option4Validate = selectValidator(option4);
           updateExcelData[rowIndex + 1].option_d = option4;
           if (option4Validate) {
@@ -631,6 +672,11 @@ export default function QuestionUpload() {
               row: rowIndex + 2,
             });
           }
+        } else {
+          error.push({
+            error: `Option 4 is required`,
+            row: rowIndex + 2,
+          });
         }
       });
     }
@@ -638,17 +684,37 @@ export default function QuestionUpload() {
     if (correctAnswerIndex === -1) {
       error.push({ error: "Correct Answer column is required" });
     } else {
-      excelData.slice(1).map((row, rowIndex) => {
-        updateExcelData[rowIndex + 1].correct_answer =
-          row[correctAnswerIndex].toString();
+      excelData.slice(1).forEach((row, rowIndex) => {
+        const correctAnswer = row[correctAnswerIndex];
+
+        // Set value only if defined
         if (
-          row[correctAnswerIndex] !== row[option1Index] &&
-          row[correctAnswerIndex] !== row[option2Index] &&
-          row[correctAnswerIndex] !== row[option3Index] &&
-          row[correctAnswerIndex] !== row[option4Index]
+          correctAnswer !== undefined &&
+          correctAnswer !== null &&
+          correctAnswer !== ""
         ) {
+          updateExcelData[rowIndex + 1].correct_answer =
+            correctAnswer.toString();
+
+          const option1 = row[option1Index] ?? "";
+          const option2 = row[option2Index] ?? "";
+          const option3 = row[option3Index] ?? "";
+          const option4 = row[option4Index] ?? "";
+
+          if (
+            correctAnswer !== option1 &&
+            correctAnswer !== option2 &&
+            correctAnswer !== option3 &&
+            correctAnswer !== option4
+          ) {
+            error.push({
+              error: "Correct answer must be within the options",
+              row: rowIndex + 2,
+            });
+          }
+        } else {
           error.push({
-            error: "Correct answer must be within the options",
+            error: "Correct answer is required",
             row: rowIndex + 2,
           });
         }
@@ -674,6 +740,11 @@ export default function QuestionUpload() {
           } else {
             updateExcelData[rowIndex + 1].section_id = validateSection[0].id;
           }
+        } else {
+          error.push({
+            error: `Section is required`,
+            row: rowIndex + 2,
+          });
         }
       });
     }
@@ -726,6 +797,11 @@ export default function QuestionUpload() {
             updateExcelData[rowIndex + 1].question_type_id =
               validateQuestionType[0].id;
           }
+        } else {
+          error.push({
+            error: `Question Type is required`,
+            row: rowIndex + 2,
+          });
         }
       });
     }
@@ -985,7 +1061,6 @@ export default function QuestionUpload() {
               selectClassName="questionupload_filterselectfield"
               allowClear={true}
               value={typeFilterId}
-              disabled={sectionFilterId === 1 ? true : false}
               onChange={handleTypeFilter}
               hideError={true}
             />
@@ -1016,21 +1091,19 @@ export default function QuestionUpload() {
                 className="questionupload_button"
                 onClick={() => setAddTypeModal(true)}
               >
-                <IoMdAdd size={19} style={{ marginRight: "5px" }} />
+                {/* <IoMdAdd size={19} style={{ marginRight: "5px" }} /> */}
                 Add Type
               </button>
               <button
                 className="questionupload_button"
                 onClick={() => setOpen(true)}
               >
-                <MdFileUpload size={19} style={{ marginRight: "5px" }} />
                 Upload
               </button>
               <button
                 className="questionupload_button"
                 onClick={() => setBulkUploadModal(true)}
               >
-                <MdFileUpload size={19} style={{ marginRight: "5px" }} />
                 Bulk Upload
               </button>
             </>
@@ -1076,6 +1149,7 @@ export default function QuestionUpload() {
               />
             </Col>
           </Row>
+
           <Row gutter={16} style={{ marginTop: "22px" }}>
             <Col span={12}>
               <PortalInputField
@@ -1184,10 +1258,8 @@ export default function QuestionUpload() {
 
                   if (value === 1) {
                     setCourseId(null);
-                    setQuestionTypeId(null);
                     setDisableCourse(true);
                     setCourseIdError("");
-                    setQuestionTypeIdError("");
                   } else {
                     setDisableCourse(false);
                   }
@@ -1224,7 +1296,6 @@ export default function QuestionUpload() {
                 mandatory={true}
                 options={typeData}
                 value={questionTypeId}
-                disabled={disableCourse}
                 onChange={(value) => {
                   setQuestionTypeId(value);
                   if (validationTrigger) {

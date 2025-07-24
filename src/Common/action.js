@@ -702,3 +702,30 @@ export const getFilterResults = async (payload) => {
     throw error;
   }
 };
+//schedule api's
+export const scheduleAssessment = async (payload) => {
+  try {
+    const response = await api.post(`/api/tempTestLink`, payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getSchedules = async () => {
+  try {
+    const response = await api.get(`/api/getScheduledTests`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteSchedule = async (deleteId) => {
+  try {
+    const response = await api.delete(`/api/deleteSchedule?id=${deleteId}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

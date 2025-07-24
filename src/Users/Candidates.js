@@ -10,6 +10,8 @@ import {
   Modal,
   Button,
   Radio,
+  Space,
+  Dropdown,
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import CommonTable from "../Common/CommonTable";
@@ -22,6 +24,7 @@ import {
   getCandidates,
   getCourses,
   getQuestionTypes,
+  scheduleAssessment,
   sendInterviewRequest,
 } from "../Common/action";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -33,13 +36,18 @@ import { ImCross } from "react-icons/im";
 import { PiCheckFatFill } from "react-icons/pi";
 import CommonNodataFound from "../Common/CommonNodataFound";
 import { CgSoftwareDownload } from "react-icons/cg";
+import { IoIosClose } from "react-icons/io";
 import { addressValidator, selectValidator } from "../Common/Validation";
 import PortalInputField from "../Common/PortalInputField";
 import { MdDelete } from "react-icons/md";
 import { PiWarningCircleFill } from "react-icons/pi";
 import DownloadTableAsCSV from "../Common/DownloadTableAsCSV";
 import { LuListFilter } from "react-icons/lu";
-import { FiFilter } from "react-icons/fi";
+import { HiDotsVertical } from "react-icons/hi";
+import CommonTimePicker from "../Common/CommonTimePicker";
+import CommonInputField from "../Common/CommonInputField";
+import CommonDatePicker from "../Common/CommonDatePicker";
+import PortalDatePicker from "../Common/PortalDatePicker";
 const { Search } = Input;
 
 export default function Candidates() {
@@ -84,6 +92,33 @@ export default function Candidates() {
   const [candidateBranch, setCandidateBranch] = useState("");
   const [filterModal, setFilterModal] = useState(false);
   const [filterValue, setFilterValue] = useState(1);
+  const [schedulerModal, setSchedulerModal] = useState(false);
+  const [eventName, setEventName] = useState("");
+  const [eventNameError, setEventNameError] = useState("");
+  const [scheduleDate, setScheduleDate] = useState(null);
+  const [scheduleDateError, setScheduleDateError] = useState("");
+  const [scheduleTime, setScheduleTime] = useState(null);
+  const [scheduleTimeError, setScheduleTimeError] = useState("");
+  const [requestKey, setRequestKey] = useState("");
+
+  const items = [
+    {
+      key: "1",
+      label: (
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <p>Send Assessment Request</p>
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <p>Schedule Assessment</p>
+        </div>
+      ),
+    },
+  ];
 
   const columns = [
     { title: "Name", key: "name", dataIndex: "name", width: 200 },
@@ -459,7 +494,7 @@ export default function Candidates() {
     setSelectedRows(row);
   };
 
-  const checkCandidateRegisterInPlacement = () => {
+  const checkCandidateRegisterInPlacement = (key) => {
     console.log("selected rowssss", selectedRows);
     if (selectedRows.length >= 1) {
       const filterPlacementCandidates = selectedRows.filter(
@@ -476,7 +511,11 @@ export default function Candidates() {
         setMailConfirmModal(true);
         // CommonToaster("Select Only Placement Registered Candidates");
       } else {
-        setQuestionTypeModal(true);
+        if (key === "1") {
+          setQuestionTypeModal(true);
+        } else {
+          setSchedulerModal(true);
+        }
       }
     } else {
       setSelectedRows([]);
@@ -576,6 +615,13 @@ export default function Candidates() {
     setQuestionTypeError("");
     setValidationTrigger(false);
     setMailConfirmModal(false);
+    setSchedulerModal(false);
+    setEventName("");
+    setEventNameError("");
+    setScheduleDate(null);
+    setScheduleDateError("");
+    setScheduleTime(null);
+    setScheduleTimeError("");
   };
 
   // onchange functions
@@ -624,6 +670,97 @@ export default function Candidates() {
     }
   };
 
+  const handleMenuClick = (info) => {
+    console.log("Clicked item:", info.key);
+    setRequestKey(info.key);
+
+    checkCandidateRegisterInPlacement(info.key);
+  };
+
+  const formatDateTimeIST = (date) => {
+    return new Intl.DateTimeFormat("en-GB", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // 24-hour format
+      timeZone: "Asia/Kolkata", // IST timezone
+    })
+      .format(date)
+      .replace(",", ""); // Remove comma
+  };
+
+  const convertToBackendFormat = (dateString) => {
+    const [datePart, timePart] = dateString.split(" ");
+    const [day, month, year] = datePart.split("/");
+    return `${year}-${month}-${day} ${timePart}`;
+  };
+
+  const handleLinkScheduleTime = (time) => {
+    setScheduleTime(time);
+    if (validationTrigger) {
+      setScheduleTimeError(selectValidator(time));
+    }
+  };
+
+  const handleScheduleAssessment = async () => {
+    setValidationTrigger(true);
+    const scheduleNameValidate = addressValidator(eventName);
+    const scheduleDateValidate = selectValidator(scheduleDate);
+    const scheduleTimeValidate = selectValidator(scheduleTime);
+    const questionTypeValidate = selectValidator(questionType);
+
+    setEventNameError(scheduleNameValidate);
+    setScheduleDateError(scheduleDateValidate);
+    setScheduleTimeError(scheduleTimeValidate);
+    setQuestionTypeError(questionTypeValidate);
+
+    if (
+      scheduleNameValidate ||
+      scheduleTimeValidate ||
+      questionTypeValidate ||
+      scheduleDateValidate
+    )
+      return;
+
+    const formatTime = formatDateTimeIST(scheduleTime);
+    const sendTimeFormat = convertToBackendFormat(formatTime);
+    console.log(sendTimeFormat, "sendFormat");
+
+    const filterData = placementRegisteredCandidates.map((item) => {
+      return {
+        user_id: item.id,
+        course_id: item.course_id,
+      };
+    });
+    const payload = {
+      users: filterData,
+      schedule_date: moment(scheduleDate).format("YYYY-MM-DD"),
+      schedule_time: moment(sendTimeFormat).format("HH:mm:ss"),
+      question_type_id: questionType,
+      name: eventName,
+      total_users: filterData.length,
+    };
+
+    try {
+      const response = await scheduleAssessment(payload);
+      console.log(response);
+      CommonToaster("Assessment Scheduled");
+      setSelectedRows([]);
+      setSelectedRowKeys([]);
+      setPlacementRegisteredCandidates([]);
+      setNonPlacementRegisteredCandidates([]);
+      formReset();
+    } catch (error) {
+      CommonToaster(
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later"
+      );
+    }
+  };
+
   return (
     <div>
       <Row>
@@ -646,13 +783,13 @@ export default function Candidates() {
             gap: "12px",
           }}
         >
-          <button
+          {/* <button
             className="candidate_sendrequestbutton"
             onClick={checkCandidateRegisterInPlacement}
           >
             <IoIosSend size={19} style={{ marginRight: "4px" }} />
             Send Interview Request
-          </button>
+          </button> */}
 
           <button
             className="candidate_downloadresultbutton"
@@ -661,6 +798,22 @@ export default function Candidates() {
             <CgSoftwareDownload size={19} style={{ marginRight: "4px" }} />
             Download Result
           </button>
+
+          <Space direction="vertical">
+            <Space wrap>
+              <Dropdown
+                menu={{ items: items, onClick: handleMenuClick }}
+                placement="bottomLeft"
+                arrow={{ pointAtCenter: true }}
+                // popupRender={() => <CustomDropdownContent />}
+                trigger={["click"]}
+              >
+                <div className="candidate_assmnt_request_container">
+                  <HiDotsVertical size={17} />
+                </div>
+              </Dropdown>
+            </Space>
+          </Space>
         </Col>
       </Row>
 
@@ -676,13 +829,32 @@ export default function Candidates() {
                     ? "Search by email"
                     : "Search by mobile"
                 }
-                // enterButton
+                value={nameSearch}
                 prefix={false}
                 suffix={false}
                 className="candidates_searchinput"
                 onChange={handleSearch}
                 hideError={true}
               />{" "}
+              {nameSearch === "" || nameSearch === null ? (
+                ""
+              ) : (
+                <div
+                  className="candidates_filter_closeIconContainer"
+                  onClick={() => {
+                    setNameSearch(null);
+                    getCandidatesData(
+                      null,
+                      branchId,
+                      courseId,
+                      selectedDates.length >= 1 ? selectedDates[0] : null,
+                      selectedDates.length >= 1 ? selectedDates[1] : null
+                    );
+                  }}
+                >
+                  <IoIosClose size={11} />
+                </div>
+              )}
               <div
                 className="candidates_filterIconContainer"
                 onClick={() => setFilterModal(true)}
@@ -788,6 +960,7 @@ export default function Candidates() {
         open={questionTypeModal}
         onCancel={formReset}
         title="Select Question Type"
+        width={500}
         footer={[
           <div className="courses_addtopicmodal_footerContainer">
             {requestLoading ? (
@@ -829,7 +1002,6 @@ export default function Candidates() {
       </Modal>
 
       {/* mail confirm modal */}
-
       <Modal
         open={mailConfirmModal}
         onCancel={formReset}
@@ -879,7 +1051,11 @@ export default function Candidates() {
               className="interview_confirmmodal_sendbutton"
               onClick={() => {
                 setMailConfirmModal(false);
-                setQuestionTypeModal(true);
+                if (requestKey === "1") {
+                  setQuestionTypeModal(true);
+                } else {
+                  setSchedulerModal(true);
+                }
               }}
             >
               Yes
@@ -900,6 +1076,17 @@ export default function Candidates() {
           onChange={(e) => {
             setFilterValue(e.target.value);
             setFilterModal(false);
+            setNameSearch(null);
+            if (nameSearch === "" || nameSearch === null) {
+              return;
+            }
+            getCandidatesData(
+              null,
+              branchId,
+              courseId,
+              selectedDates.length >= 1 ? selectedDates[0] : null,
+              selectedDates.length >= 1 ? selectedDates[1] : null
+            );
           }}
           value={filterValue}
         >
@@ -915,6 +1102,89 @@ export default function Candidates() {
             </Col>
           </Row>
         </Radio.Group>
+      </Modal>
+
+      {/* scheduler modal */}
+      <Modal
+        open={schedulerModal}
+        onCancel={formReset}
+        title="Schedule"
+        width={500}
+        footer={[
+          <div className="courses_addtopicmodal_footerContainer">
+            {tableLoading ? (
+              <Button className="courses_modal_disablesubmitbutton">
+                <>
+                  <Spin
+                    size="small"
+                    className="courses_addtopicbutton_spin"
+                    indicator={<LoadingOutlined spin color="#fff" />}
+                  />{" "}
+                </>
+              </Button>
+            ) : (
+              <Button
+                className="courses_modal_submitbutton"
+                onClick={handleScheduleAssessment}
+              >
+                Submit
+              </Button>
+            )}
+          </div>,
+        ]}
+      >
+        <PortalInputField
+          label="Name"
+          mandatory={true}
+          onChange={(e) => {
+            setEventName(e.target.value);
+            if (validationTrigger) {
+              setEventNameError(addressValidator(e.target.value));
+            }
+          }}
+          value={eventName}
+          error={eventNameError}
+        />
+
+        <div style={{ marginTop: "22px" }}>
+          <PortalDatePicker
+            label="Link Send Date"
+            mandatory={true}
+            value={scheduleDate}
+            onChange={(value) => {
+              setScheduleDate(value);
+              if (validationTrigger) {
+                setScheduleDateError(selectValidator(value));
+              }
+            }}
+            error={scheduleDateError}
+          />
+        </div>
+
+        <div style={{ marginTop: "22px" }}>
+          <CommonTimePicker
+            label="Link Send Time"
+            onChange={handleLinkScheduleTime}
+            value={scheduleTime}
+            error={scheduleTimeError}
+            mandatory
+          />
+        </div>
+        <div style={{ marginTop: "22px", marginBottom: "20px" }}>
+          <PortalSelectField
+            label="Type"
+            options={typeData}
+            mandatory={true}
+            value={questionType}
+            onChange={(value) => {
+              setQuestionType(value);
+              if (validationTrigger) {
+                setQuestionTypeError(selectValidator(value));
+              }
+            }}
+            error={questionTypeError}
+          />
+        </div>
       </Modal>
     </div>
   );
