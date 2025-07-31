@@ -328,7 +328,7 @@ export default function Courses() {
     const payload = {
       course_id: courseId,
       topic_id: topicid,
-      trainer_id: trainerId ? trainerId : trainerid,
+      trainer_id: trainerid,
     };
     try {
       const response = await getVideoAndDocuments(payload);
@@ -448,7 +448,7 @@ export default function Courses() {
     if (index === courseTopicIndex) return;
     setCourseTopicIndex(index);
     setActiveTopicTabId(Id);
-    getVideosAndDocumentsData(Id);
+    getVideosAndDocumentsData(Id, trainerId);
   };
 
   const handleTopicEdit = (item) => {
@@ -703,7 +703,7 @@ export default function Courses() {
           if (clickedCompanyId) {
             getCompanyVideosAndDocumentsData();
           } else {
-            getVideosAndDocumentsData(activeTopicTabId);
+            getVideosAndDocumentsData(activeTopicTabId, trainerId);
           }
         }, 300);
       } catch (error) {
@@ -750,7 +750,7 @@ export default function Courses() {
           if (clickedCompanyId) {
             getCompanyVideosAndDocumentsData();
           } else {
-            getVideosAndDocumentsData(activeTopicTabId);
+            getVideosAndDocumentsData(activeTopicTabId, trainerId);
           }
         }, 300);
       } catch (error) {

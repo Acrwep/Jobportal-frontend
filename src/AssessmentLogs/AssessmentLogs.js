@@ -76,7 +76,7 @@ export default function AssessmentsLogs() {
             className="assesmntresult_viewContainer"
             onClick={() =>
               getAnswersData(
-                text.id,
+                text.user_id,
                 record.name,
                 record.branch,
                 record.course_name
@@ -211,7 +211,7 @@ export default function AssessmentsLogs() {
     }
     let ids = [];
     selectedRows.map((item) => {
-      ids.push(item.id);
+      ids.push(item.user_id);
     });
     console.log("idssss", ids);
 
